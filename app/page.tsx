@@ -389,6 +389,18 @@ export default function Home() {
       
       if (modoEdicao && registroSelecionado) {
         // Modo edição - atualizar registro existente
+        console.log('🔄 Editando registro:', registroSelecionado.id)
+        console.log('📝 Dados enviados:', {
+          executivo,
+          agencia,
+          qtdVisitas,
+          qtdInteracoes,
+          qtdBraExpre,
+          data: dataFechamento,
+          credenciamentos: credenciamentos.length,
+          cnpjsSimulados: cnpjsSalvos.length
+        })
+        
         response = await fetch(`/api/fechamentos/${registroSelecionado.id}`, {
           method: 'PUT',
           headers: {
@@ -400,7 +412,7 @@ export default function Home() {
             qtdVisitas: parseInt(qtdVisitas),
             qtdInteracoes: parseInt(qtdInteracoes),
             qtdBraExpre: parseInt(qtdBraExpre),
-            data: registroSelecionado.data,
+            data: dataFechamento,
             credenciamentos,
             cnpjsSimulados: cnpjsSalvos
           })

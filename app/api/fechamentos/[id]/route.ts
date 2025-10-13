@@ -14,9 +14,9 @@ export async function PUT(
     const { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos, cnpjsSimulados } = body
 
     // Validação básica
-    if (!executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined || !credenciamentos || !cnpjsSimulados) {
+    if (!executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined) {
       return NextResponse.json(
-        { error: 'Todos os campos são obrigatórios' },
+        { error: 'Todos os campos principais são obrigatórios' },
         { status: 400 }
       )
     }
@@ -49,7 +49,7 @@ export async function PUT(
         data: data ? new Date(data) : fechamentoExistente.data,
         credenciamentos: {
           deleteMany: {},
-          create: credenciamentos.map((cred: any) => ({
+          create: (credenciamentos || []).map((cred: any) => ({
             qtdCredenciamentos: parseInt(cred.qtdCredenciamentos),
             ativacoesValor: parseFloat(cred.ativacoesValor),
             ec: cred.ec,
@@ -62,7 +62,7 @@ export async function PUT(
         },
         cnpjsSimulados: {
           deleteMany: {},
-          create: cnpjsSimulados.map((cnpj: any) => ({
+          create: (cnpjsSimulados || []).map((cnpj: any) => ({
             cnpj: cnpj.cnpj,
             nomeEmpresa: cnpj.nomeEmpresa,
             faturamento: parseFloat(cnpj.faturamento),
