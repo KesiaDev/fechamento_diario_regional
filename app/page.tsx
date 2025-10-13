@@ -302,6 +302,12 @@ export default function Home() {
       return
     }
 
+    // Validar CNPJs Simulados (obrigatório pelo menos 1)
+    if (cnpjsSalvos.length === 0) {
+      alert('É obrigatório adicionar pelo menos 1 CNPJ Simulado')
+      return
+    }
+
     // Se há credenciamentos, validar se estão preenchidos corretamente
     if (credenciamentos.length > 0) {
       const credenciamentosValidos = credenciamentos.every(c => 
@@ -488,7 +494,7 @@ export default function Home() {
                   {/* CNPJs Simulados */}
                   <div className="border-t pt-4 sm:pt-6">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-                      <h3 className="text-base sm:text-lg font-semibold">CNPJs Simulados</h3>
+                      <h3 className="text-base sm:text-lg font-semibold">CNPJs Simulados <span className="text-red-500">*</span></h3>
                       <Button
                         type="button"
                         onClick={adicionarCnpjSimulado}
@@ -501,10 +507,10 @@ export default function Home() {
                       </Button>
                     </div>
 
-                    {/* CNPJs Salvos */}
-                    {cnpjsSalvos.length > 0 && (
-                      <div className="mb-6">
-                        <h4 className="text-sm font-medium text-green-700 mb-3">✅ CNPJs Salvos ({cnpjsSalvos.length})</h4>
+      {/* CNPJs Salvos */}
+      {cnpjsSalvos.length > 0 ? (
+        <div className="mb-6">
+          <h4 className="text-sm font-medium text-green-700 mb-3">✅ CNPJs Salvos ({cnpjsSalvos.length})</h4>
                         <div className="space-y-3">
                           {cnpjsSalvos.map((cnpj, index) => (
                             <Card key={cnpj.id} className="bg-green-50 border-green-200">
@@ -528,11 +534,24 @@ export default function Home() {
                               </CardContent>
                             </Card>
                           ))}
-                        </div>
-                      </div>
-                    )}
+          </div>
+        </div>
+      ) : (
+        <div className="mb-6">
+          <Card className="bg-red-50 border-red-200">
+            <CardContent className="pt-4 pb-4 text-center">
+              <div className="text-red-600">
+                <div className="text-2xl mb-2">⚠️</div>
+                <h4 className="font-semibold mb-2">CNPJs Simulados Obrigatórios</h4>
+                <p className="text-sm">Você deve adicionar pelo menos 1 CNPJ Simulado para salvar o fechamento.</p>
+                <p className="text-xs mt-1 text-red-500">Clique em "Adicionar CNPJ" para começar.</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-                    {/* CNPJs em Edição */}
+      {/* CNPJs em Edição */}
                     <div className="space-y-4">
                       {cnpjsSimulados.map((cnpj, index) => (
                         <Card key={cnpj.id} className="bg-blue-50 border-blue-200">
