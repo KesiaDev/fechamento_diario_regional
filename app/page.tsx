@@ -148,19 +148,7 @@ export default function Home() {
   const [qtdBraExpre, setQtdBraExpre] = useState('')
   const [cnpjsSimulados, setCnpjsSimulados] = useState<CnpjSimulado[]>([])
   const [cnpjsSalvos, setCnpjsSalvos] = useState<CnpjSimulado[]>([])
-  const [credenciamentos, setCredenciamentos] = useState<Credenciamento[]>([
-    {
-      id: crypto.randomUUID(),
-      qtdCredenciamentos: '',
-      ativacoesValor: '',
-      ec: '',
-      volumeRS: '',
-      ra: '',
-      cesta: '',
-      instalaDireto: '',
-      nomeGerentePJ: ''
-    }
-  ])
+  const [credenciamentos, setCredenciamentos] = useState<Credenciamento[]>([])
   
   const [fechamentos, setFechamentos] = useState<Fechamento[]>([])
   const [ranking, setRanking] = useState<RankingItem[]>([])
@@ -315,7 +303,7 @@ export default function Home() {
       )
 
       if (!credenciamentosValidos) {
-        alert('Preencha todos os campos de todos os credenciamentos')
+        alert('Preencha todos os campos de todos os credenciamentos ou remova os credenciamentos vazios')
         return
       }
 
@@ -664,13 +652,13 @@ export default function Home() {
 
                     <div className="space-y-4">
                       {credenciamentos.length === 0 ? (
-                        <Card className="bg-red-50 border-red-200">
+                        <Card className="bg-gray-50 border-gray-200">
                           <CardContent className="pt-6 pb-6 text-center">
-                            <div className="text-red-600">
-                              <div className="text-2xl mb-2">❌</div>
+                            <div className="text-gray-600">
+                              <div className="text-2xl mb-2">📋</div>
                               <h4 className="font-semibold mb-2">Sem Credenciamentos</h4>
                               <p className="text-sm">Este GN não realizou nenhum credenciamento hoje.</p>
-                              <p className="text-xs mt-1 text-red-500">Clique em "Adicionar" se houver credenciamentos.</p>
+                              <p className="text-xs mt-1 text-gray-500">Clique em "Adicionar" se houver credenciamentos.</p>
                             </div>
                           </CardContent>
                         </Card>
