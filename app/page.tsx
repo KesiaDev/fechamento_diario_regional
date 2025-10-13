@@ -359,11 +359,7 @@ export default function Home() {
       return
     }
 
-    // Validar CNPJs Simulados (obrigatório pelo menos 1)
-    if (cnpjsSalvos.length === 0) {
-      alert('É obrigatório adicionar pelo menos 1 CNPJ Simulado')
-      return
-    }
+    // CNPJs Simulados agora são opcionais
 
     // Se há credenciamentos, validar se estão preenchidos corretamente
     if (credenciamentos.length > 0) {
@@ -566,7 +562,7 @@ export default function Home() {
                   {/* CNPJs Simulados */}
                   <div className="border-t pt-4 sm:pt-6">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-                      <h3 className="text-base sm:text-lg font-semibold">CNPJs Simulados <span className="text-red-500">*</span></h3>
+                      <h3 className="text-base sm:text-lg font-semibold">CNPJs Simulados</h3>
                       <Button
                         type="button"
                         onClick={adicionarCnpjSimulado}
@@ -610,13 +606,13 @@ export default function Home() {
         </div>
       ) : (
         <div className="mb-6">
-          <Card className="bg-red-50 border-red-200">
+          <Card className="bg-gray-50 border-gray-200">
             <CardContent className="pt-4 pb-4 text-center">
-              <div className="text-red-600">
-                <div className="text-2xl mb-2">⚠️</div>
-                <h4 className="font-semibold mb-2">CNPJs Simulados Obrigatórios</h4>
-                <p className="text-sm">Você deve adicionar pelo menos 1 CNPJ Simulado para salvar o fechamento.</p>
-                <p className="text-xs mt-1 text-red-500">Clique em "Adicionar CNPJ" para começar.</p>
+              <div className="text-gray-600">
+                <div className="text-2xl mb-2">📋</div>
+                <h4 className="font-semibold mb-2">Nenhum CNPJ Simulado</h4>
+                <p className="text-sm">Você pode adicionar CNPJs simulados se desejar.</p>
+                <p className="text-xs mt-1 text-gray-500">Clique em "Adicionar CNPJ" se houver simulações.</p>
               </div>
             </CardContent>
           </Card>
