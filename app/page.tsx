@@ -156,6 +156,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [registroSelecionado, setRegistroSelecionado] = useState<Fechamento | null>(null)
   const [mostrarModal, setMostrarModal] = useState(false)
+  const [modoEdicao, setModoEdicao] = useState(false)
 
   const adicionarCredenciamento = () => {
     setCredenciamentos([
@@ -256,6 +257,74 @@ export default function Home() {
     }
   }
 
+  const editarRegistro = (fechamento: Fechamento) => {
+    // Preencher formulário com dados do registro
+    setExecutivo(fechamento.executivo)
+    setAgencia(fechamento.agencia)
+    setQtdVisitas(fechamento.qtdVisitas.toString())
+    setQtdInteracoes(fechamento.qtdInteracoes.toString())
+    setQtdBraExpre(fechamento.qtdBraExpre.toString())
+    
+    // Converter credenciamentos para formato do formulário
+    const credenciamentosFormatados = fechamento.credenciamentos.map(cred => ({
+      id: crypto.randomUUID(),
+      qtdCredenciamentos: cred.qtdCredenciamentos.toString(),
+      ativacoesValor: cred.ativacoesValor.toString(),
+      ec: cred.ec,
+      volumeRS: cred.volumeRS.toString(),
+      ra: cred.ra ? 'true' : 'false',
+      cesta: cred.cesta,
+      instalaDireto: cred.instalaDireto ? 'true' : 'false',
+      nomeGerentePJ: cred.nomeGerentePJ || ''
+    }))
+    setCredenciamentos(credenciamentosFormatados)
+    
+    // Converter CNPJs simulados para formato do formulário
+    const cnpjsFormatados = fechamento.cnpjsSimulados.map(cnpj => ({
+      id: crypto.randomUUID(),
+      cnpj: cnpj.cnpj,
+      nomeEmpresa: cnpj.nomeEmpresa,
+      faturamento: cnpj.faturamento.toString(),
+      comentarios: cnpj.comentarios || ''
+    }))
+    setCnpjsSalvos(cnpjsFormatados)
+    setCnpjsSimulados([])
+    
+    // Configurar modo de edição
+    setRegistroSelecionado(fechamento)
+    setModoEdicao(true)
+    fecharModal()
+    
+    // Ir para aba de lançamento
+    const lancamentoTab = document.querySelector('[value="lancamento"]') as HTMLElement
+    if (lancamentoTab) {
+      lancamentoTab.click()
+    }
+  }
+
+  const excluirRegistroDireto = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir este registro?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/fechamentos/${id}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        alert('Registro excluído com sucesso!')
+        carregarFechamentos()
+        carregarRanking()
+      } else {
+        alert('Erro ao excluir registro')
+      }
+    } catch (error) {
+      console.error('Erro:', error)
+      alert('Erro ao excluir registro')
+    }
+  }
+
   const carregarFechamentos = async () => {
     try {
       const response = await fetch(`/api/fechamentos?filtro=${filtro}`)
@@ -318,25 +387,48 @@ export default function Home() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/fechamentos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          executivo,
-          agencia,
-          qtdVisitas,
-          qtdInteracoes,
-          qtdBraExpre,
-          data: new Date().toISOString(),
-          credenciamentos,
-          cnpjsSimulados: cnpjsSalvos
+      let response
+      
+      if (modoEdicao && registroSelecionado) {
+        // Modo edição - atualizar registro existente
+        response = await fetch(`/api/fechamentos/${registroSelecionado.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            executivo,
+            agencia,
+            qtdVisitas: parseInt(qtdVisitas),
+            qtdInteracoes: parseInt(qtdInteracoes),
+            qtdBraExpre: parseInt(qtdBraExpre),
+            data: registroSelecionado.data,
+            credenciamentos,
+            cnpjsSimulados: cnpjsSalvos
+          })
         })
-      })
+      } else {
+        // Modo criação - criar novo registro
+        response = await fetch('/api/fechamentos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            executivo,
+            agencia,
+            qtdVisitas: parseInt(qtdVisitas),
+            qtdInteracoes: parseInt(qtdInteracoes),
+            qtdBraExpre: parseInt(qtdBraExpre),
+            data: new Date().toISOString(),
+            credenciamentos,
+            cnpjsSimulados: cnpjsSalvos
+          })
+        })
+      }
 
       if (response.ok) {
-        alert('Fechamento salvo com sucesso!')
+        alert(modoEdicao ? 'Fechamento atualizado com sucesso!' : 'Fechamento salvo com sucesso!')
         
         // Limpar formulário
         setExecutivo('')
@@ -346,17 +438,9 @@ export default function Home() {
         setQtdBraExpre('')
         setCnpjsSimulados([])
         setCnpjsSalvos([])
-        setCredenciamentos([{
-          id: crypto.randomUUID(),
-          qtdCredenciamentos: '',
-          ativacoesValor: '',
-          ec: '',
-          volumeRS: '',
-          ra: '',
-          cesta: '',
-          instalaDireto: '',
-          nomeGerentePJ: ''
-        }])
+        setCredenciamentos([])
+        setModoEdicao(false)
+        setRegistroSelecionado(null)
         
         // Recarregar dados
         carregarFechamentos()
@@ -792,7 +876,7 @@ export default function Home() {
                   </div>
 
                   <Button type="submit" className="w-full" size="lg" disabled={loading}>
-                    {loading ? 'Salvando...' : 'Salvar Fechamento'}
+                    {loading ? (modoEdicao ? 'Atualizando...' : 'Salvando...') : (modoEdicao ? 'Atualizar Fechamento' : 'Salvar Fechamento')}
                   </Button>
                 </form>
               </CardContent>
@@ -834,7 +918,7 @@ export default function Home() {
                           <th className="text-right p-2 text-xs sm:text-sm hidden lg:table-cell">Bra Expre</th>
                           <th className="text-right p-2 text-xs sm:text-sm">Creds</th>
                           <th className="text-right p-2 text-xs sm:text-sm">Total</th>
-                          <th className="text-center p-2 text-xs sm:text-sm">Ver</th>
+                          <th className="text-center p-2 text-xs sm:text-sm">Ações</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -871,7 +955,41 @@ export default function Home() {
                                 {formatCurrency(totalAtiv)}
                               </td>
                               <td className="p-2 text-center">
-                                <Eye className="w-4 h-4 text-gray-400" />
+                                <div className="flex gap-1 justify-center">
+                                  <Button
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      abrirModalRegistro(fechamento)
+                                    }}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Eye className="w-4 h-4 text-blue-500" />
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      editarRegistro(fechamento)
+                                    }}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Edit className="w-4 h-4 text-green-500" />
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      excluirRegistroDireto(fechamento.id)
+                                    }}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Trash2 className="w-4 h-4 text-red-500" />
+                                  </Button>
+                                </div>
                               </td>
                             </tr>
                           )
