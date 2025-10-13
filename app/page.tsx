@@ -185,9 +185,7 @@ export default function Home() {
   }
 
   const removerCredenciamento = (id: string) => {
-    if (credenciamentos.length > 1) {
-      setCredenciamentos(credenciamentos.filter(c => c.id !== id))
-    }
+    setCredenciamentos(credenciamentos.filter(c => c.id !== id))
   }
 
   const atualizarCredenciamento = (id: string, campo: string, valor: string) => {
@@ -268,20 +266,23 @@ export default function Home() {
       return
     }
 
-    const credenciamentosValidos = credenciamentos.every(c => 
-      c.qtdCredenciamentos && c.ativacoesValor && c.ec && c.volumeRS && c.ra && c.cesta && c.instalaDireto
-    )
+    // Se há credenciamentos, validar se estão preenchidos corretamente
+    if (credenciamentos.length > 0) {
+      const credenciamentosValidos = credenciamentos.every(c => 
+        c.qtdCredenciamentos && c.ativacoesValor && c.ec && c.volumeRS && c.ra && c.cesta && c.instalaDireto
+      )
 
-    if (!credenciamentosValidos) {
-      alert('Preencha todos os campos de todos os credenciamentos')
-      return
-    }
+      if (!credenciamentosValidos) {
+        alert('Preencha todos os campos de todos os credenciamentos')
+        return
+      }
 
-    // Validar EC (10 dígitos)
-    const ecValido = credenciamentos.every(c => c.ec.length === 10 && /^\d+$/.test(c.ec))
-    if (!ecValido) {
-      alert('O campo EC deve conter exatamente 10 números')
-      return
+      // Validar EC (10 dígitos)
+      const ecValido = credenciamentos.every(c => c.ec.length === 10 && /^\d+$/.test(c.ec))
+      if (!ecValido) {
+        alert('O campo EC deve conter exatamente 10 números')
+        return
+      }
     }
 
     setLoading(true)
@@ -583,20 +584,43 @@ export default function Home() {
                   <div className="border-t pt-4 sm:pt-6">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                       <h3 className="text-base sm:text-lg font-semibold">Credenciamentos</h3>
-                      <Button
-                        type="button"
-                        onClick={adicionarCredenciamento}
-                        variant="outline"
-                        size="sm"
-                        className="w-full sm:w-auto"
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        <span className="text-sm">Adicionar Credenciamento</span>
-                      </Button>
+                      <div className="flex gap-2 w-full sm:w-auto">
+                        <Button
+                          type="button"
+                          onClick={() => setCredenciamentos([])}
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 sm:flex-none"
+                        >
+                          <span className="text-sm">❌ Sem Credenciamentos</span>
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={adicionarCredenciamento}
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 sm:flex-none"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          <span className="text-sm">Adicionar</span>
+                        </Button>
+                      </div>
                     </div>
 
                     <div className="space-y-4">
-                      {credenciamentos.map((cred, index) => (
+                      {credenciamentos.length === 0 ? (
+                        <Card className="bg-red-50 border-red-200">
+                          <CardContent className="pt-6 pb-6 text-center">
+                            <div className="text-red-600">
+                              <div className="text-2xl mb-2">❌</div>
+                              <h4 className="font-semibold mb-2">Sem Credenciamentos</h4>
+                              <p className="text-sm">Este GN não realizou nenhum credenciamento hoje.</p>
+                              <p className="text-xs mt-1 text-red-500">Clique em "Adicionar" se houver credenciamentos.</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ) : (
+                        credenciamentos.map((cred, index) => (
                         <Card key={cred.id} className="bg-gray-50">
                           <CardContent className="pt-6">
                             <div className="flex justify-between items-center mb-4">
@@ -719,7 +743,8 @@ export default function Home() {
                             </div>
                           </CardContent>
                         </Card>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </div>
 
