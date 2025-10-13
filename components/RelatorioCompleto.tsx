@@ -444,7 +444,7 @@ export function RelatorioCompleto() {
                             <p className="font-semibold">{gn.totalCredenciamentos}</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Volume R$</p>
+                            <p className="text-gray-600">Ativações (R$)</p>
                             <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
                           </div>
                           <div>
@@ -588,7 +588,7 @@ export function RelatorioCompleto() {
                             <p className="text-xs text-gray-500">Média: {gn.mediaCredenciamentosPorDia}/dia</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Volume R$</p>
+                            <p className="text-gray-600">Ativações (R$)</p>
                             <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
                           </div>
                           <div>
@@ -770,7 +770,7 @@ export function RelatorioCompleto() {
                             <p className="text-xs text-gray-500">Média: {gn.mediaCredenciamentosPorDia}/dia</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Volume R$</p>
+                            <p className="text-gray-600">Ativações (R$)</p>
                             <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
                           </div>
                           <div>

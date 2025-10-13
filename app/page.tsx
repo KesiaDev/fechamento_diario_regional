@@ -800,7 +800,7 @@ export default function Home() {
                               </div>
 
                               <div className="space-y-2">
-                                <Label>Volume R$ *</Label>
+                                <Label>Ativações (R$) *</Label>
                                 <Input
                                   type="number"
                                   step="0.01"
@@ -1281,7 +1281,7 @@ export default function Home() {
                                   <p className="font-semibold">{cred.qtdCredenciamentos}</p>
                                 </div>
                                 <div>
-                                  <p className="text-gray-600">Volume R$:</p>
+                                  <p className="text-gray-600">Ativações (R$):</p>
                                   <p className="font-semibold">{formatCurrency(cred.ativacoesValor)}</p>
                                 </div>
                                 <div>
