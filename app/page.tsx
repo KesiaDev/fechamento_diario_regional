@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { Plus, Trash2, TrendingUp, Users, Award } from 'lucide-react'
+import { Plus, Trash2, TrendingUp, Users, Award, Check } from 'lucide-react'
 import { RelatorioSemanal } from '@/components/RelatorioSemanal'
 
 // Função para obter foto do GN
@@ -146,6 +146,7 @@ export default function Home() {
   const [qtdInteracoes, setQtdInteracoes] = useState('')
   const [qtdBraExpre, setQtdBraExpre] = useState('')
   const [cnpjsSimulados, setCnpjsSimulados] = useState<CnpjSimulado[]>([])
+  const [cnpjsSalvos, setCnpjsSalvos] = useState<CnpjSimulado[]>([])
   const [credenciamentos, setCredenciamentos] = useState<Credenciamento[]>([
     {
       id: crypto.randomUUID(),
@@ -217,6 +218,21 @@ export default function Home() {
     ))
   }
 
+  const salvarCnpjSimulado = (id: string) => {
+    const cnpjParaSalvar = cnpjsSimulados.find(c => c.id === id)
+    if (cnpjParaSalvar && cnpjParaSalvar.cnpj && cnpjParaSalvar.nomeEmpresa && cnpjParaSalvar.faturamento) {
+      setCnpjsSalvos([...cnpjsSalvos, cnpjParaSalvar])
+      setCnpjsSimulados(cnpjsSimulados.filter(c => c.id !== id))
+      alert('CNPJ salvo com sucesso!')
+    } else {
+      alert('Preencha todos os campos obrigatórios do CNPJ')
+    }
+  }
+
+  const removerCnpjSalvo = (id: string) => {
+    setCnpjsSalvos(cnpjsSalvos.filter(c => c.id !== id))
+  }
+
   const carregarFechamentos = async () => {
     try {
       const response = await fetch(`/api/fechamentos?filtro=${filtro}`)
@@ -283,7 +299,7 @@ export default function Home() {
           qtdBraExpre,
           data: new Date().toISOString(),
           credenciamentos,
-          cnpjsSimulados
+          cnpjsSimulados: cnpjsSalvos
         })
       })
 
@@ -297,6 +313,7 @@ export default function Home() {
         setQtdInteracoes('')
         setQtdBraExpre('')
         setCnpjsSimulados([])
+        setCnpjsSalvos([])
         setCredenciamentos([{
           id: crypto.randomUUID(),
           qtdCredenciamentos: '',
@@ -443,20 +460,64 @@ export default function Home() {
                       </Button>
                     </div>
 
+                    {/* CNPJs Salvos */}
+                    {cnpjsSalvos.length > 0 && (
+                      <div className="mb-6">
+                        <h4 className="text-sm font-medium text-green-700 mb-3">✅ CNPJs Salvos ({cnpjsSalvos.length})</h4>
+                        <div className="space-y-3">
+                          {cnpjsSalvos.map((cnpj, index) => (
+                            <Card key={cnpj.id} className="bg-green-50 border-green-200">
+                              <CardContent className="pt-4 pb-4">
+                                <div className="flex justify-between items-center mb-2">
+                                  <h5 className="font-medium text-green-800">CNPJ #{index + 1}: {cnpj.cnpj}</h5>
+                                  <Button
+                                    type="button"
+                                    onClick={() => removerCnpjSalvo(cnpj.id)}
+                                    variant="ghost"
+                                    size="sm"
+                                  >
+                                    <Trash2 className="w-4 h-4 text-red-500" />
+                                  </Button>
+                                </div>
+                                <div className="text-sm text-green-700">
+                                  <p><strong>Empresa:</strong> {cnpj.nomeEmpresa}</p>
+                                  <p><strong>Faturamento:</strong> R$ {parseFloat(cnpj.faturamento).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                  {cnpj.comentarios && <p><strong>Comentários:</strong> {cnpj.comentarios}</p>}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* CNPJs em Edição */}
                     <div className="space-y-4">
                       {cnpjsSimulados.map((cnpj, index) => (
                         <Card key={cnpj.id} className="bg-blue-50 border-blue-200">
                           <CardContent className="pt-6">
                             <div className="flex justify-between items-center mb-4">
                               <h4 className="font-medium text-blue-800">CNPJ Simulado #{index + 1}</h4>
-                              <Button
-                                type="button"
-                                onClick={() => removerCnpjSimulado(cnpj.id)}
-                                variant="ghost"
-                                size="sm"
-                              >
-                                <Trash2 className="w-4 h-4 text-red-500" />
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  onClick={() => salvarCnpjSimulado(cnpj.id)}
+                                  variant="default"
+                                  size="sm"
+                                  className="bg-green-600 hover:bg-green-700"
+                                >
+                                  <Check className="w-4 h-4 mr-1" />
+                                  Salvar
+                                </Button>
+                                <Button
+                                  type="button"
+                                  onClick={() => removerCnpjSimulado(cnpj.id)}
+                                  variant="ghost"
+                                  size="sm"
+                                >
+                                  <Trash2 className="w-4 h-4 text-red-500" />
+                                </Button>
+                              </div>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
