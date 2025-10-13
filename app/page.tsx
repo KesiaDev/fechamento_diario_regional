@@ -11,6 +11,75 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 import { Plus, Trash2, TrendingUp, Users, Award } from 'lucide-react'
 import { RelatorioSemanal } from '@/components/RelatorioSemanal'
 
+// Função para obter foto do GN
+const getFotoGN = (nome: string) => {
+  const nomeLower = nome.toLowerCase()
+  const fotos = {
+    'dionei': '/fotos/dionei.jpg',
+    'sheila': '/fotos/sheila.jpg',
+    'renan': '/fotos/renan.jpg',
+    'jeferson': '/fotos/jeferson.jpg',
+    'jhonattan': '/fotos/jhonattan.jpg'
+  }
+  
+  // Se encontrar a foto, retorna o caminho, senão retorna avatar com inicial
+  if (fotos[nomeLower as keyof typeof fotos]) {
+    return { tipo: 'foto', src: fotos[nomeLower as keyof typeof fotos] }
+  }
+  
+  // Fallback para avatar com inicial
+  const inicial = nome.charAt(0).toUpperCase()
+  const cores = [
+    'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-red-500', 'bg-yellow-500',
+    'bg-indigo-500', 'bg-pink-500', 'bg-teal-500', 'bg-orange-500', 'bg-cyan-500'
+  ]
+  const corIndex = nome.length % cores.length
+  return { tipo: 'avatar', inicial, cor: cores[corIndex] }
+}
+
+// Componente para renderizar foto ou avatar
+const FotoGN = ({ nome, tamanho = 'md' }: { nome: string, tamanho?: 'sm' | 'md' | 'lg' }) => {
+  const foto = getFotoGN(nome)
+  const tamanhos = {
+    sm: 'w-6 h-6 sm:w-8 sm:h-8',
+    md: 'w-10 h-10 sm:w-12 sm:h-12',
+    lg: 'w-12 h-12 sm:w-16 sm:h-16'
+  }
+  const tamanhosTexto = {
+    sm: 'text-xs sm:text-sm',
+    md: 'text-sm sm:text-base',
+    lg: 'text-xl sm:text-2xl'
+  }
+
+  if (foto.tipo === 'foto') {
+    return (
+      <img
+        src={foto.src}
+        alt={nome}
+        className={`${tamanhos[tamanho]} rounded-full object-cover border-2 border-white shadow-md`}
+        onError={(e) => {
+          // Se a foto não carregar, mostra avatar com inicial
+          const target = e.target as HTMLImageElement
+          target.style.display = 'none'
+          const parent = target.parentElement
+          if (parent) {
+            const fallback = document.createElement('div')
+            fallback.className = `${tamanhos[tamanho]} rounded-full ${getFotoGN(nome).cor} flex items-center justify-center text-white ${tamanhosTexto[tamanho]} font-bold`
+            fallback.textContent = getFotoGN(nome).inicial
+            parent.appendChild(fallback)
+          }
+        }}
+      />
+    )
+  }
+
+  return (
+    <div className={`${tamanhos[tamanho]} rounded-full ${foto.cor} flex items-center justify-center text-white ${tamanhosTexto[tamanho]} font-bold`}>
+      {foto.inicial}
+    </div>
+  )
+}
+
 type Credenciamento = {
   id: string
   qtdCredenciamentos: string
@@ -473,7 +542,12 @@ export default function Home() {
                           return (
                             <tr key={fechamento.id} className="border-b hover:bg-gray-50">
                               <td className="p-2 text-xs sm:text-sm">{formatDate(fechamento.data)}</td>
-                              <td className="p-2 font-medium text-xs sm:text-sm">{fechamento.executivo}</td>
+                              <td className="p-2 font-medium text-xs sm:text-sm">
+                                <div className="flex items-center gap-2">
+                                  <FotoGN nome={fechamento.executivo} tamanho="sm" />
+                                  <span>{fechamento.executivo}</span>
+                                </div>
+                              </td>
                               <td className="p-2 text-xs sm:text-sm hidden sm:table-cell">{fechamento.agencia}</td>
                               <td className="p-2 text-right text-xs sm:text-sm">{fechamento.qtdVisitas}</td>
                               <td className="p-2 text-right text-xs sm:text-sm hidden md:table-cell">{fechamento.qtdBraExpre}</td>
@@ -523,6 +597,11 @@ export default function Home() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
+                      {ranking[0]?.executivo && (
+                        <div className="flex justify-center mb-3">
+                          <FotoGN nome={ranking[0].executivo} tamanho="lg" />
+                        </div>
+                      )}
                       <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-700 mb-2">
                         {ranking[0]?.executivo || 'N/A'}
                       </div>
@@ -549,6 +628,14 @@ export default function Home() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
+                      {ranking.length > 0 && (() => {
+                        const maiorVolume = ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])
+                        return maiorVolume?.executivo && (
+                          <div className="flex justify-center mb-3">
+                            <FotoGN nome={maiorVolume.executivo} tamanho="lg" />
+                          </div>
+                        )
+                      })()}
                       <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-700 mb-2">
                         {ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])?.executivo || 'N/A'}
                       </div>
@@ -606,6 +693,7 @@ export default function Home() {
                           <div className="text-2xl sm:text-3xl font-bold text-gray-400">
                             {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                           </div>
+                          <FotoGN nome={item.executivo} tamanho="md" />
                           <div>
                             <h3 className="text-lg sm:text-xl font-bold">{item.executivo}</h3>
                             <p className="text-xs sm:text-sm text-gray-600">
