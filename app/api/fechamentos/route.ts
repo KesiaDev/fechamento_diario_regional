@@ -6,10 +6,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
-    const { executivo, agencia, qtdVisitas, qtdBraExpre, data, credenciamentos } = body
+    const { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos } = body
 
     // Validação básica
-    if (!executivo || !agencia || qtdVisitas === undefined || qtdBraExpre === undefined || !credenciamentos || credenciamentos.length === 0) {
+    if (!executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined || !credenciamentos || credenciamentos.length === 0) {
       return NextResponse.json(
         { error: 'Todos os campos são obrigatórios' },
         { status: 400 }
@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
         executivo,
         agencia,
         qtdVisitas: parseInt(qtdVisitas),
+        qtdInteracoes: parseInt(qtdInteracoes),
         qtdBraExpre: parseInt(qtdBraExpre),
         data: data ? new Date(data) : new Date(),
         credenciamentos: {

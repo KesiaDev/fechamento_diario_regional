@@ -46,7 +46,10 @@ export async function GET(request: NextRequest) {
       executivo: string
       totalCredenciamentos: number
       totalAtivacoes: number
+      totalVisitas: number
+      totalInteracoes: number
       bateuMeta: boolean
+      bateuMetaVisitas: boolean
     }>()
 
     fechamentos.forEach(fechamento => {
@@ -54,7 +57,10 @@ export async function GET(request: NextRequest) {
         executivo: fechamento.executivo,
         totalCredenciamentos: 0,
         totalAtivacoes: 0,
-        bateuMeta: false
+        totalVisitas: 0,
+        totalInteracoes: 0,
+        bateuMeta: false,
+        bateuMetaVisitas: false
       }
 
       const totalCreds = fechamento.credenciamentos.reduce(
@@ -69,10 +75,14 @@ export async function GET(request: NextRequest) {
 
       existing.totalCredenciamentos += totalCreds
       existing.totalAtivacoes += totalAtiv
+      existing.totalVisitas += fechamento.qtdVisitas
+      existing.totalInteracoes += fechamento.qtdInteracoes
       
-      // Meta: 2 credenciamentos por dia
-      const meta = filtro === 'dia' ? 2 : filtro === 'semana' ? 10 : 40
-      existing.bateuMeta = existing.totalCredenciamentos >= meta
+      // Meta: 2 credenciamentos por dia, 6 visitas por dia
+      const metaCreds = filtro === 'dia' ? 2 : filtro === 'semana' ? 10 : 40
+      const metaVisitas = filtro === 'dia' ? 6 : filtro === 'semana' ? 30 : 120
+      existing.bateuMeta = existing.totalCredenciamentos >= metaCreds
+      existing.bateuMetaVisitas = existing.totalVisitas >= metaVisitas
 
       rankingMap.set(fechamento.executivo, existing)
     })

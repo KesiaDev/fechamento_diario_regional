@@ -96,6 +96,7 @@ type Fechamento = {
   executivo: string
   agencia: string
   qtdVisitas: number
+  qtdInteracoes: number
   qtdBraExpre: number
   data: string
   credenciamentos: Array<{
@@ -114,13 +115,17 @@ type RankingItem = {
   executivo: string
   totalCredenciamentos: number
   totalAtivacoes: number
+  totalVisitas: number
+  totalInteracoes: number
   bateuMeta: boolean
+  bateuMetaVisitas: boolean
 }
 
 export default function Home() {
   const [executivo, setExecutivo] = useState('')
   const [agencia, setAgencia] = useState('')
   const [qtdVisitas, setQtdVisitas] = useState('')
+  const [qtdInteracoes, setQtdInteracoes] = useState('')
   const [qtdBraExpre, setQtdBraExpre] = useState('')
   const [credenciamentos, setCredenciamentos] = useState<Credenciamento[]>([
     {
@@ -197,7 +202,7 @@ export default function Home() {
     e.preventDefault()
     
     // Validação
-    if (!executivo || !agencia || !qtdVisitas || !qtdBraExpre) {
+    if (!executivo || !agencia || !qtdVisitas || !qtdInteracoes || !qtdBraExpre) {
       alert('Preencha todos os campos principais')
       return
     }
@@ -230,6 +235,7 @@ export default function Home() {
           executivo,
           agencia,
           qtdVisitas,
+          qtdInteracoes,
           qtdBraExpre,
           data: new Date().toISOString(),
           credenciamentos
@@ -243,6 +249,7 @@ export default function Home() {
         setExecutivo('')
         setAgencia('')
         setQtdVisitas('')
+        setQtdInteracoes('')
         setQtdBraExpre('')
         setCredenciamentos([{
           id: crypto.randomUUID(),
@@ -272,6 +279,10 @@ export default function Home() {
 
   const getMeta = () => {
     return filtro === 'dia' ? 2 : filtro === 'semana' ? 10 : 40
+  }
+
+  const getMetaVisitas = () => {
+    return filtro === 'dia' ? 6 : filtro === 'semana' ? 30 : 120
   }
 
   return (
@@ -330,12 +341,25 @@ export default function Home() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="qtdVisitas">Qtd de Visitas/Interações *</Label>
+                      <Label htmlFor="qtdVisitas">Qtd de Visitas (Presenciais) *</Label>
                       <Input
                         id="qtdVisitas"
                         type="number"
                         value={qtdVisitas}
                         onChange={(e) => setQtdVisitas(e.target.value)}
+                        placeholder="0"
+                        min="0"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="qtdInteracoes">Qtd de Interações (Ligações + WhatsApp) *</Label>
+                      <Input
+                        id="qtdInteracoes"
+                        type="number"
+                        value={qtdInteracoes}
+                        onChange={(e) => setQtdInteracoes(e.target.value)}
                         placeholder="0"
                         min="0"
                         required
@@ -529,7 +553,8 @@ export default function Home() {
                           <th className="text-left p-2 text-xs sm:text-sm">Executivo</th>
                           <th className="text-left p-2 text-xs sm:text-sm hidden sm:table-cell">Agência</th>
                           <th className="text-right p-2 text-xs sm:text-sm">Visitas</th>
-                          <th className="text-right p-2 text-xs sm:text-sm hidden md:table-cell">Bra Expre</th>
+                          <th className="text-right p-2 text-xs sm:text-sm hidden md:table-cell">Interações</th>
+                          <th className="text-right p-2 text-xs sm:text-sm hidden lg:table-cell">Bra Expre</th>
                           <th className="text-right p-2 text-xs sm:text-sm">Creds</th>
                           <th className="text-right p-2 text-xs sm:text-sm">Total</th>
                         </tr>
@@ -549,8 +574,16 @@ export default function Home() {
                                 </div>
                               </td>
                               <td className="p-2 text-xs sm:text-sm hidden sm:table-cell">{fechamento.agencia}</td>
-                              <td className="p-2 text-right text-xs sm:text-sm">{fechamento.qtdVisitas}</td>
-                              <td className="p-2 text-right text-xs sm:text-sm hidden md:table-cell">{fechamento.qtdBraExpre}</td>
+                              <td className="p-2 text-right text-xs sm:text-sm">
+                                <div className="flex flex-col">
+                                  <span className="font-semibold">{fechamento.qtdVisitas}</span>
+                                  <span className="text-xs text-gray-500">
+                                    {Math.round((fechamento.qtdVisitas / 6) * 100)}%
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="p-2 text-right text-xs sm:text-sm hidden md:table-cell">{fechamento.qtdInteracoes}</td>
+                              <td className="p-2 text-right text-xs sm:text-sm hidden lg:table-cell">{fechamento.qtdBraExpre}</td>
                               <td className="p-2 text-right font-semibold text-xs sm:text-sm">{totalCreds}</td>
                               <td className="p-2 text-right text-green-600 font-semibold text-xs sm:text-sm">
                                 {formatCurrency(totalAtiv)}
@@ -714,6 +747,16 @@ export default function Home() {
                             <div className="text-lg sm:text-2xl font-bold text-blue-600">
                               {item.totalCredenciamentos}
                               <span className="text-xs sm:text-sm text-gray-500">/{getMeta()}</span>
+                            </div>
+                          </div>
+                          <div className="text-center sm:text-right">
+                            <div className="text-xs sm:text-sm text-gray-600">Visitas</div>
+                            <div className="text-base sm:text-xl font-semibold text-purple-600">
+                              {item.totalVisitas}
+                              <span className="text-xs sm:text-sm text-gray-500">/{getMetaVisitas()}</span>
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {Math.round((item.totalVisitas / getMetaVisitas()) * 100)}%
                             </div>
                           </div>
                           <div className="text-center sm:text-right">

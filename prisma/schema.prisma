@@ -15,6 +15,7 @@ model Fechamento {
   executivo         String
   agencia           String
   qtdVisitas        Int
+  qtdInteracoes     Int
   qtdBraExpre       Int
   data              DateTime          @default(now())
   createdAt         DateTime          @default(now())
