@@ -93,6 +93,14 @@ type Credenciamento = {
   nomeGerentePJ: string
 }
 
+type CnpjSimulado = {
+  id: string
+  cnpj: string
+  nomeEmpresa: string
+  faturamento: string
+  comentarios: string
+}
+
 type Fechamento = {
   id: string
   executivo: string
@@ -112,6 +120,13 @@ type Fechamento = {
     instalaDireto: boolean
     nomeGerentePJ: string
   }>
+  cnpjsSimulados: Array<{
+    id: string
+    cnpj: string
+    nomeEmpresa: string
+    faturamento: number
+    comentarios: string
+  }>
 }
 
 type RankingItem = {
@@ -130,6 +145,7 @@ export default function Home() {
   const [qtdVisitas, setQtdVisitas] = useState('')
   const [qtdInteracoes, setQtdInteracoes] = useState('')
   const [qtdBraExpre, setQtdBraExpre] = useState('')
+  const [cnpjsSimulados, setCnpjsSimulados] = useState<CnpjSimulado[]>([])
   const [credenciamentos, setCredenciamentos] = useState<Credenciamento[]>([
     {
       id: crypto.randomUUID(),
@@ -174,6 +190,29 @@ export default function Home() {
 
   const atualizarCredenciamento = (id: string, campo: string, valor: string) => {
     setCredenciamentos(credenciamentos.map(c => 
+      c.id === id ? { ...c, [campo]: valor } : c
+    ))
+  }
+
+  const adicionarCnpjSimulado = () => {
+    setCnpjsSimulados([
+      ...cnpjsSimulados,
+      {
+        id: crypto.randomUUID(),
+        cnpj: '',
+        nomeEmpresa: '',
+        faturamento: '',
+        comentarios: ''
+      }
+    ])
+  }
+
+  const removerCnpjSimulado = (id: string) => {
+    setCnpjsSimulados(cnpjsSimulados.filter(c => c.id !== id))
+  }
+
+  const atualizarCnpjSimulado = (id: string, campo: string, valor: string) => {
+    setCnpjsSimulados(cnpjsSimulados.map(c => 
       c.id === id ? { ...c, [campo]: valor } : c
     ))
   }
@@ -243,7 +282,8 @@ export default function Home() {
           qtdInteracoes,
           qtdBraExpre,
           data: new Date().toISOString(),
-          credenciamentos
+          credenciamentos,
+          cnpjsSimulados
         })
       })
 
@@ -256,6 +296,7 @@ export default function Home() {
         setQtdVisitas('')
         setQtdInteracoes('')
         setQtdBraExpre('')
+        setCnpjsSimulados([])
         setCredenciamentos([{
           id: crypto.randomUUID(),
           qtdCredenciamentos: '',
@@ -383,6 +424,94 @@ export default function Home() {
                         min="0"
                         required
                       />
+                    </div>
+                  </div>
+
+                  {/* CNPJs Simulados */}
+                  <div className="border-t pt-4 sm:pt-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                      <h3 className="text-base sm:text-lg font-semibold">CNPJs Simulados</h3>
+                      <Button
+                        type="button"
+                        onClick={adicionarCnpjSimulado}
+                        variant="outline"
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        <span className="text-sm">Adicionar CNPJ</span>
+                      </Button>
+                    </div>
+
+                    <div className="space-y-4">
+                      {cnpjsSimulados.map((cnpj, index) => (
+                        <Card key={cnpj.id} className="bg-blue-50 border-blue-200">
+                          <CardContent className="pt-6">
+                            <div className="flex justify-between items-center mb-4">
+                              <h4 className="font-medium text-blue-800">CNPJ Simulado #{index + 1}</h4>
+                              <Button
+                                type="button"
+                                onClick={() => removerCnpjSimulado(cnpj.id)}
+                                variant="ghost"
+                                size="sm"
+                              >
+                                <Trash2 className="w-4 h-4 text-red-500" />
+                              </Button>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                              <div className="space-y-2">
+                                <Label>CNPJ (apenas números) *</Label>
+                                <Input
+                                  type="text"
+                                  value={cnpj.cnpj}
+                                  onChange={(e) => {
+                                    const valor = e.target.value.replace(/\D/g, '')
+                                    if (valor.length <= 14) {
+                                      atualizarCnpjSimulado(cnpj.id, 'cnpj', valor)
+                                    }
+                                  }}
+                                  placeholder="00000000000000"
+                                  maxLength={14}
+                                  required
+                                />
+                              </div>
+
+                              <div className="space-y-2 sm:col-span-2 lg:col-span-2">
+                                <Label>Nome da Empresa *</Label>
+                                <Input
+                                  value={cnpj.nomeEmpresa}
+                                  onChange={(e) => atualizarCnpjSimulado(cnpj.id, 'nomeEmpresa', e.target.value)}
+                                  placeholder="Nome da empresa"
+                                  required
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>Faturamento (R$) *</Label>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  value={cnpj.faturamento}
+                                  onChange={(e) => atualizarCnpjSimulado(cnpj.id, 'faturamento', e.target.value)}
+                                  placeholder="0.00"
+                                  min="0"
+                                  required
+                                />
+                              </div>
+
+                              <div className="space-y-2 sm:col-span-2 lg:col-span-3">
+                                <Label>Comentários sobre a Simulação</Label>
+                                <Input
+                                  value={cnpj.comentarios}
+                                  onChange={(e) => atualizarCnpjSimulado(cnpj.id, 'comentarios', e.target.value)}
+                                  placeholder="Descreva os detalhes da simulação realizada"
+                                />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
                     </div>
                   </div>
 

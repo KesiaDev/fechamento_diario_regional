@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
-    const { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos } = body
+        const { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos, cnpjsSimulados } = body
 
     // Validação básica
     if (!executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined || !credenciamentos || credenciamentos.length === 0) {
@@ -36,10 +36,19 @@ export async function POST(request: NextRequest) {
             instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true,
             nomeGerentePJ: cred.nomeGerentePJ || null,
           }))
+        },
+        cnpjsSimulados: {
+          create: (cnpjsSimulados || []).map((cnpj: any) => ({
+            cnpj: cnpj.cnpj,
+            nomeEmpresa: cnpj.nomeEmpresa,
+            faturamento: parseFloat(cnpj.faturamento),
+            comentarios: cnpj.comentarios || null,
+          }))
         }
       },
       include: {
-        credenciamentos: true
+        credenciamentos: true,
+        cnpjsSimulados: true
       }
     })
 
@@ -88,7 +97,8 @@ export async function GET(request: NextRequest) {
         }
       },
       include: {
-        credenciamentos: true
+        credenciamentos: true,
+        cnpjsSimulados: true
       },
       orderBy: {
         data: 'desc'

@@ -21,6 +21,7 @@ model Fechamento {
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
   credenciamentos   Credenciamento[]
+  cnpjsSimulados    CnpjSimulado[]
 }
 
 model Credenciamento {
@@ -35,6 +36,18 @@ model Credenciamento {
   cesta             String
   instalaDireto     Boolean
   nomeGerentePJ     String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model CnpjSimulado {
+  id                String      @id @default(cuid())
+  fechamentoId      String
+  fechamento        Fechamento  @relation(fields: [fechamentoId], references: [id], onDelete: Cascade)
+  cnpj              String      // 14 números
+  nomeEmpresa       String
+  faturamento       Float
+  comentarios       String?
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 }

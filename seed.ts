@@ -104,6 +104,9 @@ async function main() {
             data,
             credenciamentos: {
               create: []
+            },
+            cnpjsSimulados: {
+              create: []
             }
           }
         })
@@ -136,6 +139,9 @@ async function main() {
             data,
             credenciamentos: {
               create: credenciamentos
+            },
+            cnpjsSimulados: {
+              create: []
             }
           }
         })
