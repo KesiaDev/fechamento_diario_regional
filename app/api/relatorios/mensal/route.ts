@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
       const totalCreds = fechamentosGN.reduce((sum, f) => 
         sum + f.credenciamentos.reduce((s, c) => s + c.qtdCredenciamentos, 0), 0)
       const totalAtiv = fechamentosGN.reduce((sum, f) => 
-        sum + f.credenciamentos.reduce((s, c) => s + c.ativacoesValor, 0), 0)
+        sum + f.credenciamentos.reduce((s, c) => s + c.volumeRS, 0), 0)
       const totalVisitas = fechamentosGN.reduce((sum, f) => sum + f.qtdVisitas, 0)
       const totalInteracoes = fechamentosGN.reduce((sum, f) => sum + f.qtdInteracoes, 0)
       const totalBraExpre = fechamentosGN.reduce((sum, f) => sum + f.qtdBraExpre, 0)

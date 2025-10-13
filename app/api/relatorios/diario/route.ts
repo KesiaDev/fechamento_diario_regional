@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     // Processar dados por GN
     const dadosPorGN = fechamentos.map(fechamento => {
       const totalCreds = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.qtdCredenciamentos, 0)
-      const totalAtiv = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.ativacoesValor, 0)
+      const totalAtiv = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.volumeRS, 0)
       const totalFaturamento = fechamento.cnpjsSimulados.reduce((sum, cnpj) => sum + cnpj.faturamento, 0)
       
       // Atualizar totais gerais

@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       )
       
       const totalAtiv = fechamento.credenciamentos.reduce(
-        (sum, cred) => sum + cred.ativacoesValor, 
+        (sum, cred) => sum + cred.volumeRS, 
         0
       )
 

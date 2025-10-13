@@ -146,6 +146,7 @@ export default function Home() {
   const [qtdVisitas, setQtdVisitas] = useState('')
   const [qtdInteracoes, setQtdInteracoes] = useState('')
   const [qtdBraExpre, setQtdBraExpre] = useState('')
+  const [dataFechamento, setDataFechamento] = useState(new Date().toISOString().split('T')[0])
   const [cnpjsSimulados, setCnpjsSimulados] = useState<CnpjSimulado[]>([])
   const [cnpjsSalvos, setCnpjsSalvos] = useState<CnpjSimulado[]>([])
   const [credenciamentos, setCredenciamentos] = useState<Credenciamento[]>([])
@@ -259,6 +260,7 @@ export default function Home() {
 
   const editarRegistro = (fechamento: Fechamento) => {
     // Preencher formulário com dados do registro
+    setDataFechamento(fechamento.data.split('T')[0])
     setExecutivo(fechamento.executivo)
     setAgencia(fechamento.agencia)
     setQtdVisitas(fechamento.qtdVisitas.toString())
@@ -354,7 +356,7 @@ export default function Home() {
     e.preventDefault()
     
     // Validação
-    if (!executivo || !agencia || !qtdVisitas || !qtdInteracoes || !qtdBraExpre) {
+    if (!dataFechamento || !executivo || !agencia || !qtdVisitas || !qtdInteracoes || !qtdBraExpre) {
       alert('Preencha todos os campos principais')
       return
     }
@@ -416,7 +418,7 @@ export default function Home() {
             qtdVisitas: parseInt(qtdVisitas),
             qtdInteracoes: parseInt(qtdInteracoes),
             qtdBraExpre: parseInt(qtdBraExpre),
-            data: new Date().toISOString(),
+            data: dataFechamento,
             credenciamentos,
             cnpjsSimulados: cnpjsSalvos
           })
@@ -427,6 +429,7 @@ export default function Home() {
         alert(modoEdicao ? 'Fechamento atualizado com sucesso!' : 'Fechamento salvo com sucesso!')
         
         // Limpar formulário
+        setDataFechamento(new Date().toISOString().split('T')[0])
         setExecutivo('')
         setAgencia('')
         setQtdVisitas('')
@@ -496,7 +499,18 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="dataFechamento">Data do Fechamento *</Label>
+                      <Input
+                        id="dataFechamento"
+                        type="date"
+                        value={dataFechamento}
+                        onChange={(e) => setDataFechamento(e.target.value)}
+                        required
+                      />
+                    </div>
+
                     <div className="space-y-2">
                       <Label htmlFor="executivo">Executivo (GN) *</Label>
                       <Input
@@ -920,7 +934,7 @@ export default function Home() {
                       <tbody>
                         {fechamentos.map((fechamento) => {
                           const totalCreds = fechamento.credenciamentos.reduce((sum, c) => sum + c.qtdCredenciamentos, 0)
-                          const totalAtiv = fechamento.credenciamentos.reduce((sum, c) => sum + c.ativacoesValor, 0)
+                          const totalAtiv = fechamento.credenciamentos.reduce((sum, c) => sum + c.volumeRS, 0)
                           
                           return (
                             <tr 
