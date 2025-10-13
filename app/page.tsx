@@ -85,7 +85,6 @@ const FotoGN = ({ nome, tamanho = 'md' }: { nome: string, tamanho?: 'sm' | 'md' 
 type Credenciamento = {
   id: string
   qtdCredenciamentos: string
-  ativacoesValor: string
   ec: string
   volumeRS: string
   ra: string
@@ -165,7 +164,6 @@ export default function Home() {
       {
         id: crypto.randomUUID(),
         qtdCredenciamentos: '',
-        ativacoesValor: '',
         ec: '',
         volumeRS: '',
         ra: '',
@@ -271,7 +269,6 @@ export default function Home() {
     const credenciamentosFormatados = fechamento.credenciamentos.map(cred => ({
       id: crypto.randomUUID(),
       qtdCredenciamentos: cred.qtdCredenciamentos.toString(),
-      ativacoesValor: cred.ativacoesValor.toString(),
       ec: cred.ec,
       volumeRS: cred.volumeRS.toString(),
       ra: cred.ra ? 'true' : 'false',
@@ -366,7 +363,7 @@ export default function Home() {
     // Se há credenciamentos, validar se estão preenchidos corretamente
     if (credenciamentos.length > 0) {
       const credenciamentosValidos = credenciamentos.every(c => 
-        c.qtdCredenciamentos && c.ativacoesValor && c.ec && c.volumeRS && c.ra && c.cesta && c.instalaDireto
+        c.qtdCredenciamentos && c.ec && c.volumeRS && c.ra && c.cesta && c.instalaDireto
       )
 
       if (!credenciamentosValidos) {
@@ -794,19 +791,6 @@ export default function Home() {
                                   value={cred.qtdCredenciamentos}
                                   onChange={(e) => atualizarCredenciamento(cred.id, 'qtdCredenciamentos', e.target.value)}
                                   placeholder="0"
-                                  min="0"
-                                  required
-                                />
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label>Ativações (R$) *</Label>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  value={cred.ativacoesValor}
-                                  onChange={(e) => atualizarCredenciamento(cred.id, 'ativacoesValor', e.target.value)}
-                                  placeholder="0.00"
                                   min="0"
                                   required
                                 />
@@ -1279,10 +1263,6 @@ export default function Home() {
                                 <div>
                                   <p className="text-gray-600">Quantidade:</p>
                                   <p className="font-semibold">{cred.qtdCredenciamentos}</p>
-                                </div>
-                                <div>
-                                  <p className="text-gray-600">Ativações (R$):</p>
-                                  <p className="font-semibold">{formatCurrency(cred.ativacoesValor)}</p>
                                 </div>
                                 <div>
                                   <p className="text-gray-600">EC:</p>

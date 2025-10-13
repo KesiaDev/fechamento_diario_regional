@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         credenciamentos: {
           create: credenciamentos.map((cred: any) => ({
             qtdCredenciamentos: parseInt(cred.qtdCredenciamentos),
-            ativacoesValor: parseFloat(cred.ativacoesValor),
+            ativacoesValor: 0, // Campo removido, sempre 0
             ec: cred.ec,
             volumeRS: parseFloat(cred.volumeRS),
             ra: cred.ra === 'true' || cred.ra === true,
