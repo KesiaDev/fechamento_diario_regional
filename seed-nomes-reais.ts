@@ -117,7 +117,8 @@ async function main() {
             volumeRS: randomFloat(1000, 10000),
             ra: randomBoolean(),
             cesta: randomItem(cestas),
-            pjInstalaDireto: randomBoolean()
+            instalaDireto: randomBoolean(),
+            nomeGerentePJ: randomBoolean() ? randomItem(['João Silva', 'Maria Santos', 'Pedro Costa', 'Ana Oliveira', 'Carlos Lima']) : null
           })
           totalCredenciamentos++
         }

@@ -33,7 +33,8 @@ export async function POST(request: NextRequest) {
             volumeRS: parseFloat(cred.volumeRS),
             ra: cred.ra === 'true' || cred.ra === true,
             cesta: cred.cesta,
-            pjInstalaDireto: cred.pjInstalaDireto === 'true' || cred.pjInstalaDireto === true,
+            instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true,
+            nomeGerentePJ: cred.nomeGerentePJ || null,
           }))
         }
       },

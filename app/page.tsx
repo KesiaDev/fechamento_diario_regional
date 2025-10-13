@@ -89,7 +89,8 @@ type Credenciamento = {
   volumeRS: string
   ra: string
   cesta: string
-  pjInstalaDireto: string
+  instalaDireto: string
+  nomeGerentePJ: string
 }
 
 type Fechamento = {
@@ -108,7 +109,8 @@ type Fechamento = {
     volumeRS: number
     ra: boolean
     cesta: string
-    pjInstalaDireto: boolean
+    instalaDireto: boolean
+    nomeGerentePJ: string
   }>
 }
 
@@ -137,7 +139,8 @@ export default function Home() {
       volumeRS: '',
       ra: '',
       cesta: '',
-      pjInstalaDireto: ''
+      instalaDireto: '',
+      nomeGerentePJ: ''
     }
   ])
   
@@ -157,7 +160,8 @@ export default function Home() {
         volumeRS: '',
         ra: '',
         cesta: '',
-        pjInstalaDireto: ''
+        instalaDireto: '',
+        nomeGerentePJ: ''
       }
     ])
   }
@@ -209,7 +213,7 @@ export default function Home() {
     }
 
     const credenciamentosValidos = credenciamentos.every(c => 
-      c.qtdCredenciamentos && c.ativacoesValor && c.ec && c.volumeRS && c.ra && c.cesta && c.pjInstalaDireto
+      c.qtdCredenciamentos && c.ativacoesValor && c.ec && c.volumeRS && c.ra && c.cesta && c.instalaDireto
     )
 
     if (!credenciamentosValidos) {
@@ -260,7 +264,8 @@ export default function Home() {
           volumeRS: '',
           ra: '',
           cesta: '',
-          pjInstalaDireto: ''
+          instalaDireto: '',
+          nomeGerentePJ: ''
         }])
         
         // Recarregar dados
@@ -483,10 +488,10 @@ export default function Home() {
                               </div>
 
                               <div className="space-y-2">
-                                <Label>PJ Instala Direto *</Label>
+                                <Label>Instala Direto *</Label>
                                 <Select
-                                  value={cred.pjInstalaDireto}
-                                  onValueChange={(value) => atualizarCredenciamento(cred.id, 'pjInstalaDireto', value)}
+                                  value={cred.instalaDireto}
+                                  onValueChange={(value) => atualizarCredenciamento(cred.id, 'instalaDireto', value)}
                                   required
                                 >
                                   <SelectTrigger>
@@ -497,6 +502,15 @@ export default function Home() {
                                     <SelectItem value="false">Não</SelectItem>
                                   </SelectContent>
                                 </Select>
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>Nome do Gerente PJ</Label>
+                                <Input
+                                  value={cred.nomeGerentePJ}
+                                  onChange={(e) => atualizarCredenciamento(cred.id, 'nomeGerentePJ', e.target.value)}
+                                  placeholder="Nome do gerente PJ que auxiliou"
+                                />
                               </div>
 
                               <div className="space-y-2 sm:col-span-2 lg:col-span-3">
