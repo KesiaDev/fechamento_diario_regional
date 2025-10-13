@@ -206,32 +206,38 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4">
       <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
             Fechamento Diário - CIELO
           </h1>
-          <p className="text-gray-600">Sistema de acompanhamento dos Gerentes de Negócios</p>
+          <p className="text-sm sm:text-base text-gray-600">Sistema de acompanhamento dos Gerentes de Negócios</p>
         </div>
 
         <Tabs defaultValue="lancamento" className="w-full">
-          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-8">
-            <TabsTrigger value="lancamento">📝 Lançamento</TabsTrigger>
-            <TabsTrigger value="ranking">📊 Ranking</TabsTrigger>
-            <TabsTrigger value="relatorio">📋 Relatório</TabsTrigger>
+          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-6 sm:mb-8 h-auto">
+            <TabsTrigger value="lancamento" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
+              <span className="hidden sm:inline">📝 </span>Lançamento
+            </TabsTrigger>
+            <TabsTrigger value="ranking" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
+              <span className="hidden sm:inline">📊 </span>Ranking
+            </TabsTrigger>
+            <TabsTrigger value="relatorio" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
+              <span className="hidden sm:inline">📋 </span>Relatório
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="lancamento" className="space-y-8">
+          <TabsContent value="lancamento" className="space-y-4 sm:space-y-8">
             {/* Formulário */}
             <Card>
-              <CardHeader>
-                <CardTitle>Novo Lançamento</CardTitle>
-                <CardDescription>Registre o fechamento do dia</CardDescription>
+              <CardHeader className="pb-4 sm:pb-6">
+                <CardTitle className="text-lg sm:text-xl">Novo Lançamento</CardTitle>
+                <CardDescription className="text-sm">Registre o fechamento do dia</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="executivo">Executivo (GN) *</Label>
                       <Input
@@ -281,17 +287,18 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="border-t pt-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-semibold">Credenciamentos</h3>
+                  <div className="border-t pt-4 sm:pt-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                      <h3 className="text-base sm:text-lg font-semibold">Credenciamentos</h3>
                       <Button
                         type="button"
                         onClick={adicionarCredenciamento}
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                       >
                         <Plus className="w-4 h-4 mr-2" />
-                        Adicionar Credenciamento
+                        <span className="text-sm">Adicionar Credenciamento</span>
                       </Button>
                     </div>
 
@@ -313,7 +320,7 @@ export default function Home() {
                               )}
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                               <div className="space-y-2">
                                 <Label>Qtd Credenciamentos *</Label>
                                 <Input
@@ -398,7 +405,7 @@ export default function Home() {
                                 </Select>
                               </div>
 
-                              <div className="space-y-2 md:col-span-2 lg:col-span-3">
+                              <div className="space-y-2 sm:col-span-2 lg:col-span-3">
                                 <Label>Cesta *</Label>
                                 <Input
                                   value={cred.cesta}
@@ -423,14 +430,14 @@ export default function Home() {
 
             {/* Tabela de Registros */}
             <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
+              <CardHeader className="pb-4 sm:pb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                   <div>
-                    <CardTitle>Registros</CardTitle>
-                    <CardDescription>Visualize os lançamentos do período</CardDescription>
+                    <CardTitle className="text-lg sm:text-xl">Registros</CardTitle>
+                    <CardDescription className="text-sm">Visualize os lançamentos do período</CardDescription>
                   </div>
                   <Select value={filtro} onValueChange={setFiltro}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px]">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -446,16 +453,16 @@ export default function Home() {
                   <p className="text-center text-gray-500 py-8">Nenhum registro encontrado</p>
                 ) : (
                   <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full text-sm sm:text-base">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left p-2">Data</th>
-                          <th className="text-left p-2">Executivo</th>
-                          <th className="text-left p-2">Agência</th>
-                          <th className="text-right p-2">Visitas</th>
-                          <th className="text-right p-2">Bra Expre</th>
-                          <th className="text-right p-2">Credenciamentos</th>
-                          <th className="text-right p-2">Total Ativado</th>
+                          <th className="text-left p-2 text-xs sm:text-sm">Data</th>
+                          <th className="text-left p-2 text-xs sm:text-sm">Executivo</th>
+                          <th className="text-left p-2 text-xs sm:text-sm hidden sm:table-cell">Agência</th>
+                          <th className="text-right p-2 text-xs sm:text-sm">Visitas</th>
+                          <th className="text-right p-2 text-xs sm:text-sm hidden md:table-cell">Bra Expre</th>
+                          <th className="text-right p-2 text-xs sm:text-sm">Creds</th>
+                          <th className="text-right p-2 text-xs sm:text-sm">Total</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -465,13 +472,13 @@ export default function Home() {
                           
                           return (
                             <tr key={fechamento.id} className="border-b hover:bg-gray-50">
-                              <td className="p-2">{formatDate(fechamento.data)}</td>
-                              <td className="p-2 font-medium">{fechamento.executivo}</td>
-                              <td className="p-2">{fechamento.agencia}</td>
-                              <td className="p-2 text-right">{fechamento.qtdVisitas}</td>
-                              <td className="p-2 text-right">{fechamento.qtdBraExpre}</td>
-                              <td className="p-2 text-right font-semibold">{totalCreds}</td>
-                              <td className="p-2 text-right text-green-600 font-semibold">
+                              <td className="p-2 text-xs sm:text-sm">{formatDate(fechamento.data)}</td>
+                              <td className="p-2 font-medium text-xs sm:text-sm">{fechamento.executivo}</td>
+                              <td className="p-2 text-xs sm:text-sm hidden sm:table-cell">{fechamento.agencia}</td>
+                              <td className="p-2 text-right text-xs sm:text-sm">{fechamento.qtdVisitas}</td>
+                              <td className="p-2 text-right text-xs sm:text-sm hidden md:table-cell">{fechamento.qtdBraExpre}</td>
+                              <td className="p-2 text-right font-semibold text-xs sm:text-sm">{totalCreds}</td>
+                              <td className="p-2 text-right text-green-600 font-semibold text-xs sm:text-sm">
                                 {formatCurrency(totalAtiv)}
                               </td>
                             </tr>
@@ -485,11 +492,11 @@ export default function Home() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="ranking" className="space-y-8">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">🏆 Ranking dos GNs</h2>
+          <TabsContent value="ranking" className="space-y-4 sm:space-y-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-bold">🏆 Ranking dos GNs</h2>
               <Select value={filtro} onValueChange={setFiltro}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -502,27 +509,27 @@ export default function Home() {
 
             {/* Cards de Destaque */}
             {ranking.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 {/* Card Maior Quantidade */}
                 <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
                   <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-yellow-700">
-                      <span className="text-2xl">🏆</span>
+                    <CardTitle className="flex items-center gap-2 text-yellow-700 text-sm sm:text-base">
+                      <span className="text-xl sm:text-2xl">🏆</span>
                       Maior Quantidade
                     </CardTitle>
-                    <CardDescription className="text-yellow-600">
+                    <CardDescription className="text-yellow-600 text-xs sm:text-sm">
                       {filtro === 'dia' ? 'Melhor do dia' : filtro === 'semana' ? 'Melhor da semana' : 'Melhor do mês'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-yellow-700 mb-2">
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-700 mb-2">
                         {ranking[0]?.executivo || 'N/A'}
                       </div>
-                      <div className="text-2xl font-semibold text-yellow-600">
+                      <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-yellow-600">
                         {ranking[0]?.totalCredenciamentos || 0} credenciamentos
                       </div>
-                      <div className="text-sm text-yellow-500 mt-1">
+                      <div className="text-xs sm:text-sm text-yellow-500 mt-1">
                         {filtro === 'dia' ? 'Hoje' : filtro === 'semana' ? 'Esta semana' : 'Este mês'}
                       </div>
                     </div>
@@ -532,23 +539,23 @@ export default function Home() {
                 {/* Card Maior Volume */}
                 <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
                   <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-green-700">
-                      <span className="text-2xl">💰</span>
+                    <CardTitle className="flex items-center gap-2 text-green-700 text-sm sm:text-base">
+                      <span className="text-xl sm:text-2xl">💰</span>
                       Maior Volume
                     </CardTitle>
-                    <CardDescription className="text-green-600">
+                    <CardDescription className="text-green-600 text-xs sm:text-sm">
                       {filtro === 'dia' ? 'Melhor do dia' : filtro === 'semana' ? 'Melhor da semana' : 'Melhor do mês'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-green-700 mb-2">
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-700 mb-2">
                         {ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])?.executivo || 'N/A'}
                       </div>
-                      <div className="text-2xl font-semibold text-green-600">
+                      <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-green-600">
                         {formatCurrency(ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])?.totalAtivacoes || 0)}
                       </div>
-                      <div className="text-sm text-green-500 mt-1">
+                      <div className="text-xs sm:text-sm text-green-500 mt-1">
                         {filtro === 'dia' ? 'Hoje' : filtro === 'semana' ? 'Esta semana' : 'Este mês'}
                       </div>
                     </div>
@@ -560,12 +567,12 @@ export default function Home() {
             {/* Aviso para Relatório Semanal */}
             {filtro === 'semana' && (
               <Card className="bg-blue-50 border-blue-200">
-                <CardContent className="pt-6">
+                <CardContent className="pt-4 sm:pt-6">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">📊</span>
+                    <span className="text-xl sm:text-2xl">📊</span>
                     <div>
-                      <h3 className="font-semibold text-blue-800">Relatório Semanal</h3>
-                      <p className="text-sm text-blue-600">
+                      <h3 className="font-semibold text-blue-800 text-sm sm:text-base">Relatório Semanal</h3>
+                      <p className="text-xs sm:text-sm text-blue-600">
                         Este ranking será enviado toda sexta-feira após o preenchimento dos dias úteis (segunda a sexta).
                       </p>
                     </div>
@@ -576,12 +583,12 @@ export default function Home() {
 
             {ranking.length === 0 ? (
               <Card>
-                <CardContent className="py-12">
-                  <p className="text-center text-gray-500">Nenhum dado disponível para o período selecionado</p>
+                <CardContent className="py-8 sm:py-12">
+                  <p className="text-center text-gray-500 text-sm sm:text-base">Nenhum dado disponível para o período selecionado</p>
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4">
                 {ranking.map((item, index) => (
                   <Card 
                     key={item.executivo} 
@@ -593,15 +600,15 @@ export default function Home() {
                       ''
                     }`}
                   >
-                    <CardContent className="pt-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="text-3xl font-bold text-gray-400">
+                    <CardContent className="pt-4 sm:pt-6">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                        <div className="flex items-center space-x-3 sm:space-x-4">
+                          <div className="text-2xl sm:text-3xl font-bold text-gray-400">
                             {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                           </div>
                           <div>
-                            <h3 className="text-xl font-bold">{item.executivo}</h3>
-                            <p className="text-sm text-gray-600">
+                            <h3 className="text-lg sm:text-xl font-bold">{item.executivo}</h3>
+                            <p className="text-xs sm:text-sm text-gray-600">
                               {item.bateuMeta ? (
                                 <span className="text-green-600 font-semibold">✅ Meta batida!</span>
                               ) : item.totalCredenciamentos === 0 ? (
@@ -613,17 +620,17 @@ export default function Home() {
                           </div>
                         </div>
                         
-                        <div className="text-right space-y-2">
-                          <div>
-                            <div className="text-sm text-gray-600">Credenciamentos</div>
-                            <div className="text-2xl font-bold text-blue-600">
+                        <div className="flex sm:flex-col gap-4 sm:gap-2 w-full sm:w-auto">
+                          <div className="text-center sm:text-right">
+                            <div className="text-xs sm:text-sm text-gray-600">Credenciamentos</div>
+                            <div className="text-lg sm:text-2xl font-bold text-blue-600">
                               {item.totalCredenciamentos}
-                              <span className="text-sm text-gray-500">/{getMeta()}</span>
+                              <span className="text-xs sm:text-sm text-gray-500">/{getMeta()}</span>
                             </div>
                           </div>
-                          <div>
-                            <div className="text-sm text-gray-600">Total Ativado</div>
-                            <div className="text-xl font-semibold text-green-600">
+                          <div className="text-center sm:text-right">
+                            <div className="text-xs sm:text-sm text-gray-600">Total Ativado</div>
+                            <div className="text-base sm:text-xl font-semibold text-green-600">
                               {formatCurrency(item.totalAtivacoes)}
                             </div>
                           </div>
@@ -636,7 +643,7 @@ export default function Home() {
             )}
           </TabsContent>
 
-          <TabsContent value="relatorio" className="space-y-8">
+          <TabsContent value="relatorio" className="space-y-4 sm:space-y-8">
             <RelatorioSemanal />
           </TabsContent>
         </Tabs>
