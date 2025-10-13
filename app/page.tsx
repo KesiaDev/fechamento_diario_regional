@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { Plus, Trash2, TrendingUp, Users, Award, Check } from 'lucide-react'
+import { Plus, Trash2, TrendingUp, Users, Award, Check, Eye, Edit, X } from 'lucide-react'
 import { RelatorioSemanal } from '@/components/RelatorioSemanal'
 import { RelatorioCompleto } from '@/components/RelatorioCompleto'
 
@@ -166,6 +166,8 @@ export default function Home() {
   const [ranking, setRanking] = useState<RankingItem[]>([])
   const [filtro, setFiltro] = useState('dia')
   const [loading, setLoading] = useState(false)
+  const [registroSelecionado, setRegistroSelecionado] = useState<Fechamento | null>(null)
+  const [mostrarModal, setMostrarModal] = useState(false)
 
   const adicionarCredenciamento = () => {
     setCredenciamentos([
@@ -230,6 +232,40 @@ export default function Home() {
 
   const removerCnpjSalvo = (id: string) => {
     setCnpjsSalvos(cnpjsSalvos.filter(c => c.id !== id))
+  }
+
+  const abrirModalRegistro = (fechamento: Fechamento) => {
+    setRegistroSelecionado(fechamento)
+    setMostrarModal(true)
+  }
+
+  const fecharModal = () => {
+    setMostrarModal(false)
+    setRegistroSelecionado(null)
+  }
+
+  const excluirRegistro = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir este registro?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/fechamentos/${id}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        alert('Registro excluído com sucesso!')
+        carregarFechamentos()
+        carregarRanking()
+        fecharModal()
+      } else {
+        alert('Erro ao excluir registro')
+      }
+    } catch (error) {
+      console.error('Erro:', error)
+      alert('Erro ao excluir registro')
+    }
   }
 
   const carregarFechamentos = async () => {
@@ -791,6 +827,7 @@ export default function Home() {
                           <th className="text-right p-2 text-xs sm:text-sm hidden lg:table-cell">Bra Expre</th>
                           <th className="text-right p-2 text-xs sm:text-sm">Creds</th>
                           <th className="text-right p-2 text-xs sm:text-sm">Total</th>
+                          <th className="text-center p-2 text-xs sm:text-sm">Ver</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -799,7 +836,11 @@ export default function Home() {
                           const totalAtiv = fechamento.credenciamentos.reduce((sum, c) => sum + c.ativacoesValor, 0)
                           
                           return (
-                            <tr key={fechamento.id} className="border-b hover:bg-gray-50">
+                            <tr 
+                              key={fechamento.id} 
+                              className="border-b hover:bg-gray-50 cursor-pointer transition-colors"
+                              onClick={() => abrirModalRegistro(fechamento)}
+                            >
                               <td className="p-2 text-xs sm:text-sm">{formatDate(fechamento.data)}</td>
                               <td className="p-2 font-medium text-xs sm:text-sm">
                                 <div className="flex items-center gap-2">
@@ -821,6 +862,9 @@ export default function Home() {
                               <td className="p-2 text-right font-semibold text-xs sm:text-sm">{totalCreds}</td>
                               <td className="p-2 text-right text-green-600 font-semibold text-xs sm:text-sm">
                                 {formatCurrency(totalAtiv)}
+                              </td>
+                              <td className="p-2 text-center">
+                                <Eye className="w-4 h-4 text-gray-400" />
                               </td>
                             </tr>
                           )
@@ -1016,6 +1060,176 @@ export default function Home() {
             <RelatorioCompleto />
           </TabsContent>
         </Tabs>
+
+        {/* Modal de Detalhes do Registro */}
+        {mostrarModal && registroSelecionado && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold">Detalhes do Registro</h2>
+                  <Button onClick={fecharModal} variant="ghost" size="sm">
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Informações Básicas */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Eye className="w-5 h-5" />
+                        Informações Básicas
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <FotoGN nome={registroSelecionado.executivo} tamanho="md" />
+                        <div>
+                          <p className="font-semibold">{registroSelecionado.executivo}</p>
+                          <p className="text-sm text-gray-600">{registroSelecionado.agencia}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <p className="text-gray-600">Data:</p>
+                          <p className="font-semibold">{formatDate(registroSelecionado.data)}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600">Visitas:</p>
+                          <p className="font-semibold">{registroSelecionado.qtdVisitas}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600">Interações:</p>
+                          <p className="font-semibold">{registroSelecionado.qtdInteracoes}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600">Bra Expre:</p>
+                          <p className="font-semibold">{registroSelecionado.qtdBraExpre}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Credenciamentos */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Credenciamentos ({registroSelecionado.credenciamentos.length})</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {registroSelecionado.credenciamentos.length === 0 ? (
+                        <div className="text-center text-gray-500 py-4">
+                          <p>❌ Nenhum credenciamento registrado</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {registroSelecionado.credenciamentos.map((cred, index) => (
+                            <div key={cred.id} className="border rounded-lg p-3">
+                              <div className="flex justify-between items-start mb-2">
+                                <h4 className="font-medium">Credenciamento #{index + 1}</h4>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                  <p className="text-gray-600">Quantidade:</p>
+                                  <p className="font-semibold">{cred.qtdCredenciamentos}</p>
+                                </div>
+                                <div>
+                                  <p className="text-gray-600">Ativações:</p>
+                                  <p className="font-semibold">{formatCurrency(cred.ativacoesValor)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-gray-600">EC:</p>
+                                  <p className="font-semibold">{cred.ec}</p>
+                                </div>
+                                <div>
+                                  <p className="text-gray-600">Volume R$:</p>
+                                  <p className="font-semibold">{formatCurrency(cred.volumeRS)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-gray-600">RA:</p>
+                                  <p className="font-semibold">{cred.ra ? 'Sim' : 'Não'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-gray-600">Instala Direto:</p>
+                                  <p className="font-semibold">{cred.instalaDireto ? 'Sim' : 'Não'}</p>
+                                </div>
+                                {cred.nomeGerentePJ && (
+                                  <div className="col-span-2">
+                                    <p className="text-gray-600">Gerente PJ:</p>
+                                    <p className="font-semibold">{cred.nomeGerentePJ}</p>
+                                  </div>
+                                )}
+                                <div className="col-span-2">
+                                  <p className="text-gray-600">Cesta:</p>
+                                  <p className="font-semibold">{cred.cesta}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* CNPJs Simulados */}
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle>CNPJs Simulados ({registroSelecionado.cnpjsSimulados.length})</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {registroSelecionado.cnpjsSimulados.length === 0 ? (
+                      <div className="text-center text-gray-500 py-4">
+                        <p>📋 Nenhum CNPJ simulado registrado</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {registroSelecionado.cnpjsSimulados.map((cnpj, index) => (
+                          <div key={cnpj.id} className="border rounded-lg p-3 bg-blue-50">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-medium">CNPJ #{index + 1}</h4>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                              <div>
+                                <p className="text-gray-600">CNPJ:</p>
+                                <p className="font-semibold">{cnpj.cnpj}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-600">Empresa:</p>
+                                <p className="font-semibold">{cnpj.nomeEmpresa}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-600">Faturamento:</p>
+                                <p className="font-semibold">{formatCurrency(cnpj.faturamento)}</p>
+                              </div>
+                              {cnpj.comentarios && (
+                                <div>
+                                  <p className="text-gray-600">Comentários:</p>
+                                  <p className="font-semibold">{cnpj.comentarios}</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Botões de Ação */}
+                <div className="flex gap-3 mt-6 pt-6 border-t">
+                  <Button onClick={() => excluirRegistro(registroSelecionado.id)} variant="destructive">
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Excluir Registro
+                  </Button>
+                  <Button onClick={fecharModal} variant="outline">
+                    Fechar
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
