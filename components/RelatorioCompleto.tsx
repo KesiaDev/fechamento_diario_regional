@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Calendar, TrendingUp, Users, Award, Target, CheckCircle, XCircle, Download } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import { gerarPDFRelatorio, PDFData } from '@/lib/pdf-generator'
 
 interface RelatorioDiario {
   data: string
@@ -192,9 +193,105 @@ export function RelatorioCompleto() {
     carregarRelatorios()
   }, [dataSelecionada])
 
-  const exportarRelatorio = (tipo: 'diario' | 'semanal' | 'mensal') => {
-    // Implementar exportação para PDF/Excel
-    console.log(`Exportando relatório ${tipo}`)
+  const exportarRelatorio = async (tipo: 'diario' | 'semanal' | 'mensal') => {
+    try {
+      let data: PDFData | null = null
+      
+      if (tipo === 'diario' && relatorioDiario) {
+        data = {
+          titulo: 'Relatório Diário de Performance',
+          periodo: relatorioDiario.data,
+          resumo: relatorioDiario.resumo,
+          totaisGerais: relatorioDiario.totaisGerais,
+          dadosPorGN: relatorioDiario.dadosPorGN.map(gn => ({
+            executivo: gn.executivo,
+            agencia: gn.agencia,
+            qtdVisitas: gn.qtdVisitas,
+            qtdInteracoes: gn.qtdInteracoes,
+            qtdBraExpre: gn.qtdBraExpre,
+            totalCredenciamentos: gn.totalCredenciamentos,
+            totalAtivacoes: gn.totalAtivacoes,
+            totalCnpjsSimulados: gn.totalCnpjsSimulados,
+            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
+            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
+            bateuMetaVisitas: gn.bateuMetaVisitas,
+            percentualVisitas: gn.percentualVisitas
+          })),
+          metas: {
+            credenciamentosPorDia: relatorioDiario.metas.credenciamentosPorDia,
+            visitasPorDia: relatorioDiario.metas.visitasPorDia,
+            totalGNs: relatorioDiario.metas.totalGNs
+          }
+        }
+      } else if (tipo === 'semanal' && relatorioSemanal) {
+        data = {
+          titulo: 'Relatório Semanal de Performance',
+          periodo: relatorioSemanal.periodo,
+          resumo: relatorioSemanal.resumo,
+          totaisGerais: relatorioSemanal.totaisGerais,
+          dadosPorGN: relatorioSemanal.dadosPorGN.map(gn => ({
+            executivo: gn.executivo,
+            totalCredenciamentos: gn.totalCredenciamentos,
+            totalAtivacoes: gn.totalAtivacoes,
+            totalVisitas: gn.totalVisitas,
+            totalInteracoes: gn.totalInteracoes,
+            totalBraExpre: gn.totalBraExpre,
+            totalCnpjsSimulados: gn.totalCnpjsSimulados,
+            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
+            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
+            bateuMetaVisitas: gn.bateuMetaVisitas,
+            diasTrabalhados: gn.diasTrabalhados,
+            diasEsperados: gn.diasEsperados,
+            percentualPresenca: gn.percentualPresenca,
+            mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
+            mediaVisitasPorDia: gn.mediaVisitasPorDia
+          })),
+          metas: {
+            credenciamentosPorSemana: relatorioSemanal.metas.credenciamentosPorSemana,
+            visitasPorSemana: relatorioSemanal.metas.visitasPorSemana,
+            totalGNs: relatorioSemanal.metas.totalGNs
+          }
+        }
+      } else if (tipo === 'mensal' && relatorioMensal) {
+        data = {
+          titulo: 'Relatório Mensal de Performance',
+          periodo: `${relatorioMensal.mes} ${relatorioMensal.ano}`,
+          resumo: relatorioMensal.resumo,
+          totaisGerais: relatorioMensal.totaisGerais,
+          dadosPorGN: relatorioMensal.dadosPorGN.map(gn => ({
+            executivo: gn.executivo,
+            totalCredenciamentos: gn.totalCredenciamentos,
+            totalAtivacoes: gn.totalAtivacoes,
+            totalVisitas: gn.totalVisitas,
+            totalInteracoes: gn.totalInteracoes,
+            totalBraExpre: gn.totalBraExpre,
+            totalCnpjsSimulados: gn.totalCnpjsSimulados,
+            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
+            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
+            bateuMetaVisitas: gn.bateuMetaVisitas,
+            diasTrabalhados: gn.diasTrabalhados,
+            diasUteisEsperados: gn.diasUteisEsperados,
+            percentualPresenca: gn.percentualPresenca,
+            mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
+            mediaVisitasPorDia: gn.mediaVisitasPorDia
+          })),
+          metas: {
+            credenciamentosPorMes: relatorioMensal.metas.credenciamentosPorMes,
+            visitasPorMes: relatorioMensal.metas.visitasPorMes,
+            totalGNs: relatorioMensal.metas.totalGNs
+          }
+        }
+      }
+      
+      if (data) {
+        await gerarPDFRelatorio(data, tipo)
+      } else {
+        alert('Nenhum relatório disponível para exportação')
+      }
+    } catch (error) {
+      console.error('Erro ao exportar relatório:', error)
+      alert('Erro ao gerar PDF. Tente novamente.')
+    }
   }
 
   if (loading) {
