@@ -96,6 +96,7 @@ async function main() {
             executivo,
             agencia: randomItem(agencias),
             qtdVisitas,
+            qtdInteracoes: randomInt(0, 10),
             qtdBraExpre,
             data,
             credenciamentos: {
@@ -126,6 +127,7 @@ async function main() {
             executivo,
             agencia: randomItem(agencias),
             qtdVisitas,
+            qtdInteracoes: randomInt(0, 10),
             qtdBraExpre,
             data,
             credenciamentos: {

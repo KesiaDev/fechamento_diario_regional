@@ -64,8 +64,9 @@ const FotoGN = ({ nome, tamanho = 'md' }: { nome: string, tamanho?: 'sm' | 'md' 
           const parent = target.parentElement
           if (parent) {
             const fallback = document.createElement('div')
-            fallback.className = `${tamanhos[tamanho]} rounded-full ${getFotoGN(nome).cor} flex items-center justify-center text-white ${tamanhosTexto[tamanho]} font-bold`
-            fallback.textContent = getFotoGN(nome).inicial
+            const avatarData = getFotoGN(nome)
+            fallback.className = `${tamanhos[tamanho]} rounded-full ${avatarData.cor} flex items-center justify-center text-white ${tamanhosTexto[tamanho]} font-bold`
+            fallback.textContent = avatarData.inicial ?? '?'
             parent.appendChild(fallback)
           }
         }}
@@ -75,7 +76,7 @@ const FotoGN = ({ nome, tamanho = 'md' }: { nome: string, tamanho?: 'sm' | 'md' 
 
   return (
     <div className={`${tamanhos[tamanho]} rounded-full ${foto.cor} flex items-center justify-center text-white ${tamanhosTexto[tamanho]} font-bold`}>
-      {foto.inicial}
+      {foto.inicial ?? '?'}
     </div>
   )
 }
