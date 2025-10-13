@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Plus, Trash2, TrendingUp, Users, Award, Check } from 'lucide-react'
 import { RelatorioSemanal } from '@/components/RelatorioSemanal'
+import { RelatorioCompleto } from '@/components/RelatorioCompleto'
 
 // Função para obter foto do GN
 const getFotoGN = (nome: string) => {
@@ -360,7 +361,7 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="lancamento" className="w-full">
-          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-6 sm:mb-8 h-auto">
+          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-4 mb-6 sm:mb-8 h-auto">
             <TabsTrigger value="lancamento" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
               <span className="hidden sm:inline">📝 </span>Lançamento
             </TabsTrigger>
@@ -369,6 +370,9 @@ export default function Home() {
             </TabsTrigger>
             <TabsTrigger value="relatorio" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
               <span className="hidden sm:inline">📋 </span>Relatório
+            </TabsTrigger>
+            <TabsTrigger value="relatorio-completo" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
+              <span className="hidden sm:inline">👩‍💼 </span>Chef
             </TabsTrigger>
           </TabsList>
 
@@ -981,6 +985,10 @@ export default function Home() {
 
           <TabsContent value="relatorio" className="space-y-4 sm:space-y-8">
             <RelatorioSemanal />
+          </TabsContent>
+
+          <TabsContent value="relatorio-completo" className="space-y-4 sm:space-y-8">
+            <RelatorioCompleto />
           </TabsContent>
         </Tabs>
       </div>
