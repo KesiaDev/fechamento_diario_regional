@@ -372,7 +372,7 @@ export default function Home() {
               <span className="hidden sm:inline">📋 </span>Relatório
             </TabsTrigger>
             <TabsTrigger value="relatorio-completo" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
-              <span className="hidden sm:inline">👩‍💼 </span>Chef
+              <span className="hidden sm:inline">📊 </span>Prestação
             </TabsTrigger>
           </TabsList>
 

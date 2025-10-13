@@ -213,7 +213,7 @@ export function RelatorioCompleto() {
       {/* Cabeçalho */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Relatórios de Prestação de Contas</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Prestação de Resultados</h2>
           <p className="text-gray-600">Acompanhamento completo da equipe CIELO</p>
         </div>
         <div className="flex gap-2">
