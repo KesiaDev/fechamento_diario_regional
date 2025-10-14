@@ -18,11 +18,11 @@ const getFotoGN = (nome: string) => {
   
   // Lista de nomes base para identificar o GN
   const nomesGN = {
-    'dionei': '/fotos/dionei.jpg',
-    'sheila': '/fotos/sheila.jpg',
-    'renan': '/fotos/renan.jpg',
-    'jeferson': '/fotos/jeferson.jpg',
-    'jhonattan': '/fotos/jhonattan.jpg'
+    'dionei': '/fotos/Dionei.jpeg',
+    'sheila': '/fotos/Sheila.jpeg',
+    'renan': '/fotos/Renan.jpeg',
+    'jeferson': '/fotos/Jeferson.jpeg',
+    'jhonattan': '/fotos/Jhonattan.jpeg'
   }
   
   // Verificar se o nome contém algum dos nomes base
