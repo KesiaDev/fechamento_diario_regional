@@ -364,6 +364,10 @@ export default function Home() {
 
     // CNPJs Simulados agora são opcionais
 
+    // Debug: verificar credenciamentos
+    console.log('🔍 Debug - Credenciamentos no submit:', credenciamentos.length)
+    console.log('🔍 Debug - Credenciamentos:', credenciamentos)
+
     // Se há credenciamentos, validar se estão preenchidos corretamente
     if (credenciamentos.length > 0) {
       const credenciamentosValidos = credenciamentos.every(c => 
@@ -381,6 +385,8 @@ export default function Home() {
         alert('O campo EC deve conter exatamente 10 números')
         return
       }
+    } else {
+      console.log('✅ Nenhum credenciamento - permitindo salvar com zero credenciamentos')
     }
 
     setLoading(true)
@@ -742,7 +748,12 @@ export default function Home() {
                       <div className="flex gap-2 w-full sm:w-auto">
                         <Button
                           type="button"
-                          onClick={() => setCredenciamentos([])}
+                          onClick={() => {
+                            console.log('🔄 Limpando credenciamentos...')
+                            console.log('📝 Credenciamentos antes:', credenciamentos.length)
+                            setCredenciamentos([])
+                            console.log('✅ Credenciamentos limpos!')
+                          }}
                           variant="outline"
                           size="sm"
                           className="flex-1 sm:flex-none"
