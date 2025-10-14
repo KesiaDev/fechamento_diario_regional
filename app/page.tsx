@@ -749,10 +749,20 @@ export default function Home() {
                         <Button
                           type="button"
                           onClick={() => {
-                            console.log('🔄 Limpando credenciamentos...')
-                            console.log('📝 Credenciamentos antes:', credenciamentos.length)
-                            setCredenciamentos([])
-                            console.log('✅ Credenciamentos limpos!')
+                            const confirmar = window.confirm(
+                              'Você confirma que hoje não realizou nenhum credenciamento?\n\n' +
+                              'Isso irá remover todos os credenciamentos adicionados.'
+                            )
+                            
+                            if (confirmar) {
+                              console.log('🔄 Limpando credenciamentos...')
+                              console.log('📝 Credenciamentos antes:', credenciamentos.length)
+                              setCredenciamentos([])
+                              console.log('✅ Credenciamentos limpos!')
+                              alert('✅ Credenciamentos removidos! Você pode salvar o fechamento sem credenciamentos.')
+                            } else {
+                              console.log('❌ Usuário cancelou a limpeza')
+                            }
                           }}
                           variant="outline"
                           size="sm"
