@@ -9,9 +9,9 @@ export async function POST(request: NextRequest) {
         const { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos, cnpjsSimulados } = body
 
     // Validação básica
-    if (!executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined || !credenciamentos || credenciamentos.length === 0) {
+    if (!executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined) {
       return NextResponse.json(
-        { error: 'Todos os campos são obrigatórios' },
+        { error: 'Todos os campos principais são obrigatórios' },
         { status: 400 }
       )
     }
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         qtdBraExpre: parseInt(qtdBraExpre),
         data: data ? new Date(data) : new Date(),
         credenciamentos: {
-          create: credenciamentos.map((cred: any) => ({
+          create: (credenciamentos || []).map((cred: any) => ({
             qtdCredenciamentos: parseInt(cred.qtdCredenciamentos),
             ativacoesValor: 0, // Campo removido, sempre 0
             ec: cred.ec,
