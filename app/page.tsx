@@ -14,8 +14,10 @@ import { RelatorioCompleto } from '@/components/RelatorioCompleto'
 
 // Função para obter foto do GN
 const getFotoGN = (nome: string) => {
-  const nomeLower = nome.toLowerCase().trim()
-  const fotos = {
+  const nomeLimpo = nome.toLowerCase().trim()
+  
+  // Lista de nomes base para identificar o GN
+  const nomesGN = {
     'dionei': '/fotos/dionei.jpg',
     'sheila': '/fotos/sheila.jpg',
     'renan': '/fotos/renan.jpg',
@@ -23,9 +25,11 @@ const getFotoGN = (nome: string) => {
     'jhonattan': '/fotos/jhonattan.jpg'
   }
   
-  // Se encontrar a foto, retorna o caminho, senão retorna avatar com inicial
-  if (fotos[nomeLower as keyof typeof fotos]) {
-    return { tipo: 'foto', src: fotos[nomeLower as keyof typeof fotos] }
+  // Verificar se o nome contém algum dos nomes base
+  for (const [nomeBase, foto] of Object.entries(nomesGN)) {
+    if (nomeLimpo.includes(nomeBase)) {
+      return { tipo: 'foto', src: foto }
+    }
   }
   
   // Fallback para avatar com inicial
