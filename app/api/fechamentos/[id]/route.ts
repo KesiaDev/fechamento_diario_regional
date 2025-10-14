@@ -11,7 +11,11 @@ export async function PUT(
     const { id } = params
     const body = await request.json()
     
+    console.log('🔄 API PUT - Atualizando registro:', id)
+    
     const { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos, cnpjsSimulados } = body
+    
+    console.log('📝 Dados recebidos:', { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data })
 
     // Validação básica
     if (!executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined) {

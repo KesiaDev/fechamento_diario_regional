@@ -14,7 +14,7 @@ import { RelatorioCompleto } from '@/components/RelatorioCompleto'
 
 // Função para obter foto do GN
 const getFotoGN = (nome: string) => {
-  const nomeLower = nome.toLowerCase()
+  const nomeLower = nome.toLowerCase().trim()
   const fotos = {
     'dionei': '/fotos/dionei.jpg',
     'sheila': '/fotos/sheila.jpg',
@@ -387,6 +387,8 @@ export default function Home() {
       if (modoEdicao && registroSelecionado) {
         // Modo edição - atualizar registro existente
         console.log('🔄 Editando registro:', registroSelecionado.id)
+        console.log('📝 Modo edição ativo:', modoEdicao)
+        console.log('📝 Registro selecionado:', registroSelecionado.executivo)
         console.log('📝 Dados enviados:', {
           executivo,
           agencia,
@@ -416,6 +418,9 @@ export default function Home() {
         })
       } else {
         // Modo criação - criar novo registro
+        console.log('🆕 Criando novo registro')
+        console.log('📝 Modo edição:', modoEdicao)
+        console.log('📝 Registro selecionado:', registroSelecionado)
         response = await fetch('/api/fechamentos', {
           method: 'POST',
           headers: {
