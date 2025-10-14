@@ -537,13 +537,18 @@ export default function Home() {
 
                     <div className="space-y-2">
                       <Label htmlFor="executivo">Executivo (GN) *</Label>
-                      <Input
-                        id="executivo"
-                        value={executivo}
-                        onChange={(e) => setExecutivo(e.target.value)}
-                        placeholder="Nome do Gerente"
-                        required
-                      />
+                      <Select value={executivo} onValueChange={setExecutivo} required>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o Gerente" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Dionei">Dionei</SelectItem>
+                          <SelectItem value="Sheila">Sheila</SelectItem>
+                          <SelectItem value="Renan">Renan</SelectItem>
+                          <SelectItem value="Jeferson">Jeferson</SelectItem>
+                          <SelectItem value="Jhonattan">Jhonattan</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="space-y-2">
