@@ -1152,9 +1152,7 @@ export default function Home() {
                                 <span className="text-green-600 font-semibold">✅ Meta batida!</span>
                               ) : item.totalCredenciamentos === 0 ? (
                                 <span className="text-red-600 font-semibold">❌ Zerado</span>
-                              ) : (
-                                <span className="text-orange-600">⚠️ Abaixo da meta</span>
-                              )}
+                              ) : null}
                             </p>
                           </div>
                         </div>
