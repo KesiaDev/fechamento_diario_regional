@@ -243,9 +243,7 @@ export function RelatorioSemanal() {
                         <span className="text-green-600 font-semibold">✅ Meta batida!</span>
                       ) : gn.totalCredenciamentos === 0 ? (
                         <span className="text-red-600 font-semibold">❌ Zerado</span>
-                      ) : (
-                        <span className="text-orange-600">⚠️ Abaixo da meta</span>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </div>
