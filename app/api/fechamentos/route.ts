@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
     const filtro = searchParams.get('filtro') || 'dia'
     const dataParam = searchParams.get('data')
     
-    const dataReferencia = dataParam ? new Date(dataParam + 'T00:00:00') : new Date()
+    const dataReferencia = dataParam ? new Date(dataParam + 'T12:00:00') : new Date()
     
     let startDate: Date
     let endDate: Date

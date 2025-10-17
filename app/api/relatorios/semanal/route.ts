@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const data = searchParams.get('data') || new Date().toISOString().split('T')[0]
     
-    const dataReferencia = new Date(data + 'T00:00:00')
+    const dataReferencia = new Date(data + 'T12:00:00')
     const startDate = startOfWeek(dataReferencia, { weekStartsOn: 1 }) // Segunda-feira
     const endDate = endOfWeek(dataReferencia, { weekStartsOn: 1 }) // Domingo
 
