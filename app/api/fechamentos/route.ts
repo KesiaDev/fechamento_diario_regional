@@ -101,6 +101,24 @@ export async function GET(request: NextRequest) {
     console.log('End date:', endDate)
     console.log('Filtro:', filtro)
 
+    // Primeiro, vamos buscar todos os fechamentos para debug
+    const todosFechamentos = await prisma.fechamento.findMany({
+      include: {
+        credenciamentos: true,
+        cnpjsSimulados: true
+      },
+      orderBy: {
+        data: 'desc'
+      }
+    })
+
+    console.log('Todos os fechamentos no banco:', todosFechamentos.map(f => ({ 
+      id: f.id, 
+      data: f.data, 
+      executivo: f.executivo,
+      dataISO: f.data.toISOString()
+    })))
+
     const fechamentos = await prisma.fechamento.findMany({
       where: {
         data: {
