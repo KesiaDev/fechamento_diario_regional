@@ -1197,65 +1197,67 @@ export default function Home() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 gap-3 sm:gap-4">
+              <div className="space-y-2">
                 {ranking.map((item, index) => (
-                  <Card 
+                  <div 
                     key={item.executivo} 
-                    className={`${
-                      index === 0 ? 'border-yellow-400 border-2 bg-yellow-50' :
-                      index === 1 ? 'border-gray-400 border-2 bg-gray-50' :
-                      index === 2 ? 'border-orange-400 border-2 bg-orange-50' :
-                      item.totalCredenciamentos === 0 ? 'border-red-300 bg-red-50' :
-                      ''
+                    className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
+                      index === 0 ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-200' :
+                      index === 1 ? 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200' :
+                      index === 2 ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-200' :
+                      item.totalCredenciamentos === 0 ? 'bg-red-50 border-red-200' :
+                      'bg-white border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <CardContent className="pt-4 sm:pt-6">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                        <div className="flex items-center space-x-3 sm:space-x-4">
-                          <div className="text-2xl sm:text-3xl font-bold text-gray-400">
-                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
-                          </div>
-                          <FotoGN nome={item.executivo} tamanho="md" />
-                          <div>
-                            <h3 className="text-lg sm:text-xl font-bold">{item.executivo}</h3>
-                            <p className="text-xs sm:text-sm text-gray-600">
-                              {item.bateuMeta ? (
-                                <span className="text-green-600 font-semibold">✅ Meta batida!</span>
-                              ) : item.totalCredenciamentos === 0 ? (
-                                <span className="text-red-600 font-semibold">❌ Zerado</span>
-                              ) : null}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex sm:flex-col gap-4 sm:gap-2 w-full sm:w-auto">
-                          <div className="text-center sm:text-right">
-                            <div className="text-xs sm:text-sm text-gray-600">Credenciamentos</div>
-                            <div className="text-lg sm:text-2xl font-bold text-blue-600">
-                              {item.totalCredenciamentos}
-                              <span className="text-xs sm:text-sm text-gray-500">/{getMeta()}</span>
-                            </div>
-                          </div>
-                          <div className="text-center sm:text-right">
-                            <div className="text-xs sm:text-sm text-gray-600">Visitas</div>
-                            <div className="text-base sm:text-xl font-semibold text-purple-600">
-                              {item.totalVisitas}
-                              <span className="text-xs sm:text-sm text-gray-500">/{getMetaVisitas()}</span>
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {Math.round((item.totalVisitas / getMetaVisitas()) * 100)}%
-                            </div>
-                          </div>
-                          <div className="text-center sm:text-right">
-                            <div className="text-xs sm:text-sm text-gray-600">Total Ativado</div>
-                            <div className="text-base sm:text-xl font-semibold text-green-600">
-                              {formatCurrency(item.totalAtivacoes)}
-                            </div>
-                          </div>
+                    {/* Posição e Foto */}
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        index === 0 ? 'bg-yellow-400 text-yellow-900' :
+                        index === 1 ? 'bg-gray-400 text-gray-900' :
+                        index === 2 ? 'bg-orange-400 text-orange-900' :
+                        'bg-gray-200 text-gray-700'
+                      }`}>
+                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+                      </div>
+                      <FotoGN nome={item.executivo} tamanho="sm" />
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{item.executivo}</h3>
+                        <div className="flex items-center gap-2">
+                          {item.bateuMeta ? (
+                            <span className="text-xs text-green-600 font-medium">✅ Meta</span>
+                          ) : item.totalCredenciamentos === 0 ? (
+                            <span className="text-xs text-red-600 font-medium">❌ Zerado</span>
+                          ) : (
+                            <span className="text-xs text-orange-600 font-medium">⚠️ Abaixo</span>
+                          )}
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+
+                    {/* Métricas */}
+                    <div className="flex items-center gap-6">
+                      <div className="text-center">
+                        <div className="text-xs text-gray-500">Creds</div>
+                        <div className="text-sm font-bold text-blue-600">
+                          {item.totalCredenciamentos}
+                          <span className="text-xs text-gray-400">/{getMeta()}</span>
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs text-gray-500">Visitas</div>
+                        <div className="text-sm font-bold text-purple-600">
+                          {item.totalVisitas}
+                          <span className="text-xs text-gray-400">/{getMetaVisitas()}</span>
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs text-gray-500">Volume</div>
+                        <div className="text-sm font-bold text-green-600">
+                          {formatCurrency(item.totalAtivacoes)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
