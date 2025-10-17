@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf'
+import { formatCurrency, formatPercent, calcularPerformance, getMetasPorGN } from './metas'
 
 export interface PDFData {
   titulo: string
@@ -193,16 +194,25 @@ export const gerarPDFRelatorio = async (data: PDFData, tipo: 'diario' | 'semanal
       yPosition = addNormalText(`CNPJs Simulados: ${gn.totalCnpjsSimulados || 0}`, yPosition)
       yPosition = addNormalText(`Faturamento Simulado: ${formatCurrency(gn.totalFaturamentoSimulado || 0)}`, yPosition)
     } else if (tipo === 'semanal') {
+      const metas = getMetasPorGN(gn.executivo)
+      const perfCred = calcularPerformance(gn.totalCredenciamentos, metas.credenciamentosPorSemana)
+      const perfVolume = calcularPerformance(gn.totalAtivacoes, metas.volumePorSemana)
+      const perfVisitas = calcularPerformance(gn.totalVisitas || 0, metas.visitasPorSemana)
+      
       yPosition = addNormalText(`Dias Trabalhados: ${gn.diasTrabalhados}/${gn.diasEsperados} (${gn.percentualPresenca}%)`, yPosition)
-      yPosition = addNormalText(`Credenciamentos: ${gn.totalCredenciamentos} (Meta: ${data.metas.credenciamentosPorSemana}) ${gn.bateuMetaCredenciamentos ? '✅' : '❌'}`, yPosition)
+      yPosition = addNormalText(`Credenciamentos: ${gn.totalCredenciamentos}/${metas.credenciamentosPorSemana} (${formatPercent(perfCred.percentual)}) ${perfCred.bateuMeta ? '✅' : '❌'}`, yPosition)
       yPosition = addNormalText(`Média Credenciamentos/Dia: ${gn.mediaCredenciamentosPorDia}`, yPosition)
-      yPosition = addNormalText(`Ativações: ${formatCurrency(gn.totalAtivacoes)}`, yPosition)
-      yPosition = addNormalText(`Visitas: ${gn.totalVisitas || 0} (Meta: ${data.metas.visitasPorSemana}) ${gn.bateuMetaVisitas ? '✅' : '❌'}`, yPosition)
+      yPosition = addNormalText(`Volume: ${formatCurrency(gn.totalAtivacoes)}/${formatCurrency(metas.volumePorSemana)} (${formatPercent(perfVolume.percentual)}) ${perfVolume.bateuMeta ? '✅' : '❌'}`, yPosition)
+      yPosition = addNormalText(`Visitas: ${gn.totalVisitas || 0}/${metas.visitasPorSemana} (${formatPercent(perfVisitas.percentual)}) ${perfVisitas.bateuMeta ? '✅' : '❌'}`, yPosition)
       yPosition = addNormalText(`Média Visitas/Dia: ${gn.mediaVisitasPorDia}`, yPosition)
       yPosition = addNormalText(`Interações: ${gn.totalInteracoes || 0}`, yPosition)
       yPosition = addNormalText(`Bra Expre: ${gn.totalBraExpre || 0}`, yPosition)
       yPosition = addNormalText(`CNPJs Simulados: ${gn.totalCnpjsSimulados || 0}`, yPosition)
       yPosition = addNormalText(`Faturamento Simulado: ${formatCurrency(gn.totalFaturamentoSimulado || 0)}`, yPosition)
+      
+      // Status geral
+      const statusGeral = (perfCred.bateuMeta && perfVolume.bateuMeta && perfVisitas.bateuMeta) ? 'META BATIDA' : 'ABAIXO DA META'
+      yPosition = addNormalText(`Status Geral: ${statusGeral}`, yPosition)
     } else if (tipo === 'mensal') {
       yPosition = addNormalText(`Dias Trabalhados: ${gn.diasTrabalhados}/${gn.diasUteisEsperados} (${gn.percentualPresenca}%)`, yPosition)
       yPosition = addNormalText(`Credenciamentos: ${gn.totalCredenciamentos} (Meta: ${data.metas.credenciamentosPorMes}) ${gn.bateuMetaCredenciamentos ? '✅' : '❌'}`, yPosition)

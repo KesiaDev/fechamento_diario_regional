@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Lista de GNs esperados
-    const gnsEsperados = ['Dionei', 'Sheila', 'Renan', 'Jeferson', 'Jhonattan']
+    const gnsEsperados = ['Dionei', 'Sheila', 'Renan', 'Jeferson', 'Jhonattan', 'Cristian']
     
     // Calcular totais gerais da semana
     const totaisGerais = {
@@ -91,8 +91,8 @@ export async function GET(request: NextRequest) {
         totalFaturamentoSimulado: totalFaturamento,
         mediaCredenciamentosPorDia: Math.round(mediaCredenciamentosPorDia * 100) / 100,
         mediaVisitasPorDia: Math.round(mediaVisitasPorDia * 100) / 100,
-        bateuMetaCredenciamentos: totalCreds >= 10, // 2 por dia x 5 dias
-        bateuMetaVisitas: totalVisitas >= 30, // 6 por dia x 5 dias
+        bateuMetaCredenciamentos: totalCreds >= 10, // Meta individual: 10 credenciamentos/semana
+        bateuMetaVisitas: totalVisitas >= 30, // Meta individual: 30 visitas/semana
         fechamentos: fechamentosGN
       }
     })

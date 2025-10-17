@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatCurrency } from '@/lib/utils'
-import { Download, Mail, Calendar } from 'lucide-react'
+import { gerarPDFRelatorio, PDFData } from '@/lib/pdf-generator'
+import { gerarExcelRelatorio, ExcelData } from '@/lib/excel-generator'
+import { Download, Mail, Calendar, FileSpreadsheet } from 'lucide-react'
 
 type RelatorioSemanal = {
   periodo: {
@@ -67,9 +69,101 @@ export function RelatorioSemanal() {
     carregarRelatorio()
   }, [dataFiltro])
 
-  const gerarRelatorioPDF = () => {
-    // Implementar geração de PDF (futuro)
-    alert('Funcionalidade de PDF será implementada em breve!')
+  const gerarRelatorioPDF = async () => {
+    if (!relatorio) return
+
+    try {
+      const pdfData: PDFData = {
+        titulo: 'Relatório Semanal de Performance - CIELO',
+        periodo: `${relatorio.periodo.inicio} a ${relatorio.periodo.fim}`,
+        resumo: {
+          totalGNs: relatorio.estatisticas.totalGNs,
+          gnsBateramMetaCredenciamentos: relatorio.estatisticas.gnsComMeta,
+          gnsBateramMetaVisitas: 0, // Será calculado
+          percentualMetaCredenciamentos: 0, // Será calculado
+          percentualMetaVisitas: 0 // Será calculado
+        },
+        totaisGerais: {
+          totalCredenciamentos: relatorio.estatisticas.totalCredenciamentos,
+          totalAtivacoes: relatorio.estatisticas.totalAtivacoes,
+          totalVisitas: 0,
+          totalInteracoes: 0,
+          totalBraExpre: 0,
+          totalCnpjsSimulados: 0,
+          totalFaturamentoSimulado: 0
+        },
+        dadosPorGN: relatorio.ranking.map(gn => ({
+          executivo: gn.executivo,
+          diasTrabalhados: gn.diasTrabalhados,
+          diasEsperados: 5,
+          percentualPresenca: Math.round((gn.diasTrabalhados / 5) * 100),
+          totalCredenciamentos: gn.totalCredenciamentos,
+          totalAtivacoes: gn.totalAtivacoes,
+          totalVisitas: 0,
+          totalInteracoes: 0,
+          totalBraExpre: 0,
+          totalCnpjsSimulados: 0,
+          totalFaturamentoSimulado: 0,
+          mediaCredenciamentosPorDia: gn.mediaCredenciamentos,
+          mediaVisitasPorDia: 0,
+          bateuMetaCredenciamentos: gn.bateuMeta,
+          bateuMetaVisitas: false
+        })),
+        metas: {
+          credenciamentosPorSemana: 10,
+          visitasPorSemana: 30,
+          totalGNs: relatorio.estatisticas.totalGNs
+        }
+      }
+
+      await gerarPDFRelatorio(pdfData, 'semanal')
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error)
+      alert('Erro ao gerar PDF')
+    }
+  }
+
+  const gerarRelatorioExcel = async () => {
+    if (!relatorio) return
+
+    try {
+      const excelData: ExcelData = {
+        titulo: 'Relatório Semanal de Performance - CIELO',
+        periodo: `${relatorio.periodo.inicio} a ${relatorio.periodo.fim}`,
+        dadosPorGN: relatorio.ranking.map(gn => ({
+          executivo: gn.executivo,
+          diasTrabalhados: gn.diasTrabalhados,
+          diasEsperados: 5,
+          percentualPresenca: Math.round((gn.diasTrabalhados / 5) * 100),
+          totalCredenciamentos: gn.totalCredenciamentos,
+          totalAtivacoes: gn.totalAtivacoes,
+          totalVisitas: 0,
+          totalInteracoes: 0,
+          totalBraExpre: 0,
+          totalCnpjsSimulados: 0,
+          totalFaturamentoSimulado: 0,
+          mediaCredenciamentosPorDia: gn.mediaCredenciamentos,
+          mediaVisitasPorDia: 0,
+          bateuMetaCredenciamentos: gn.bateuMeta,
+          bateuMetaVisitas: false,
+          fechamentos: [] // Será preenchido com dados detalhados
+        })),
+        totaisGerais: {
+          totalCredenciamentos: relatorio.estatisticas.totalCredenciamentos,
+          totalAtivacoes: relatorio.estatisticas.totalAtivacoes,
+          totalVisitas: 0,
+          totalInteracoes: 0,
+          totalBraExpre: 0,
+          totalCnpjsSimulados: 0,
+          totalFaturamentoSimulado: 0
+        }
+      }
+
+      gerarExcelRelatorio(excelData)
+    } catch (error) {
+      console.error('Erro ao gerar Excel:', error)
+      alert('Erro ao gerar Excel')
+    }
   }
 
   const enviarPorEmail = () => {
@@ -149,6 +243,10 @@ export function RelatorioSemanal() {
               <Button onClick={gerarRelatorioPDF} variant="outline" size="sm">
                 <Download className="w-4 h-4 mr-2" />
                 PDF
+              </Button>
+              <Button onClick={gerarRelatorioExcel} variant="outline" size="sm">
+                <FileSpreadsheet className="w-4 h-4 mr-2" />
+                Excel
               </Button>
               <Button onClick={enviarPorEmail} variant="outline" size="sm">
                 <Mail className="w-4 h-4 mr-2" />
