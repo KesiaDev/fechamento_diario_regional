@@ -309,173 +309,192 @@ export function RelatorioCompleto() {
 
   return (
     <div className="space-y-6">
-      {/* Cabeçalho */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Prestação de Resultados</h2>
-          <p className="text-gray-600">Acompanhamento completo da equipe CIELO</p>
-        </div>
-        <div className="flex gap-2">
-          <Input
-            type="date"
-            value={dataSelecionada}
-            onChange={(e) => setDataSelecionada(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
-            aria-label="Selecionar data para relatórios"
-          />
-          <Button onClick={carregarRelatorios} variant="outline" size="sm">
-            <Calendar className="w-4 h-4 mr-2" />
-            Atualizar
-          </Button>
+      {/* Cabeçalho Moderno */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">📈 Prestação de Resultados</h2>
+            <p className="text-indigo-100">Acompanhamento completo da equipe CIELO</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Input
+              type="date"
+              value={dataSelecionada}
+              onChange={(e) => setDataSelecionada(e.target.value)}
+              className="bg-white/10 border-white/20 text-white placeholder:text-indigo-200"
+              aria-label="Selecionar data para relatórios"
+            />
+            <Button onClick={carregarRelatorios} variant="secondary" size="sm">
+              <Calendar className="w-4 h-4 mr-2" />
+              Atualizar
+            </Button>
+          </div>
         </div>
       </div>
 
       <Tabs defaultValue="diario" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="diario">Relatório Diário</TabsTrigger>
-          <TabsTrigger value="semanal">Relatório Semanal</TabsTrigger>
-          <TabsTrigger value="mensal">Relatório Mensal</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 bg-gray-100 p-1 rounded-lg">
+          <TabsTrigger value="diario" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            📅 Diário
+          </TabsTrigger>
+          <TabsTrigger value="semanal" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            📊 Semanal
+          </TabsTrigger>
+          <TabsTrigger value="mensal" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            📈 Mensal
+          </TabsTrigger>
         </TabsList>
 
         {/* Relatório Diário */}
         <TabsContent value="diario" className="space-y-6">
           {relatorioDiario && (
             <>
-              {/* Resumo Executivo */}
+              {/* Resumo Executivo - Design Moderno */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total GNs</CardTitle>
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{relatorioDiario.resumo.totalGNs}</div>
-                    <p className="text-xs text-muted-foreground">
-                      de {relatorioDiario.metas.totalGNs} esperados
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Meta Credenciamentos</CardTitle>
-                    <Target className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-green-600">
-                      {relatorioDiario.resumo.percentualMetaCredenciamentos}%
+                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Users className="h-5 w-5 text-blue-600" />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {relatorioDiario.resumo.gnsBateramMetaCredenciamentos} de {relatorioDiario.resumo.totalGNs} GNs
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Meta Visitas</CardTitle>
-                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-blue-600">
-                      {relatorioDiario.resumo.percentualMetaVisitas}%
+                    <div>
+                      <div className="text-2xl font-bold text-blue-600">{relatorioDiario.resumo.totalGNs}</div>
+                      <div className="text-xs text-gray-600">Total GNs</div>
+                      <div className="text-xs text-gray-500">de {relatorioDiario.metas.totalGNs} esperados</div>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {relatorioDiario.resumo.gnsBateramMetaVisitas} de {relatorioDiario.resumo.totalGNs} GNs
-                    </p>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
 
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Credenciamentos</CardTitle>
-                    <Award className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{relatorioDiario.totaisGerais.totalCredenciamentos}</div>
-                    <p className="text-xs text-muted-foreground">
-                      Meta: {relatorioDiario.metas.credenciamentosPorDia * relatorioDiario.metas.totalGNs}
-                    </p>
-                  </CardContent>
-                </Card>
+                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Target className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {relatorioDiario.resumo.percentualMetaCredenciamentos}%
+                      </div>
+                      <div className="text-xs text-gray-600">Meta Credenciamentos</div>
+                      <div className="text-xs text-gray-500">
+                        {relatorioDiario.resumo.gnsBateramMetaCredenciamentos} de {relatorioDiario.resumo.totalGNs} GNs
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-purple-600">
+                        {relatorioDiario.resumo.percentualMetaVisitas}%
+                      </div>
+                      <div className="text-xs text-gray-600">Meta Visitas</div>
+                      <div className="text-xs text-gray-500">
+                        {relatorioDiario.resumo.gnsBateramMetaVisitas} de {relatorioDiario.resumo.totalGNs} GNs
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Award className="h-5 w-5 text-orange-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-orange-600">{relatorioDiario.totaisGerais.totalCredenciamentos}</div>
+                      <div className="text-xs text-gray-600">Total Credenciamentos</div>
+                      <div className="text-xs text-gray-500">
+                        Meta: {relatorioDiario.metas.credenciamentosPorDia * relatorioDiario.metas.totalGNs}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Detalhamento por GN */}
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle>Performance por GN - {relatorioDiario.data}</CardTitle>
-                      <CardDescription>Detalhamento individual de cada Gerente de Negócios</CardDescription>
-                    </div>
-                    <Button onClick={() => exportarRelatorio('diario')} variant="outline" size="sm">
-                      <Download className="w-4 h-4 mr-2" />
-                      Exportar
-                    </Button>
+              {/* Detalhamento por GN - Design Moderno */}
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">👥 Performance por GN</h3>
+                    <p className="text-sm text-gray-600">{relatorioDiario.data} - Detalhamento individual</p>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {relatorioDiario.dadosPorGN.map((gn, index) => (
-                      <div key={index} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-3">
+                  <Button onClick={() => exportarRelatorio('diario')} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
+                    <Download className="w-4 h-4 mr-2" />
+                    Exportar
+                  </Button>
+                </div>
+                
+                <div className="space-y-4">
+                  {relatorioDiario.dadosPorGN.map((gn, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                            <span className="text-gray-700 font-bold text-sm">
+                              {gn.executivo.charAt(0)}
+                            </span>
+                          </div>
                           <div>
-                            <h4 className="font-semibold text-lg">{gn.executivo}</h4>
+                            <h4 className="font-semibold text-lg text-gray-900">{gn.executivo}</h4>
                             <p className="text-sm text-gray-600">{gn.agencia}</p>
                           </div>
-                          <div className="flex gap-2">
-                            <Badge variant={gn.bateuMetaCredenciamentos ? "default" : "secondary"}>
-                              {gn.bateuMetaCredenciamentos ? (
-                                <><CheckCircle className="w-3 h-3 mr-1" /> Meta Creds</>
-                              ) : (
-                                <><XCircle className="w-3 h-3 mr-1" /> Meta Creds</>
-                              )}
-                            </Badge>
-                            <Badge variant={gn.bateuMetaVisitas ? "default" : "secondary"}>
-                              {gn.bateuMetaVisitas ? (
-                                <><CheckCircle className="w-3 h-3 mr-1" /> Meta Visitas</>
-                              ) : (
-                                <><XCircle className="w-3 h-3 mr-1" /> Meta Visitas</>
-                              )}
-                            </Badge>
-                          </div>
                         </div>
-                        
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                          <div>
-                            <p className="text-gray-600">Credenciamentos</p>
-                            <p className="font-semibold">{gn.totalCredenciamentos}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Ativações (R$)</p>
-                            <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Visitas</p>
-                            <p className="font-semibold">{gn.qtdVisitas} ({gn.percentualVisitas}%)</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Interações</p>
-                            <p className="font-semibold">{gn.qtdInteracoes}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Bra Expre</p>
-                            <p className="font-semibold">{gn.qtdBraExpre}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">CNPJs Simulados</p>
-                            <p className="font-semibold">{gn.totalCnpjsSimulados}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Faturamento Simulado</p>
-                            <p className="font-semibold">{formatCurrency(gn.totalFaturamentoSimulado)}</p>
-                          </div>
+                        <div className="flex gap-2">
+                          <Badge variant={gn.bateuMetaCredenciamentos ? "default" : "secondary"} className="text-xs">
+                            {gn.bateuMetaCredenciamentos ? (
+                              <><CheckCircle className="w-3 h-3 mr-1" /> Meta Creds</>
+                            ) : (
+                              <><XCircle className="w-3 h-3 mr-1" /> Meta Creds</>
+                            )}
+                          </Badge>
+                          <Badge variant={gn.bateuMetaVisitas ? "default" : "secondary"} className="text-xs">
+                            {gn.bateuMetaVisitas ? (
+                              <><CheckCircle className="w-3 h-3 mr-1" /> Meta Visitas</>
+                            ) : (
+                              <><XCircle className="w-3 h-3 mr-1" /> Meta Visitas</>
+                            )}
+                          </Badge>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="bg-blue-50 rounded-lg p-3">
+                          <p className="text-xs text-blue-600 font-medium">Credenciamentos</p>
+                          <p className="text-lg font-bold text-blue-700">{gn.totalCredenciamentos}</p>
+                        </div>
+                        <div className="bg-green-50 rounded-lg p-3">
+                          <p className="text-xs text-green-600 font-medium">Ativações (R$)</p>
+                          <p className="text-lg font-bold text-green-700">{formatCurrency(gn.totalAtivacoes)}</p>
+                        </div>
+                        <div className="bg-purple-50 rounded-lg p-3">
+                          <p className="text-xs text-purple-600 font-medium">Visitas</p>
+                          <p className="text-lg font-bold text-purple-700">{gn.qtdVisitas}</p>
+                          <p className="text-xs text-purple-500">({gn.percentualVisitas}%)</p>
+                        </div>
+                        <div className="bg-orange-50 rounded-lg p-3">
+                          <p className="text-xs text-orange-600 font-medium">Interações</p>
+                          <p className="text-lg font-bold text-orange-700">{gn.qtdInteracoes}</p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <p className="text-xs text-gray-600 font-medium">Bra Expre</p>
+                          <p className="text-lg font-bold text-gray-700">{gn.qtdBraExpre}</p>
+                        </div>
+                        <div className="bg-indigo-50 rounded-lg p-3">
+                          <p className="text-xs text-indigo-600 font-medium">CNPJs Simulados</p>
+                          <p className="text-lg font-bold text-indigo-700">{gn.totalCnpjsSimulados}</p>
+                        </div>
+                        <div className="bg-pink-50 rounded-lg p-3">
+                          <p className="text-xs text-pink-600 font-medium">Faturamento Simulado</p>
+                          <p className="text-lg font-bold text-pink-700">{formatCurrency(gn.totalFaturamentoSimulado)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </>
           )}
         </TabsContent>

@@ -193,211 +193,225 @@ export function RelatorioSemanal() {
 
   return (
     <div className="space-y-6">
-      {/* Seletor de Data */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="w-5 h-5" />
-            Selecionar Semana
-          </CardTitle>
-          <CardDescription>
-            Escolha uma data para visualizar o relatório da semana correspondente
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <Label htmlFor="dataFiltroRelatorio">Data de Referência</Label>
-              <Input
-                id="dataFiltroRelatorio"
-                type="date"
-                value={dataFiltro}
-                onChange={(e) => setDataFiltro(e.target.value)}
-                className="w-full"
-              />
-            </div>
-            <div className="flex items-end">
-              <Button onClick={carregarRelatorio} variant="outline">
-                <Calendar className="w-4 h-4 mr-2" />
-                Atualizar
-              </Button>
-            </div>
+      {/* Cabeçalho Moderno */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">📊 Relatório Semanal</h2>
+            <p className="text-blue-100">Acompanhamento de performance da equipe CIELO</p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Cabeçalho do Relatório */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle className="flex items-center gap-2 text-blue-800">
-                <Calendar className="w-6 h-6" />
-                Relatório Semanal - {relatorio.periodo.semana}
-              </CardTitle>
-              <CardDescription className="text-blue-600">
-                Período: {relatorio.periodo.inicio} a {relatorio.periodo.fim}
-              </CardDescription>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={gerarRelatorioPDF} variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                PDF
-              </Button>
-              <Button onClick={gerarRelatorioExcel} variant="outline" size="sm">
-                <FileSpreadsheet className="w-4 h-4 mr-2" />
-                Excel
-              </Button>
-              <Button onClick={enviarPorEmail} variant="outline" size="sm">
-                <Mail className="w-4 h-4 mr-2" />
-                Email
-              </Button>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Input
+              type="date"
+              value={dataFiltro}
+              onChange={(e) => setDataFiltro(e.target.value)}
+              className="bg-white/10 border-white/20 text-white placeholder:text-blue-200"
+            />
+            <Button onClick={carregarRelatorio} variant="secondary" size="sm">
+              <Calendar className="w-4 h-4 mr-2" />
+              Atualizar
+            </Button>
           </div>
-        </CardHeader>
-      </Card>
+        </div>
+      </div>
 
-      {/* Destaques da Semana */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Período e Ações */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-white rounded-lg border border-gray-200">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">{relatorio.periodo.semana}</h3>
+          <p className="text-sm text-gray-600">{relatorio.periodo.inicio} a {relatorio.periodo.fim}</p>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={gerarRelatorioPDF} variant="outline" size="sm" className="hover:bg-red-50 hover:border-red-200">
+            <Download className="w-4 h-4 mr-2" />
+            PDF
+          </Button>
+          <Button onClick={gerarRelatorioExcel} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200">
+            <FileSpreadsheet className="w-4 h-4 mr-2" />
+            Excel
+          </Button>
+          <Button onClick={enviarPorEmail} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
+            <Mail className="w-4 h-4 mr-2" />
+            Email
+          </Button>
+        </div>
+      </div>
+
+      {/* Destaques da Semana - Design Compacto */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Maior Quantidade */}
         {relatorio.destaques.maiorQuantidade && (
-          <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-yellow-700">
-                <span className="text-2xl">🏆</span>
-                Maior Quantidade da Semana
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-700 mb-2">
-                  {relatorio.destaques.maiorQuantidade.executivo}
-                </div>
-                <div className="text-2xl font-semibold text-yellow-600">
-                  {relatorio.destaques.maiorQuantidade.credenciamentos} credenciamentos
-                </div>
-                <div className="text-lg text-yellow-500">
-                  {formatCurrency(relatorio.destaques.maiorQuantidade.ativacoes)}
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
+                <span className="text-yellow-900 text-lg">🏆</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-yellow-700">Maior Quantidade</h3>
+                <p className="text-xs text-yellow-600">Destaque da semana</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                <span className="text-yellow-700 font-bold text-lg">
+                  {relatorio.destaques.maiorQuantidade.executivo.charAt(0)}
+                </span>
+              </div>
+              <div className="flex-1">
+                <div className="font-bold text-yellow-700">{relatorio.destaques.maiorQuantidade.executivo}</div>
+                <div className="text-sm text-yellow-600">
+                  {relatorio.destaques.maiorQuantidade.credenciamentos} creds • {formatCurrency(relatorio.destaques.maiorQuantidade.ativacoes)}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Maior Volume */}
         {relatorio.destaques.maiorVolume && (
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-700">
-                <span className="text-2xl">💰</span>
-                Maior Volume da Semana
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-700 mb-2">
-                  {relatorio.destaques.maiorVolume.executivo}
-                </div>
-                <div className="text-2xl font-semibold text-green-600">
-                  {formatCurrency(relatorio.destaques.maiorVolume.ativacoes)}
-                </div>
-                <div className="text-lg text-green-500">
-                  {relatorio.destaques.maiorVolume.credenciamentos} credenciamentos
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-green-400 rounded-full flex items-center justify-center">
+                <span className="text-green-900 text-lg">💰</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-green-700">Maior Volume</h3>
+                <p className="text-xs text-green-600">Destaque da semana</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <span className="text-green-700 font-bold text-lg">
+                  {relatorio.destaques.maiorVolume.executivo.charAt(0)}
+                </span>
+              </div>
+              <div className="flex-1">
+                <div className="font-bold text-green-700">{relatorio.destaques.maiorVolume.executivo}</div>
+                <div className="text-sm text-green-600">
+                  {formatCurrency(relatorio.destaques.maiorVolume.ativacoes)} • {relatorio.destaques.maiorVolume.credenciamentos} creds
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
 
-      {/* Estatísticas Gerais */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">📊 Estatísticas da Semana</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
-                {relatorio.estatisticas.totalCredenciamentos}
-              </div>
-              <div className="text-sm text-gray-600">Total Credenciamentos</div>
+      {/* Estatísticas Gerais - Design Moderno */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <span className="text-blue-600 text-lg">📋</span>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {formatCurrency(relatorio.estatisticas.totalAtivacoes)}
-              </div>
-              <div className="text-sm text-gray-600">Total Ativado</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600">
-                {relatorio.estatisticas.gnsComMeta}
-              </div>
-              <div className="text-sm text-gray-600">GNs com Meta</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">
-                {relatorio.estatisticas.gnsZerados}
-              </div>
-              <div className="text-sm text-gray-600">GNs Zerados</div>
+            <div>
+              <div className="text-2xl font-bold text-blue-600">{relatorio.estatisticas.totalCredenciamentos}</div>
+              <div className="text-xs text-gray-600">Total Credenciamentos</div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+        
+        <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <span className="text-green-600 text-lg">💰</span>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-green-600">{formatCurrency(relatorio.estatisticas.totalAtivacoes)}</div>
+              <div className="text-xs text-gray-600">Total Ativado</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <span className="text-yellow-600 text-lg">✅</span>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-yellow-600">{relatorio.estatisticas.gnsComMeta}</div>
+              <div className="text-xs text-gray-600">GNs com Meta</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+              <span className="text-red-600 text-lg">❌</span>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-red-600">{relatorio.estatisticas.gnsZerados}</div>
+              <div className="text-xs text-gray-600">GNs Zerados</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {/* Ranking Completo */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">🏆 Ranking Semanal Completo</CardTitle>
-          <CardDescription>
-            Meta semanal: {relatorio.estatisticas.metaSemanal} credenciamentos
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {relatorio.ranking.map((gn) => (
-              <div
-                key={gn.executivo}
-                className={`flex items-center justify-between p-4 rounded-lg border ${
-                  gn.posicao === 1 ? 'bg-yellow-50 border-yellow-200' :
-                  gn.posicao === 2 ? 'bg-gray-50 border-gray-200' :
-                  gn.posicao === 3 ? 'bg-orange-50 border-orange-200' :
-                  gn.totalCredenciamentos === 0 ? 'bg-red-50 border-red-200' :
-                  'bg-white border-gray-200'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-2xl font-bold text-gray-400">
-                    {gn.posicao === 1 ? '🥇' : gn.posicao === 2 ? '🥈' : gn.posicao === 3 ? '🥉' : `#${gn.posicao}`}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-lg">{gn.executivo}</div>
-                    <div className="text-sm text-gray-600">
-                      {gn.bateuMeta ? (
-                        <span className="text-green-600 font-semibold">✅ Meta batida!</span>
-                      ) : gn.totalCredenciamentos === 0 ? (
-                        <span className="text-red-600 font-semibold">❌ Zerado</span>
-                      ) : null}
-                    </div>
-                  </div>
+      {/* Ranking Completo - Design Moderno */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">🏆 Ranking Semanal</h3>
+            <p className="text-sm text-gray-600">Meta: {relatorio.estatisticas.metaSemanal} credenciamentos</p>
+          </div>
+        </div>
+        
+        <div className="space-y-3">
+          {relatorio.ranking.map((gn) => (
+            <div
+              key={gn.executivo}
+              className={`flex items-center justify-between p-4 rounded-lg border transition-all hover:shadow-sm ${
+                gn.posicao === 1 ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200' :
+                gn.posicao === 2 ? 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200' :
+                gn.posicao === 3 ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-200' :
+                gn.totalCredenciamentos === 0 ? 'bg-red-50 border-red-200' :
+                'bg-white border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                  gn.posicao === 1 ? 'bg-yellow-400 text-yellow-900' :
+                  gn.posicao === 2 ? 'bg-gray-400 text-gray-900' :
+                  gn.posicao === 3 ? 'bg-orange-400 text-orange-900' :
+                  'bg-gray-200 text-gray-700'
+                }`}>
+                  {gn.posicao === 1 ? '🥇' : gn.posicao === 2 ? '🥈' : gn.posicao === 3 ? '🥉' : gn.posicao}
                 </div>
-                
-                <div className="text-right">
-                  <div className="text-lg font-semibold text-blue-600">
-                    {gn.totalCredenciamentos} credenciamentos
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatCurrency(gn.totalAtivacoes)}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {gn.diasTrabalhados} dias • Média: {gn.mediaCredenciamentos}/dia
+                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                  <span className="text-gray-700 font-bold text-sm">
+                    {gn.executivo.charAt(0)}
+                  </span>
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">{gn.executivo}</div>
+                  <div className="flex items-center gap-2">
+                    {gn.bateuMeta ? (
+                      <span className="text-xs text-green-600 font-medium">✅ Meta</span>
+                    ) : gn.totalCredenciamentos === 0 ? (
+                      <span className="text-xs text-red-600 font-medium">❌ Zerado</span>
+                    ) : (
+                      <span className="text-xs text-orange-600 font-medium">⚠️ Abaixo</span>
+                    )}
+                    <span className="text-xs text-gray-500">
+                      {gn.diasTrabalhados} dias • {gn.mediaCredenciamentos}/dia
+                    </span>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              
+              <div className="text-right">
+                <div className="text-lg font-bold text-blue-600">
+                  {gn.totalCredenciamentos}
+                  <span className="text-xs text-gray-400">/{relatorio.estatisticas.metaSemanal}</span>
+                </div>
+                <div className="text-sm text-gray-600">
+                  {formatCurrency(gn.totalAtivacoes)}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
