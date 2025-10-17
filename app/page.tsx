@@ -1209,9 +1209,7 @@ export default function Home() {
                             <span className="text-xs text-green-600 font-medium">✅ Meta</span>
                           ) : item.totalCredenciamentos === 0 ? (
                             <span className="text-xs text-red-600 font-medium">❌ Zerado</span>
-                          ) : (
-                            <span className="text-xs text-orange-600 font-medium">⚠️ Abaixo</span>
-                          )}
+                          ) : null}
                         </div>
                       </div>
                     </div>

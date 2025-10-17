@@ -389,9 +389,7 @@ export function RelatorioSemanal() {
                       <span className="text-xs text-green-600 font-medium">✅ Meta</span>
                     ) : gn.totalCredenciamentos === 0 ? (
                       <span className="text-xs text-red-600 font-medium">❌ Zerado</span>
-                    ) : (
-                      <span className="text-xs text-orange-600 font-medium">⚠️ Abaixo</span>
-                    )}
+                    ) : null}
                     <span className="text-xs text-gray-500">
                       {gn.diasTrabalhados} dias • {gn.mediaCredenciamentos}/dia
                     </span>
