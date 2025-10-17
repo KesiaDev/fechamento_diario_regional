@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const dataParam = searchParams.get('data')
     
     // Se não especificar data, usa a semana atual
-    const dataReferencia = dataParam ? new Date(dataParam) : new Date()
+    const dataReferencia = dataParam ? new Date(dataParam + 'T00:00:00') : new Date()
     
     // Calcular início e fim da semana (segunda a sexta)
     const inicioSemana = startOfWeek(dataReferencia, { weekStartsOn: 1 }) // Segunda
