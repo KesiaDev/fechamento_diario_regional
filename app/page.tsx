@@ -962,6 +962,17 @@ export default function Home() {
                         </SelectContent>
                       </Select>
                     </div>
+                    <div className="flex items-end">
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setDataFiltro(new Date().toISOString().split('T')[0])}
+                        className="whitespace-nowrap"
+                      >
+                        Hoje
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -1091,6 +1102,17 @@ export default function Home() {
                       <SelectItem value="mes">Mês</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setDataFiltro(new Date().toISOString().split('T')[0])}
+                    className="whitespace-nowrap"
+                  >
+                    Hoje
+                  </Button>
                 </div>
               </div>
             </div>
