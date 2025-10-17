@@ -50,7 +50,7 @@ export async function PUT(
         qtdVisitas: parseInt(qtdVisitas),
         qtdInteracoes: parseInt(qtdInteracoes),
         qtdBraExpre: parseInt(qtdBraExpre),
-        data: data ? new Date(data) : fechamentoExistente.data,
+        data: data ? new Date(data + 'T12:00:00') : fechamentoExistente.data,
         credenciamentos: {
           deleteMany: {},
           create: (credenciamentos || []).map((cred: any) => ({
