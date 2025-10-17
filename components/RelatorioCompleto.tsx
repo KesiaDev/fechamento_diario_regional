@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Calendar, TrendingUp, Users, Award, Target, CheckCircle, XCircle, Download } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
@@ -314,11 +316,12 @@ export function RelatorioCompleto() {
           <p className="text-gray-600">Acompanhamento completo da equipe CIELO</p>
         </div>
         <div className="flex gap-2">
-          <input
+          <Input
             type="date"
             value={dataSelecionada}
             onChange={(e) => setDataSelecionada(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            aria-label="Selecionar data para relatórios"
           />
           <Button onClick={carregarRelatorios} variant="outline" size="sm">
             <Calendar className="w-4 h-4 mr-2" />

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { formatCurrency } from '@/lib/utils'
 import { Download, Mail, Calendar } from 'lucide-react'
 
@@ -46,11 +48,12 @@ type RelatorioSemanal = {
 export function RelatorioSemanal() {
   const [relatorio, setRelatorio] = useState<RelatorioSemanal | null>(null)
   const [loading, setLoading] = useState(false)
+  const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
 
   const carregarRelatorio = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/fechamentos/relatorio-semanal')
+      const response = await fetch(`/api/fechamentos/relatorio-semanal?data=${dataFiltro}`)
       const data = await response.json()
       setRelatorio(data)
     } catch (error) {
@@ -62,7 +65,7 @@ export function RelatorioSemanal() {
 
   useEffect(() => {
     carregarRelatorio()
-  }, [])
+  }, [dataFiltro])
 
   const gerarRelatorioPDF = () => {
     // Implementar geração de PDF (futuro)
@@ -96,6 +99,39 @@ export function RelatorioSemanal() {
 
   return (
     <div className="space-y-6">
+      {/* Seletor de Data */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="w-5 h-5" />
+            Selecionar Semana
+          </CardTitle>
+          <CardDescription>
+            Escolha uma data para visualizar o relatório da semana correspondente
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <Label htmlFor="dataFiltroRelatorio">Data de Referência</Label>
+              <Input
+                id="dataFiltroRelatorio"
+                type="date"
+                value={dataFiltro}
+                onChange={(e) => setDataFiltro(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div className="flex items-end">
+              <Button onClick={carregarRelatorio} variant="outline">
+                <Calendar className="w-4 h-4 mr-2" />
+                Atualizar
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Cabeçalho do Relatório */}
       <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
         <CardHeader>

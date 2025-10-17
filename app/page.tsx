@@ -157,6 +157,7 @@ export default function Home() {
   const [fechamentos, setFechamentos] = useState<Fechamento[]>([])
   const [ranking, setRanking] = useState<RankingItem[]>([])
   const [filtro, setFiltro] = useState('dia')
+  const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
   const [loading, setLoading] = useState(false)
   const [registroSelecionado, setRegistroSelecionado] = useState<Fechamento | null>(null)
   const [mostrarModal, setMostrarModal] = useState(false)
@@ -330,7 +331,7 @@ export default function Home() {
 
   const carregarFechamentos = async () => {
     try {
-      const response = await fetch(`/api/fechamentos?filtro=${filtro}`)
+      const response = await fetch(`/api/fechamentos?filtro=${filtro}&data=${dataFiltro}`)
       const data = await response.json()
       setFechamentos(data)
     } catch (error) {
@@ -340,7 +341,7 @@ export default function Home() {
 
   const carregarRanking = async () => {
     try {
-      const response = await fetch(`/api/fechamentos/ranking?filtro=${filtro}`)
+      const response = await fetch(`/api/fechamentos/ranking?filtro=${filtro}&data=${dataFiltro}`)
       const data = await response.json()
       setRanking(data)
     } catch (error) {
@@ -351,7 +352,7 @@ export default function Home() {
   useEffect(() => {
     carregarFechamentos()
     carregarRanking()
-  }, [filtro])
+  }, [filtro, dataFiltro])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -931,16 +932,31 @@ export default function Home() {
                     <CardTitle className="text-lg sm:text-xl">Registros</CardTitle>
                     <CardDescription className="text-sm">Visualize os lançamentos do período</CardDescription>
                   </div>
-                  <Select value={filtro} onValueChange={setFiltro}>
-                    <SelectTrigger className="w-full sm:w-[180px]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dia">Hoje</SelectItem>
-                      <SelectItem value="semana">Esta Semana</SelectItem>
-                      <SelectItem value="mes">Este Mês</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1">
+                      <Label htmlFor="dataFiltro" className="text-xs text-gray-600">Data de Referência</Label>
+                      <Input
+                        id="dataFiltro"
+                        type="date"
+                        value={dataFiltro}
+                        onChange={(e) => setDataFiltro(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <Label className="text-xs text-gray-600">Período</Label>
+                      <Select value={filtro} onValueChange={setFiltro}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="dia">Dia</SelectItem>
+                          <SelectItem value="semana">Semana</SelectItem>
+                          <SelectItem value="mes">Mês</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -1046,16 +1062,31 @@ export default function Home() {
           <TabsContent value="ranking" className="space-y-4 sm:space-y-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <h2 className="text-xl sm:text-2xl font-bold">🏆 Ranking dos GNs</h2>
-              <Select value={filtro} onValueChange={setFiltro}>
-                <SelectTrigger className="w-full sm:w-[180px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="dia">Hoje</SelectItem>
-                  <SelectItem value="semana">Esta Semana</SelectItem>
-                  <SelectItem value="mes">Este Mês</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <Label htmlFor="dataFiltroRanking" className="text-xs text-gray-600">Data de Referência</Label>
+                  <Input
+                    id="dataFiltroRanking"
+                    type="date"
+                    value={dataFiltro}
+                    onChange={(e) => setDataFiltro(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex-1">
+                  <Label className="text-xs text-gray-600">Período</Label>
+                  <Select value={filtro} onValueChange={setFiltro}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="dia">Dia</SelectItem>
+                      <SelectItem value="semana">Semana</SelectItem>
+                      <SelectItem value="mes">Mês</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
 
             {/* Cards de Destaque */}
@@ -1069,7 +1100,9 @@ export default function Home() {
                       Maior Quantidade
                     </CardTitle>
                     <CardDescription className="text-yellow-600 text-xs sm:text-sm">
-                      {filtro === 'dia' ? 'Melhor do dia' : filtro === 'semana' ? 'Melhor da semana' : 'Melhor do mês'}
+                      {filtro === 'dia' ? `Melhor do dia ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                       filtro === 'semana' ? `Melhor da semana de ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                       `Melhor do mês de ${new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -1086,7 +1119,9 @@ export default function Home() {
                         {ranking[0]?.totalCredenciamentos || 0} credenciamentos
                       </div>
                       <div className="text-xs sm:text-sm text-yellow-500 mt-1">
-                        {filtro === 'dia' ? 'Hoje' : filtro === 'semana' ? 'Esta semana' : 'Este mês'}
+                        {filtro === 'dia' ? new Date(dataFiltro).toLocaleDateString('pt-BR') : 
+                         filtro === 'semana' ? `Semana de ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                         new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
                       </div>
                     </div>
                   </CardContent>
@@ -1100,7 +1135,9 @@ export default function Home() {
                       Maior Volume
                     </CardTitle>
                     <CardDescription className="text-green-600 text-xs sm:text-sm">
-                      {filtro === 'dia' ? 'Melhor do dia' : filtro === 'semana' ? 'Melhor da semana' : 'Melhor do mês'}
+                      {filtro === 'dia' ? `Melhor do dia ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                       filtro === 'semana' ? `Melhor da semana de ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                       `Melhor do mês de ${new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -1120,7 +1157,9 @@ export default function Home() {
                         {formatCurrency(ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])?.totalAtivacoes || 0)}
                       </div>
                       <div className="text-xs sm:text-sm text-green-500 mt-1">
-                        {filtro === 'dia' ? 'Hoje' : filtro === 'semana' ? 'Esta semana' : 'Este mês'}
+                        {filtro === 'dia' ? new Date(dataFiltro).toLocaleDateString('pt-BR') : 
+                         filtro === 'semana' ? `Semana de ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                         new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
                       </div>
                     </div>
                   </CardContent>
