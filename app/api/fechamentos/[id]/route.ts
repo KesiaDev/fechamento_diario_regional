@@ -54,7 +54,7 @@ export async function PUT(
         credenciamentos: {
           deleteMany: {},
           create: (credenciamentos || []).map((cred: any) => ({
-            qtdCredenciamentos: parseInt(cred.qtdCredenciamentos),
+            qtdCredenciamentos: 1, // Cada credenciamento adicionado = 1 credenciamento
             ativacoesValor: 0, // Campo removido, sempre 0
             ec: cred.ec,
             volumeRS: parseFloat(cred.volumeRS),

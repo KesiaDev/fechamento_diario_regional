@@ -90,7 +90,6 @@ const FotoGN = ({ nome, tamanho = 'md' }: { nome: string, tamanho?: 'sm' | 'md' 
 
 type Credenciamento = {
   id: string
-  qtdCredenciamentos: string
   ec: string
   volumeRS: string
   ra: string
@@ -176,7 +175,6 @@ export default function Home() {
       ...credenciamentos,
       {
         id: crypto.randomUUID(),
-        qtdCredenciamentos: '',
         ec: '',
         volumeRS: '',
         ra: '',
@@ -281,7 +279,6 @@ export default function Home() {
     // Converter credenciamentos para formato do formulário
     const credenciamentosFormatados = fechamento.credenciamentos.map(cred => ({
       id: crypto.randomUUID(),
-      qtdCredenciamentos: cred.qtdCredenciamentos.toString(),
       ec: cred.ec,
       volumeRS: cred.volumeRS.toString(),
       ra: cred.ra ? 'true' : 'false',
@@ -380,7 +377,7 @@ export default function Home() {
     // Se há credenciamentos, validar se estão preenchidos corretamente
     if (credenciamentos.length > 0) {
       const credenciamentosValidos = credenciamentos.every(c => 
-        c.qtdCredenciamentos && c.ec && c.volumeRS && c.ra && c.cesta && c.instalaDireto
+        c.ec && c.volumeRS && c.ra && c.cesta && c.instalaDireto
       )
 
       if (!credenciamentosValidos) {
@@ -842,18 +839,6 @@ export default function Home() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                               <div className="space-y-2">
-                                <Label>Qtd Credenciamentos *</Label>
-                                <Input
-                                  type="number"
-                                  value={cred.qtdCredenciamentos}
-                                  onChange={(e) => atualizarCredenciamento(cred.id, 'qtdCredenciamentos', e.target.value)}
-                                  placeholder="0"
-                                  min="0"
-                                  required
-                                />
-                              </div>
-
-                              <div className="space-y-2">
                                 <Label>EC (10 números) *</Label>
                                 <Input
                                   type="text"
@@ -1001,7 +986,7 @@ export default function Home() {
                       </thead>
                       <tbody>
                         {fechamentos.map((fechamento) => {
-                          const totalCreds = fechamento.credenciamentos.reduce((sum, c) => sum + c.qtdCredenciamentos, 0)
+                          const totalCreds = fechamento.credenciamentos.length
                           const totalAtiv = fechamento.credenciamentos.reduce((sum, c) => sum + c.volumeRS, 0)
                           
                           return (
@@ -1353,10 +1338,6 @@ export default function Home() {
                                 <h4 className="font-medium">Credenciamento #{index + 1}</h4>
                               </div>
                               <div className="grid grid-cols-2 gap-2 text-sm">
-                                <div>
-                                  <p className="text-gray-600">Quantidade:</p>
-                                  <p className="font-semibold">{cred.qtdCredenciamentos}</p>
-                                </div>
                                 <div>
                                   <p className="text-gray-600">EC:</p>
                                   <p className="font-semibold">{cred.ec}</p>
