@@ -1097,79 +1097,61 @@ export default function Home() {
 
             {/* Cards de Destaque */}
             {ranking.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                {/* Card Maior Quantidade */}
-                <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-yellow-700 text-sm sm:text-base">
-                      <span className="text-xl sm:text-2xl">🏆</span>
-                      Maior Quantidade
-                    </CardTitle>
-                    <CardDescription className="text-yellow-600 text-xs sm:text-sm">
-                      {filtro === 'dia' ? `Melhor do dia ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                       filtro === 'semana' ? `Melhor da semana de ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                       `Melhor do mês de ${new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center">
-                      {ranking[0]?.executivo && (
-                        <div className="flex justify-center mb-3">
-                          <FotoGN nome={ranking[0].executivo} tamanho="lg" />
-                        </div>
-                      )}
-                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-700 mb-2">
-                        {ranking[0]?.executivo || 'N/A'}
-                      </div>
-                      <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-yellow-600">
-                        {ranking[0]?.totalCredenciamentos || 0} credenciamentos
-                      </div>
-                      <div className="text-xs sm:text-sm text-yellow-500 mt-1">
-                        {filtro === 'dia' ? new Date(dataFiltro).toLocaleDateString('pt-BR') : 
-                         filtro === 'semana' ? `Semana de ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                         new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                {/* Card Maior Quantidade - Compacto */}
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
+                      <span className="text-yellow-900 text-lg">🏆</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-yellow-700">Maior Quantidade</div>
+                      <div className="text-xs text-yellow-600">
+                        {filtro === 'dia' ? `Dia ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                         filtro === 'semana' ? `Semana ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                         new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                  <div className="flex items-center gap-3 mt-3">
+                    <FotoGN nome={ranking[0]?.executivo || ''} tamanho="sm" />
+                    <div className="flex-1">
+                      <div className="font-bold text-yellow-700 text-sm">{ranking[0]?.executivo || 'N/A'}</div>
+                      <div className="text-xs text-yellow-600">{ranking[0]?.totalCredenciamentos || 0} creds</div>
+                    </div>
+                  </div>
+                </div>
 
-                {/* Card Maior Volume */}
-                <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-green-700 text-sm sm:text-base">
-                      <span className="text-xl sm:text-2xl">💰</span>
-                      Maior Volume
-                    </CardTitle>
-                    <CardDescription className="text-green-600 text-xs sm:text-sm">
-                      {filtro === 'dia' ? `Melhor do dia ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                       filtro === 'semana' ? `Melhor da semana de ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                       `Melhor do mês de ${new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center">
-                      {ranking.length > 0 && (() => {
-                        const maiorVolume = ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])
-                        return maiorVolume?.executivo && (
-                          <div className="flex justify-center mb-3">
-                            <FotoGN nome={maiorVolume.executivo} tamanho="lg" />
-                          </div>
-                        )
-                      })()}
-                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-700 mb-2">
-                        {ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])?.executivo || 'N/A'}
-                      </div>
-                      <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-green-600">
-                        {formatCurrency(ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])?.totalAtivacoes || 0)}
-                      </div>
-                      <div className="text-xs sm:text-sm text-green-500 mt-1">
-                        {filtro === 'dia' ? new Date(dataFiltro).toLocaleDateString('pt-BR') : 
-                         filtro === 'semana' ? `Semana de ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                         new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+                {/* Card Maior Volume - Compacto */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-400 rounded-full flex items-center justify-center">
+                      <span className="text-green-900 text-lg">💰</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-green-700">Maior Volume</div>
+                      <div className="text-xs text-green-600">
+                        {filtro === 'dia' ? `Dia ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                         filtro === 'semana' ? `Semana ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
+                         new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                  <div className="flex items-center gap-3 mt-3">
+                    {(() => {
+                      const maiorVolume = ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])
+                      return (
+                        <>
+                          <FotoGN nome={maiorVolume?.executivo || ''} tamanho="sm" />
+                          <div className="flex-1">
+                            <div className="font-bold text-green-700 text-sm">{maiorVolume?.executivo || 'N/A'}</div>
+                            <div className="text-xs text-green-600">{formatCurrency(maiorVolume?.totalAtivacoes || 0)}</div>
+                          </div>
+                        </>
+                      )
+                    })()}
+                  </div>
+                </div>
               </div>
             )}
 
