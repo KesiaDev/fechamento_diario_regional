@@ -17,6 +17,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Criar fechamento com credenciamentos
+    const dataFechamento = data ? new Date(data + 'T12:00:00') : new Date(new Date().toISOString().split('T')[0] + 'T12:00:00')
+    
+    console.log('Criando fechamento com data:', dataFechamento)
+    console.log('Data original:', data)
+    console.log('Executivo:', executivo)
+
     const fechamento = await prisma.fechamento.create({
       data: {
         executivo,
@@ -24,7 +30,7 @@ export async function POST(request: NextRequest) {
         qtdVisitas: parseInt(qtdVisitas),
         qtdInteracoes: parseInt(qtdInteracoes),
         qtdBraExpre: parseInt(qtdBraExpre),
-        data: data ? new Date(data + 'T12:00:00') : new Date(new Date().toISOString().split('T')[0] + 'T12:00:00'),
+        data: dataFechamento,
         credenciamentos: {
           create: (credenciamentos || []).map((cred: any) => ({
             qtdCredenciamentos: 1, // Cada credenciamento adicionado = 1 credenciamento
@@ -89,6 +95,12 @@ export async function GET(request: NextRequest) {
         break
     }
 
+    // Debug: log das datas para verificar
+    console.log('Data referência:', dataReferencia)
+    console.log('Start date:', startDate)
+    console.log('End date:', endDate)
+    console.log('Filtro:', filtro)
+
     const fechamentos = await prisma.fechamento.findMany({
       where: {
         data: {
@@ -104,6 +116,9 @@ export async function GET(request: NextRequest) {
         data: 'desc'
       }
     })
+
+    console.log('Fechamentos encontrados:', fechamentos.length)
+    console.log('Fechamentos:', fechamentos.map(f => ({ id: f.id, data: f.data, executivo: f.executivo })))
 
     return NextResponse.json(fechamentos)
   } catch (error) {
