@@ -9,6 +9,7 @@ Coloque as fotos nesta pasta com os seguintes nomes:
 - `renan.jpg` (ou .png)
 - `jeferson.jpg` (ou .png)
 - `jhonattan.jpg` (ou .png)
+- `cristian.jpg` (ou .png)
 
 ### **2. Formato das Fotos:**
 - **Formato:** JPG ou PNG
@@ -27,7 +28,8 @@ public/fotos/
 ├── sheila.jpg
 ├── renan.jpg
 ├── jeferson.jpg
-└── jhonattan.jpg
+├── jhonattan.jpg
+└── cristian.jpg
 ```
 
 ## 🎯 **Resultado:**

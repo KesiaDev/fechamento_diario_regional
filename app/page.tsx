@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import { getAgenciasPorExecutivo, executivos } from '@/lib/agencias'
 import { Plus, Trash2, TrendingUp, Users, Award, Check, Eye, Edit, X } from 'lucide-react'
 import { RelatorioSemanal } from '@/components/RelatorioSemanal'
 import { RelatorioCompleto } from '@/components/RelatorioCompleto'
@@ -22,7 +23,8 @@ const getFotoGN = (nome: string) => {
     'sheila': '/fotos/Sheila.jpeg',
     'renan': '/fotos/Renan.jpeg',
     'jeferson': '/fotos/Jeferson.jpeg',
-    'jhonattan': '/fotos/Jhonattan.jpeg'
+    'jhonattan': '/fotos/Jhonattan.jpeg',
+    'cristian': '/fotos/Cristian.jpeg'
   }
   
   // Verificar se o nome contém algum dos nomes base
@@ -162,6 +164,12 @@ export default function Home() {
   const [registroSelecionado, setRegistroSelecionado] = useState<Fechamento | null>(null)
   const [mostrarModal, setMostrarModal] = useState(false)
   const [modoEdicao, setModoEdicao] = useState(false)
+
+  // Função para lidar com mudança de executivo
+  const handleExecutivoChange = (novoExecutivo: string) => {
+    setExecutivo(novoExecutivo)
+    setAgencia('') // Limpa a agência quando muda o executivo
+  }
 
   const adicionarCredenciamento = () => {
     setCredenciamentos([
@@ -538,29 +546,42 @@ export default function Home() {
 
                     <div className="space-y-2">
                       <Label htmlFor="executivo">Executivo (GN) *</Label>
-                      <Select value={executivo} onValueChange={setExecutivo} required>
+                      <Select value={executivo} onValueChange={handleExecutivoChange} required>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o Gerente" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Dionei">Dionei</SelectItem>
-                          <SelectItem value="Sheila">Sheila</SelectItem>
-                          <SelectItem value="Renan">Renan</SelectItem>
-                          <SelectItem value="Jeferson">Jeferson</SelectItem>
-                          <SelectItem value="Jhonattan">Jhonattan</SelectItem>
+                          {executivos.map((exec) => (
+                            <SelectItem key={exec} value={exec}>{exec}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="agencia">Agência Visitada *</Label>
-                      <Input
-                        id="agencia"
-                        value={agencia}
-                        onChange={(e) => setAgencia(e.target.value)}
-                        placeholder="Nome da agência"
-                        required
-                      />
+                      {executivo ? (
+                        <Select value={agencia} onValueChange={setAgencia} required>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione a agência" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getAgenciasPorExecutivo(executivo).map((ag) => (
+                              <SelectItem key={ag.codigo} value={`${ag.codigo} - ${ag.nome}`}>
+                                {ag.codigo} - {ag.nome}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input
+                          id="agencia"
+                          value={agencia}
+                          onChange={(e) => setAgencia(e.target.value)}
+                          placeholder="Primeiro selecione o executivo"
+                          disabled
+                        />
+                      )}
                     </div>
 
                     <div className="space-y-2">
