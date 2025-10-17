@@ -1274,160 +1274,195 @@ export default function Home() {
           </TabsContent>
         </Tabs>
 
-        {/* Modal de Detalhes do Registro */}
+        {/* Modal de Detalhes do Registro - Design Moderno */}
         {mostrarModal && registroSelecionado && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">Detalhes do Registro</h2>
-                  <Button onClick={fecharModal} variant="ghost" size="sm">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+              {/* Header com gradiente */}
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-4">
+                    <FotoGN nome={registroSelecionado.executivo} tamanho="lg" />
+                    <div>
+                      <h2 className="text-2xl font-bold">{registroSelecionado.executivo}</h2>
+                      <p className="text-blue-100">{registroSelecionado.agencia}</p>
+                      <p className="text-blue-200 text-sm">{formatDate(registroSelecionado.data)}</p>
+                    </div>
+                  </div>
+                  <Button onClick={fecharModal} variant="ghost" size="sm" className="text-white hover:bg-white/20">
                     <X className="w-5 h-5" />
                   </Button>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Informações Básicas */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Eye className="w-5 h-5" />
-                        Informações Básicas
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <FotoGN nome={registroSelecionado.executivo} tamanho="md" />
-                        <div>
-                          <p className="font-semibold">{registroSelecionado.executivo}</p>
-                          <p className="text-sm text-gray-600">{registroSelecionado.agencia}</p>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3 text-sm">
-                        <div>
-                          <p className="text-gray-600">Data:</p>
-                          <p className="font-semibold">{formatDate(registroSelecionado.data)}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Visitas:</p>
-                          <p className="font-semibold">{registroSelecionado.qtdVisitas}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Interações:</p>
-                          <p className="font-semibold">{registroSelecionado.qtdInteracoes}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Bra Expre:</p>
-                          <p className="font-semibold">{registroSelecionado.qtdBraExpre}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Credenciamentos */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Credenciamentos ({registroSelecionado.credenciamentos.length})</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {registroSelecionado.credenciamentos.length === 0 ? (
-                        <div className="text-center text-gray-500 py-4">
-                          <p>❌ Nenhum credenciamento registrado</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {registroSelecionado.credenciamentos.map((cred, index) => (
-                            <div key={cred.id} className="border rounded-lg p-3">
-                              <div className="flex justify-between items-start mb-2">
-                                <h4 className="font-medium">Credenciamento #{index + 1}</h4>
-                              </div>
-                              <div className="grid grid-cols-2 gap-2 text-sm">
-                                <div>
-                                  <p className="text-gray-600">EC:</p>
-                                  <p className="font-semibold">{cred.ec}</p>
-                                </div>
-                                <div>
-                                  <p className="text-gray-600">Volume R$:</p>
-                                  <p className="font-semibold">{formatCurrency(cred.volumeRS)}</p>
-                                </div>
-                                <div>
-                                  <p className="text-gray-600">RA:</p>
-                                  <p className="font-semibold">{cred.ra ? 'Sim' : 'Não'}</p>
-                                </div>
-                                <div>
-                                  <p className="text-gray-600">Instala Direto:</p>
-                                  <p className="font-semibold">{cred.instalaDireto ? 'Sim' : 'Não'}</p>
-                                </div>
-                                {cred.nomeGerentePJ && (
-                                  <div className="col-span-2">
-                                    <p className="text-gray-600">Gerente PJ:</p>
-                                    <p className="font-semibold">{cred.nomeGerentePJ}</p>
-                                  </div>
-                                )}
-                                <div className="col-span-2">
-                                  <p className="text-gray-600">Cesta:</p>
-                                  <p className="font-semibold">{cred.cesta}</p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+              {/* Conteúdo */}
+              <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                {/* Métricas Principais */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className="bg-blue-50 rounded-xl p-4 text-center hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-blue-600 text-xl">👥</span>
+                    </div>
+                    <div className="text-2xl font-bold text-blue-700">{registroSelecionado.qtdVisitas}</div>
+                    <div className="text-sm text-blue-600">Visitas</div>
+                  </div>
+                  
+                  <div className="bg-green-50 rounded-xl p-4 text-center hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-green-600 text-xl">📞</span>
+                    </div>
+                    <div className="text-2xl font-bold text-green-700">{registroSelecionado.qtdInteracoes}</div>
+                    <div className="text-sm text-green-600">Interações</div>
+                  </div>
+                  
+                  <div className="bg-purple-50 rounded-xl p-4 text-center hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-purple-600 text-xl">🏢</span>
+                    </div>
+                    <div className="text-2xl font-bold text-purple-700">{registroSelecionado.qtdBraExpre}</div>
+                    <div className="text-sm text-purple-600">Bra Expre</div>
+                  </div>
+                  
+                  <div className="bg-orange-50 rounded-xl p-4 text-center hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-orange-600 text-xl">📋</span>
+                    </div>
+                    <div className="text-2xl font-bold text-orange-700">{registroSelecionado.credenciamentos.length}</div>
+                    <div className="text-sm text-orange-600">Credenciamentos</div>
+                  </div>
                 </div>
 
-                {/* CNPJs Simulados */}
-                <Card className="mt-6">
-                  <CardHeader>
-                    <CardTitle>CNPJs Simulados ({registroSelecionado.cnpjsSimulados.length})</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {registroSelecionado.cnpjsSimulados.length === 0 ? (
-                      <div className="text-center text-gray-500 py-4">
-                        <p>📋 Nenhum CNPJ simulado registrado</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {registroSelecionado.cnpjsSimulados.map((cnpj, index) => (
-                          <div key={cnpj.id} className="border rounded-lg p-3 bg-blue-50">
-                            <div className="flex justify-between items-start mb-2">
-                              <h4 className="font-medium">CNPJ #{index + 1}</h4>
+                {/* Credenciamentos */}
+                {registroSelecionado.credenciamentos.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-gray-400 text-3xl">📋</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Nenhum Credenciamento</h3>
+                    <p className="text-gray-500">Este registro não possui credenciamentos cadastrados.</p>
+                  </div>
+                ) : (
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                      <span className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <span className="text-orange-600">📋</span>
+                      </span>
+                      Credenciamentos ({registroSelecionado.credenciamentos.length})
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {registroSelecionado.credenciamentos.map((cred, index) => (
+                        <div key={cred.id} className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                              <span className="text-orange-600 font-bold">#{index + 1}</span>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                              <div>
-                                <p className="text-gray-600">CNPJ:</p>
-                                <p className="font-semibold">{cnpj.cnpj}</p>
-                              </div>
-                              <div>
-                                <p className="text-gray-600">Empresa:</p>
-                                <p className="font-semibold">{cnpj.nomeEmpresa}</p>
-                              </div>
-                              <div>
-                                <p className="text-gray-600">Faturamento:</p>
-                                <p className="font-semibold">{formatCurrency(cnpj.faturamento)}</p>
-                              </div>
-                              {cnpj.comentarios && (
-                                <div>
-                                  <p className="text-gray-600">Comentários:</p>
-                                  <p className="font-semibold">{cnpj.comentarios}</p>
-                                </div>
-                              )}
-                            </div>
+                            <h4 className="font-semibold text-gray-900">Credenciamento #{index + 1}</h4>
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                          
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="bg-blue-50 rounded-lg p-3">
+                                <p className="text-xs text-blue-600 font-medium mb-1">EC</p>
+                                <p className="font-bold text-blue-700">{cred.ec}</p>
+                              </div>
+                              <div className="bg-green-50 rounded-lg p-3">
+                                <p className="text-xs text-green-600 font-medium mb-1">Volume</p>
+                                <p className="font-bold text-green-700">{formatCurrency(cred.volumeRS)}</p>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="bg-purple-50 rounded-lg p-3">
+                                <p className="text-xs text-purple-600 font-medium mb-1">RA</p>
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-2 h-2 rounded-full ${cred.ra ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                                  <p className="font-semibold text-purple-700">{cred.ra ? 'Sim' : 'Não'}</p>
+                                </div>
+                              </div>
+                              <div className="bg-orange-50 rounded-lg p-3">
+                                <p className="text-xs text-orange-600 font-medium mb-1">Instala Direto</p>
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-2 h-2 rounded-full ${cred.instalaDireto ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                                  <p className="font-semibold text-orange-700">{cred.instalaDireto ? 'Sim' : 'Não'}</p>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="bg-gray-50 rounded-lg p-3">
+                              <p className="text-xs text-gray-600 font-medium mb-1">Cesta</p>
+                              <p className="font-semibold text-gray-700">{cred.cesta}</p>
+                            </div>
+                            
+                            {cred.nomeGerentePJ && (
+                              <div className="bg-indigo-50 rounded-lg p-3">
+                                <p className="text-xs text-indigo-600 font-medium mb-1">Gerente PJ</p>
+                                <p className="font-semibold text-indigo-700">{cred.nomeGerentePJ}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* CNPJs Simulados */}
+                {registroSelecionado.cnpjsSimulados.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                      <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <span className="text-blue-600">🏢</span>
+                      </span>
+                      CNPJs Simulados ({registroSelecionado.cnpjsSimulados.length})
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {registroSelecionado.cnpjsSimulados.map((cnpj, index) => (
+                        <div key={cnpj.id} className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                              <span className="text-blue-600 font-bold">#{index + 1}</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">CNPJ #{index + 1}</h4>
+                          </div>
+                          
+                          <div className="space-y-4">
+                            <div className="bg-white rounded-lg p-3">
+                              <p className="text-xs text-blue-600 font-medium mb-1">CNPJ</p>
+                              <p className="font-bold text-blue-700">{cnpj.cnpj}</p>
+                            </div>
+                            
+                            <div className="bg-white rounded-lg p-3">
+                              <p className="text-xs text-green-600 font-medium mb-1">Empresa</p>
+                              <p className="font-bold text-green-700">{cnpj.nomeEmpresa}</p>
+                            </div>
+                            
+                            <div className="bg-white rounded-lg p-3">
+                              <p className="text-xs text-purple-600 font-medium mb-1">Faturamento</p>
+                              <p className="font-bold text-purple-700">{formatCurrency(cnpj.faturamento)}</p>
+                            </div>
+                            
+                            {cnpj.comentarios && (
+                              <div className="bg-white rounded-lg p-3">
+                                <p className="text-xs text-gray-600 font-medium mb-1">Comentários</p>
+                                <p className="font-semibold text-gray-700">{cnpj.comentarios}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Botões de Ação */}
-                <div className="flex gap-3 mt-6 pt-6 border-t">
-                  <Button onClick={() => excluirRegistro(registroSelecionado.id)} variant="destructive">
+                <div className="flex gap-3 mt-8 pt-6 border-t border-gray-200">
+                  <Button onClick={() => excluirRegistro(registroSelecionado.id)} variant="destructive" className="hover:bg-red-600">
                     <Trash2 className="w-4 h-4 mr-2" />
                     Excluir Registro
                   </Button>
-                  <Button onClick={fecharModal} variant="outline">
+                  <Button onClick={fecharModal} variant="outline" className="hover:bg-blue-50 hover:border-blue-200">
                     Fechar
                   </Button>
                 </div>
