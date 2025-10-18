@@ -55,7 +55,12 @@ export interface PDFData {
 }
 
 export const gerarPDFRelatorio = async (data: PDFData, tipo: 'diario' | 'semanal' | 'mensal') => {
-  const doc = new jsPDF()
+  // Configurar PDF com orientação portrait e unidade em mm
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  })
   
   // Configurações do PDF
   const pageWidth = doc.internal.pageSize.getWidth()
@@ -72,20 +77,32 @@ export const gerarPDFRelatorio = async (data: PDFData, tipo: 'diario' | 'semanal
     return y + (lines.length * (options.lineHeight || 7))
   }
   
+  // Função para adicionar texto centralizado
+  const addCenteredText = (text: string, y: number, fontSize: number = 10) => {
+    doc.setFontSize(fontSize)
+    doc.setFont('helvetica', 'normal')
+    const textWidth = doc.getTextWidth(text)
+    const x = (pageWidth - textWidth) / 2
+    doc.text(text, x, y)
+    return y + fontSize + 2
+  }
+  
   // Função para adicionar título
   const addTitle = (text: string, y: number) => {
     doc.setFontSize(16)
     doc.setFont('helvetica', 'bold')
-    const titleY = addText(text, margin, y, { align: 'center' })
-    return titleY + 10
+    const textWidth = doc.getTextWidth(text)
+    const x = (pageWidth - textWidth) / 2
+    doc.text(text, x, y)
+    return y + 20
   }
   
   // Função para adicionar subtítulo
   const addSubtitle = (text: string, y: number) => {
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    const subtitleY = addText(text, margin, y)
-    return subtitleY + 5
+    doc.text(text, margin, y)
+    return y + 15
   }
   
   // Função para adicionar texto normal
@@ -99,7 +116,7 @@ export const gerarPDFRelatorio = async (data: PDFData, tipo: 'diario' | 'semanal
   const addLine = (y: number) => {
     doc.setLineWidth(0.5)
     doc.line(margin, y, pageWidth - margin, y)
-    return y + 5
+    return y + 10
   }
   
   // Função para formatar moeda
@@ -123,8 +140,8 @@ export const gerarPDFRelatorio = async (data: PDFData, tipo: 'diario' | 'semanal
   // Cabeçalho
   yPosition = addTitle('CIELO - Relatório de Performance', yPosition)
   yPosition = addTitle(data.titulo, yPosition)
-  yPosition = addNormalText(`Período: ${data.periodo}`, yPosition)
-  yPosition = addNormalText(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, yPosition)
+  yPosition = addCenteredText(`Período: ${data.periodo}`, yPosition, 12)
+  yPosition = addCenteredText(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, yPosition, 10)
   yPosition = addLine(yPosition)
   
   // Resumo Executivo
@@ -235,7 +252,13 @@ export const gerarPDFRelatorio = async (data: PDFData, tipo: 'diario' | 'semanal
     doc.setPage(i)
     doc.setFontSize(8)
     doc.setFont('helvetica', 'normal')
-    doc.text(`Página ${i} de ${totalPages}`, pageWidth - 40, pageHeight - 10)
+    
+    // Página atual
+    const pageText = `Página ${i} de ${totalPages}`
+    const pageTextWidth = doc.getTextWidth(pageText)
+    doc.text(pageText, pageWidth - pageTextWidth - margin, pageHeight - 10)
+    
+    // Sistema
     doc.text('CIELO - Sistema de Acompanhamento', margin, pageHeight - 10)
   }
   
