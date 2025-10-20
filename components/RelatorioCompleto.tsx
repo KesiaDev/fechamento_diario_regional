@@ -418,7 +418,34 @@ export function RelatorioCompleto() {
               <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex justify-between items-center mb-6">
                   <div className="flex items-center gap-3">
-                    <img src="/fotos/Kesia.jpeg" alt="Késia Nandi" className="w-12 h-12 rounded-full object-cover border-2 border-white shadow" />
+                    <img
+                      src="/fotos/Kesia.jpeg"
+                      alt="Késia Nandi"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
+                      onError={(e) => {
+                        const img = e.currentTarget as HTMLImageElement
+                        // Tenta outras extensões comuns antes de desistir
+                        if (!img.dataset.tryjpg) {
+                          img.dataset.tryjpg = '1'
+                          img.src = '/fotos/Kesia.jpg'
+                          return
+                        }
+                        if (!img.dataset.trypng) {
+                          img.dataset.trypng = '1'
+                          img.src = '/fotos/Kesia.png'
+                          return
+                        }
+                        // Se nenhuma existir, mantém um avatar de fallback simples
+                        img.style.display = 'none'
+                        const parent = img.parentElement
+                        if (parent) {
+                          const fallback = document.createElement('div')
+                          fallback.className = 'w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold'
+                          fallback.textContent = 'K'
+                          parent.appendChild(fallback)
+                        }
+                      }}
+                    />
                     <div>
                       <h3 className="text-xl font-bold text-gray-900">Acumulado Regional — Késia Nandi</h3>
                       <p className="text-sm text-gray-600">Gerente Estadual • {formatDate(relatorioDiario.dataISO)}</p>
