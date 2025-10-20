@@ -414,6 +414,46 @@ export function RelatorioCompleto() {
                 </div>
               </div>
 
+              {/* Acumulado Regional — Késia Nandi */}
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">K</div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">Acumulado Regional — Késia Nandi</h3>
+                      <p className="text-sm text-gray-600">Gerente Estadual • {formatDate(relatorioDiario.dataISO)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <div className="bg-blue-50 rounded-lg p-4 text-center">
+                    <p className="text-xs text-blue-600 font-medium">Credenciamentos</p>
+                    <p className="text-xl font-bold text-blue-700">{relatorioDiario.totaisGerais.totalCredenciamentos}</p>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-4 text-center">
+                    <p className="text-xs text-green-600 font-medium">Ativações (R$)</p>
+                    <p className="text-xl font-bold text-green-700">{formatCurrency(relatorioDiario.totaisGerais.totalAtivacoes)}</p>
+                  </div>
+                  <div className="bg-purple-50 rounded-lg p-4 text-center">
+                    <p className="text-xs text-purple-600 font-medium">Visitas</p>
+                    <p className="text-xl font-bold text-purple-700">{relatorioDiario.totaisGerais.totalVisitas}</p>
+                  </div>
+                  <div className="bg-orange-50 rounded-lg p-4 text-center">
+                    <p className="text-xs text-orange-600 font-medium">Interações</p>
+                    <p className="text-xl font-bold text-orange-700">{relatorioDiario.totaisGerais.totalInteracoes}</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4 text-center">
+                    <p className="text-xs text-gray-600 font-medium">CNPJs Simulados</p>
+                    <p className="text-xl font-bold text-gray-700">{relatorioDiario.totaisGerais.totalCnpjsSimulados}</p>
+                  </div>
+                  <div className="bg-pink-50 rounded-lg p-4 text-center">
+                    <p className="text-xs text-pink-600 font-medium">Faturamento Simulado</p>
+                    <p className="text-xl font-bold text-pink-700">{formatCurrency(relatorioDiario.totaisGerais.totalFaturamentoSimulado)}</p>
+                  </div>
+                </div>
+              </div>
+
               {/* Detalhamento por GN - Design Moderno */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex justify-between items-center mb-6">
