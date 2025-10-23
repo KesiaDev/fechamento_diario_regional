@@ -258,21 +258,9 @@ export function RelatorioSemanal() {
           <p className="text-sm text-gray-600">{relatorio.periodo.inicio} a {relatorio.periodo.fim}</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={gerarRelatorioPDF} variant="outline" size="sm" className="hover:bg-red-50 hover:border-red-200">
-            <Download className="w-4 h-4 mr-2" />
-            PDF
-          </Button>
           <Button onClick={gerarRelatorioExcel} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200">
             <FileSpreadsheet className="w-4 h-4 mr-2" />
             Excel
-          </Button>
-          <Button onClick={gerarRelatorioExcelCompleto} variant="outline" size="sm" className="hover:bg-emerald-50 hover:border-emerald-200 bg-emerald-100">
-            <FileSpreadsheet className="w-4 h-4 mr-2" />
-            Excel Completo
-          </Button>
-          <Button onClick={enviarPorEmail} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
-            <Mail className="w-4 h-4 mr-2" />
-            Email
           </Button>
         </div>
       </div>

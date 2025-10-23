@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Calendar, TrendingUp, Users, Award, Target, CheckCircle, XCircle, Download } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { gerarPDFRelatorio, PDFData } from '@/lib/pdf-generator'
 import { gerarExcelRelatorioCompleto, ExcelDataCompleto } from '@/lib/excel-generator'
 import { QuadroKesiaNandi } from '@/components/QuadroKesiaNandi'
 
@@ -249,106 +248,6 @@ export function RelatorioCompleto() {
     }
   }
 
-  const exportarRelatorio = async (tipo: 'diario' | 'semanal' | 'mensal') => {
-    try {
-      let data: PDFData | null = null
-      
-      if (tipo === 'diario' && relatorioDiario) {
-        data = {
-          titulo: 'Relatório Diário de Performance',
-          periodo: relatorioDiario.data,
-          resumo: relatorioDiario.resumo,
-          totaisGerais: relatorioDiario.totaisGerais,
-          dadosPorGN: relatorioDiario.dadosPorGN.map(gn => ({
-            executivo: gn.executivo,
-            agencia: gn.agencia,
-            qtdVisitas: gn.qtdVisitas,
-            qtdInteracoes: gn.qtdInteracoes,
-            qtdBraExpre: gn.qtdBraExpre,
-            totalCredenciamentos: gn.totalCredenciamentos,
-            totalAtivacoes: gn.totalAtivacoes,
-            totalCnpjsSimulados: gn.totalCnpjsSimulados,
-            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
-            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
-            bateuMetaVisitas: gn.bateuMetaVisitas,
-            percentualVisitas: gn.percentualVisitas
-          })),
-          metas: {
-            credenciamentosPorDia: relatorioDiario.metas.credenciamentosPorDia,
-            visitasPorDia: relatorioDiario.metas.visitasPorDia,
-            totalGNs: relatorioDiario.metas.totalGNs
-          }
-        }
-      } else if (tipo === 'semanal' && relatorioSemanal) {
-        data = {
-          titulo: 'Relatório Semanal de Performance',
-          periodo: relatorioSemanal.periodo,
-          resumo: relatorioSemanal.resumo,
-          totaisGerais: relatorioSemanal.totaisGerais,
-          dadosPorGN: relatorioSemanal.dadosPorGN.map(gn => ({
-            executivo: gn.executivo,
-            totalCredenciamentos: gn.totalCredenciamentos,
-            totalAtivacoes: gn.totalAtivacoes,
-            totalVisitas: gn.totalVisitas,
-            totalInteracoes: gn.totalInteracoes,
-            totalBraExpre: gn.totalBraExpre,
-            totalCnpjsSimulados: gn.totalCnpjsSimulados,
-            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
-            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
-            bateuMetaVisitas: gn.bateuMetaVisitas,
-            diasTrabalhados: gn.diasTrabalhados,
-            diasEsperados: gn.diasEsperados,
-            percentualPresenca: gn.percentualPresenca,
-            mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
-            mediaVisitasPorDia: gn.mediaVisitasPorDia
-          })),
-          metas: {
-            credenciamentosPorSemana: relatorioSemanal.metas.credenciamentosPorSemana,
-            visitasPorSemana: relatorioSemanal.metas.visitasPorSemana,
-            totalGNs: relatorioSemanal.metas.totalGNs
-          }
-        }
-      } else if (tipo === 'mensal' && relatorioMensal) {
-        data = {
-          titulo: 'Relatório Mensal de Performance',
-          periodo: `${relatorioMensal.mes} ${relatorioMensal.ano}`,
-          resumo: relatorioMensal.resumo,
-          totaisGerais: relatorioMensal.totaisGerais,
-          dadosPorGN: relatorioMensal.dadosPorGN.map(gn => ({
-            executivo: gn.executivo,
-            totalCredenciamentos: gn.totalCredenciamentos,
-            totalAtivacoes: gn.totalAtivacoes,
-            totalVisitas: gn.totalVisitas,
-            totalInteracoes: gn.totalInteracoes,
-            totalBraExpre: gn.totalBraExpre,
-            totalCnpjsSimulados: gn.totalCnpjsSimulados,
-            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
-            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
-            bateuMetaVisitas: gn.bateuMetaVisitas,
-            diasTrabalhados: gn.diasTrabalhados,
-            diasUteisEsperados: gn.diasUteisEsperados,
-            percentualPresenca: gn.percentualPresenca,
-            mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
-            mediaVisitasPorDia: gn.mediaVisitasPorDia
-          })),
-          metas: {
-            credenciamentosPorMes: relatorioMensal.metas.credenciamentosPorMes,
-            visitasPorMes: relatorioMensal.metas.visitasPorMes,
-            totalGNs: relatorioMensal.metas.totalGNs
-          }
-        }
-      }
-      
-      if (data) {
-        await gerarPDFRelatorio(data, tipo)
-      } else {
-        alert('Nenhum relatório disponível para exportação')
-      }
-    } catch (error) {
-      console.error('Erro ao exportar relatório:', error)
-      alert('Erro ao gerar PDF. Tente novamente.')
-    }
-  }
 
   if (loading) {
     return (
@@ -483,13 +382,9 @@ export function RelatorioCompleto() {
                     <p className="text-sm text-gray-600">{relatorioDiario.data} - Detalhamento individual</p>
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={() => exportarRelatorio('diario')} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
-                      <Download className="w-4 h-4 mr-2" />
-                      PDF
-                    </Button>
                     <Button onClick={() => exportarExcelCompleto('diario')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
                       <Download className="w-4 h-4 mr-2" />
-                      Excel Completo
+                      Excel
                     </Button>
                   </div>
                 </div>
@@ -643,13 +538,9 @@ export function RelatorioCompleto() {
                       <CardDescription>Resumo da semana de trabalho</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                      <Button onClick={() => exportarRelatorio('semanal')} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
-                        <Download className="w-4 h-4 mr-2" />
-                        PDF
-                      </Button>
                       <Button onClick={() => exportarExcelCompleto('semanal')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
                         <Download className="w-4 h-4 mr-2" />
-                        Excel Completo
+                        Excel
                       </Button>
                     </div>
                   </div>
@@ -801,13 +692,9 @@ export function RelatorioCompleto() {
                       <CardDescription>Classificação por credenciamentos e ativações</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                      <Button onClick={() => exportarRelatorio('mensal')} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
-                        <Download className="w-4 h-4 mr-2" />
-                        PDF
-                      </Button>
                       <Button onClick={() => exportarExcelCompleto('mensal')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
                         <Download className="w-4 h-4 mr-2" />
-                        Excel Completo
+                        Excel
                       </Button>
                     </div>
                   </div>
