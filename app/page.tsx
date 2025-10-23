@@ -512,7 +512,7 @@ export default function Home() {
           <img 
             src="/banner-cielo-bradesco.webp" 
             alt="Parceria Cielo e Bradesco" 
-            className="w-full h-24 sm:h-32 md:h-40 object-cover rounded-lg shadow-lg"
+            className="w-full h-32 sm:h-40 md:h-48 object-cover rounded-lg shadow-lg"
           />
         </div>
 
