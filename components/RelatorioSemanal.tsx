@@ -48,6 +48,15 @@ type RelatorioSemanal = {
     bateuMeta: boolean
     diasTrabalhados: number
     mediaCredenciamentos: number
+    acumuloPorDia?: Array<{
+      dia: string
+      diaSemana: string
+      credenciamentosAcumulados: number
+      ativacoesAcumuladas: number
+      visitasAcumuladas: number
+      interacoesAcumuladas: number
+      braExpreAcumulado: number
+    }>
   }>
 }
 
@@ -475,6 +484,49 @@ export function RelatorioSemanal() {
               </div>
             </div>
           ))}
+        </div>
+        
+        {/* Acúmulo Progressivo da Semana */}
+        <div className="mt-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">📈 Acúmulo Progressivo da Semana</h3>
+          <div className="space-y-4">
+            {relatorio.ranking.filter(gn => gn.acumuloPorDia && gn.acumuloPorDia.length > 0).map((gn) => (
+              <div key={gn.executivo} className="border rounded-lg p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                    <span className="text-gray-700 font-bold text-sm">{gn.executivo.charAt(0)}</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{gn.executivo}</h4>
+                    <p className="text-sm text-gray-600">
+                      Total: {gn.totalCredenciamentos} creds • {formatCurrency(gn.totalAtivacoes)}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-7 gap-2">
+                  {gn.acumuloPorDia!.map((dia, diaIndex) => (
+                    <div key={diaIndex} className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">{dia.dia}</div>
+                      <div className="text-xs text-gray-400 mb-2 capitalize">{dia.diaSemana}</div>
+                      <div className="bg-white p-3 rounded border hover:shadow-sm transition-shadow">
+                        <div className="text-lg font-bold text-blue-600 mb-1">
+                          {dia.credenciamentosAcumulados}
+                        </div>
+                        <div className="text-xs text-gray-500 mb-2">creds</div>
+                        <div className="text-xs text-green-600 font-medium">
+                          {formatCurrency(dia.ativacoesAcumuladas)}
+                        </div>
+                        <div className="text-xs text-gray-400 mt-1">
+                          {dia.visitasAcumuladas} visitas
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

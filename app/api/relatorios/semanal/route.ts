@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay } from 'date-fns'
+import { prisma } from '@/lib/prisma'
+import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, endOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-
-const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
@@ -95,7 +93,34 @@ export async function GET(request: NextRequest) {
         mediaVisitasPorDia: Math.round(mediaVisitasPorDia * 100) / 100,
         bateuMetaCredenciamentos: totalCreds >= 10, // Meta individual: 10 credenciamentos/semana
         bateuMetaVisitas: totalVisitas >= 30, // Meta individual: 30 visitas/semana
-        fechamentos: fechamentosGN
+        fechamentos: fechamentosGN,
+        acumuloPorDia: (() => {
+          // Calcular acúmulo progressivo por dia da semana
+          const diasSemana = eachDayOfInterval({ start: startDate, end: endDate })
+          return diasSemana.map((dia, index) => {
+            const fechamentosAteHoje = fechamentosGN.filter(f => 
+              f.data <= endOfDay(dia)
+            )
+            
+            const credenciamentosAcumulados = fechamentosAteHoje.reduce((sum, f) => 
+              sum + f.credenciamentos.reduce((s, c) => s + c.qtdCredenciamentos, 0), 0)
+            const ativacoesAcumuladas = fechamentosAteHoje.reduce((sum, f) => 
+              sum + f.credenciamentos.reduce((s, c) => s + c.volumeRS, 0), 0)
+            const visitasAcumuladas = fechamentosAteHoje.reduce((sum, f) => sum + f.qtdVisitas, 0)
+            const interacoesAcumuladas = fechamentosAteHoje.reduce((sum, f) => sum + f.qtdInteracoes, 0)
+            const braExpreAcumulado = fechamentosAteHoje.reduce((sum, f) => sum + f.qtdBraExpre, 0)
+            
+            return {
+              dia: format(dia, 'dd/MM', { locale: ptBR }),
+              diaSemana: format(dia, 'EEEE', { locale: ptBR }),
+              credenciamentosAcumulados,
+              ativacoesAcumuladas,
+              visitasAcumuladas,
+              interacoesAcumuladas,
+              braExpreAcumulado
+            }
+          })
+        })()
       }
     })
 
