@@ -28,9 +28,9 @@ export async function GET(request: NextRequest) {
         credenciamentos: true,
         cnpjsSimulados: true
       },
-      orderBy: {
-        data: 'asc'
-      }
+      orderBy: [
+        { data: 'asc' }
+      ]
     })
 
     // Lista de GNs esperados

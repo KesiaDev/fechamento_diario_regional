@@ -107,9 +107,9 @@ export async function GET(request: NextRequest) {
         credenciamentos: true,
         cnpjsSimulados: true
       },
-      orderBy: {
-        data: 'desc'
-      }
+      orderBy: [
+        { data: 'desc' }
+      ]
     })
 
     console.log('Todos os fechamentos no banco:', todosFechamentos.map(f => ({ 
@@ -130,9 +130,9 @@ export async function GET(request: NextRequest) {
         credenciamentos: true,
         cnpjsSimulados: true
       },
-      orderBy: {
-        data: 'desc'
-      }
+      orderBy: [
+        { data: 'desc' }
+      ]
     })
 
     console.log('Fechamentos encontrados:', fechamentos.length)
