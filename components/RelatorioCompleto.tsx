@@ -205,11 +205,23 @@ export function RelatorioCompleto() {
         dataInicio = relatorioDiario.dataISO
         dataFim = relatorioDiario.dataISO
       } else if (tipo === 'semanal' && relatorioSemanal) {
-        dataInicio = relatorioSemanal.periodo.inicio
-        dataFim = relatorioSemanal.periodo.fim
+        // Para relatório semanal, usar a data selecionada como referência
+        const dataRef = new Date(dataSelecionada)
+        const startOfWeek = new Date(dataRef)
+        startOfWeek.setDate(dataRef.getDate() - dataRef.getDay() + 1) // Segunda-feira
+        const endOfWeek = new Date(startOfWeek)
+        endOfWeek.setDate(startOfWeek.getDate() + 6) // Domingo
+        
+        dataInicio = startOfWeek.toISOString().split('T')[0]
+        dataFim = endOfWeek.toISOString().split('T')[0]
       } else if (tipo === 'mensal' && relatorioMensal) {
-        dataInicio = relatorioMensal.periodo.inicio
-        dataFim = relatorioMensal.periodo.fim
+        // Para relatório mensal, usar o mês e ano
+        const dataRef = new Date(dataSelecionada)
+        const startOfMonth = new Date(dataRef.getFullYear(), dataRef.getMonth(), 1)
+        const endOfMonth = new Date(dataRef.getFullYear(), dataRef.getMonth() + 1, 0)
+        
+        dataInicio = startOfMonth.toISOString().split('T')[0]
+        dataFim = endOfMonth.toISOString().split('T')[0]
       }
 
       if (!dataInicio || !dataFim) {
