@@ -508,11 +508,11 @@ export default function Home() {
         </div>
 
         {/* Banner Cielo e Bradesco */}
-        <div className="w-full mb-6">
+        <div className="w-full mb-6 max-w-4xl mx-auto">
           <img 
             src="/banner-cielo-bradesco.webp" 
             alt="Parceria Cielo e Bradesco" 
-            className="w-full h-auto rounded-lg shadow-lg"
+            className="w-full h-24 sm:h-32 md:h-40 object-cover rounded-lg shadow-lg"
           />
         </div>
 
