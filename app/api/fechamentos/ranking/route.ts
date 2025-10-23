@@ -98,7 +98,35 @@ export async function GET(request: NextRequest) {
         return b.totalAtivacoes - a.totalAtivacoes
       })
 
-    return NextResponse.json(ranking)
+    // Adicionar informações de empate e posição
+    const rankingComEmpates = ranking.map((item, index) => {
+      // Calcular posição real considerando empates
+      let posicao = index + 1
+      
+      // Verificar se há empate com GNs anteriores
+      for (let i = 0; i < index; i++) {
+        if (ranking[i].totalCredenciamentos === item.totalCredenciamentos && 
+            ranking[i].totalAtivacoes === item.totalAtivacoes) {
+          posicao = i + 1
+          break
+        }
+      }
+      
+      // Verificar quantos GNs estão empatados nesta posição
+      const gnsEmpatados = ranking.filter(gn => 
+        gn.totalCredenciamentos === item.totalCredenciamentos && 
+        gn.totalAtivacoes === item.totalAtivacoes
+      )
+      
+      return {
+        ...item,
+        posicao,
+        temEmpate: gnsEmpatados.length > 1,
+        gnsEmpatados: gnsEmpatados.map(gn => gn.executivo)
+      }
+    })
+
+    return NextResponse.json(rankingComEmpates)
   } catch (error) {
     console.error('Erro ao buscar ranking:', error)
     return NextResponse.json(

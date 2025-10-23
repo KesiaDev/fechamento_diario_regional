@@ -142,6 +142,9 @@ type RankingItem = {
   totalInteracoes: number
   bateuMeta: boolean
   bateuMetaVisitas: boolean
+  posicao?: number
+  temEmpate?: boolean
+  gnsEmpatados?: string[]
 }
 
 export default function Home() {
@@ -1250,25 +1253,12 @@ export default function Home() {
             ) : (
               <div className="space-y-2">
                 {ranking.map((item, index) => {
-                  // Calcular posição real considerando empates
-                  const calcularPosicao = (currentIndex: number) => {
-                    if (currentIndex === 0) return 1
-                    
-                    let posicao = currentIndex + 1
-                    for (let i = 0; i < currentIndex; i++) {
-                      if (ranking[i].totalCredenciamentos === item.totalCredenciamentos && 
-                          ranking[i].totalAtivacoes === item.totalAtivacoes) {
-                        posicao = i + 1
-                        break
-                      }
-                    }
-                    return posicao
-                  }
-                  
-                  const posicaoReal = calcularPosicao(index)
+                  // Usar posição calculada pela API
+                  const posicaoReal = item.posicao || (index + 1)
                   const isPrimeiroLugar = posicaoReal === 1
                   const isSegundoLugar = posicaoReal === 2
                   const isTerceiroLugar = posicaoReal === 3
+                  const temEmpate = item.temEmpate || false
                   
                   return (
                     <div 
@@ -1290,10 +1280,18 @@ export default function Home() {
                           'bg-gray-200 text-gray-700'
                         }`}>
                           {isPrimeiroLugar ? '🥇' : isSegundoLugar ? '🥈' : isTerceiroLugar ? '🥉' : posicaoReal}
+                          {temEmpate && <span className="text-xs ml-1">=</span>}
                         </div>
                       <FotoGN nome={item.executivo} tamanho="sm" />
                       <div>
-                        <h3 className="font-semibold text-gray-900">{item.executivo}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-gray-900">{item.executivo}</h3>
+                          {temEmpate && (
+                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                              EMPATE
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-2">
                           {item.bateuMeta ? (
                             <span className="text-xs text-green-600 font-medium">✅ Meta</span>
