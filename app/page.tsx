@@ -12,7 +12,6 @@ import { getAgenciasPorExecutivo, executivos } from '@/lib/agencias'
 import { Plus, Trash2, TrendingUp, Users, Award, Check, Eye, Edit, X } from 'lucide-react'
 import { RelatorioSemanal } from '@/components/RelatorioSemanal'
 import { RelatorioCompleto } from '@/components/RelatorioCompleto'
-import { BannerCieloBradesco } from '@/components/BannerCieloBradesco'
 
 // Função para obter foto do GN
 const getFotoGN = (nome: string) => {
@@ -509,7 +508,13 @@ export default function Home() {
         </div>
 
         {/* Banner Cielo e Bradesco */}
-        <BannerCieloBradesco />
+        <div className="w-full mb-6">
+          <img 
+            src="/banner-cielo-bradesco.webp" 
+            alt="Parceria Cielo e Bradesco" 
+            className="w-full h-auto rounded-lg shadow-lg"
+          />
+        </div>
 
         <Tabs defaultValue="lancamento" className="w-full">
           <TabsList className="grid w-full max-w-lg mx-auto grid-cols-4 mb-6 sm:mb-8 h-auto">
