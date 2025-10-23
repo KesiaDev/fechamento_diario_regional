@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx'
 import { formatCurrency, formatPercent, calcularPerformance, getMetasPorGN } from './metas'
+import { formatCurrency as formatCurrencyUtil } from './utils'
 
 export interface ExcelData {
   titulo: string
@@ -133,12 +134,12 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
     [''],
     ['RESUMO GERAL'],
     ['Total de Credenciamentos:', data.totaisGerais.totalCredenciamentos],
-    ['Total de Volume R$:', formatCurrency(data.totaisGerais.totalAtivacoes)],
+    ['Total de Volume R$:', formatCurrencyUtil(data.totaisGerais.totalAtivacoes)],
     ['Total de Visitas:', data.totaisGerais.totalVisitas],
     ['Total de Interações:', data.totaisGerais.totalInteracoes],
     ['Total Bra Expre:', data.totaisGerais.totalBraExpre],
     ['Total CNPJs Simulados:', data.totaisGerais.totalCnpjsSimulados],
-    ['Total Faturamento Simulado:', formatCurrency(data.totaisGerais.totalFaturamentoSimulado)],
+    ['Total Faturamento Simulado:', formatCurrencyUtil(data.totaisGerais.totalFaturamentoSimulado)],
     [''],
     ['PERFORMANCE POR GN'],
     ['GN', 'Credenciamentos', 'Meta Cred.', '% Meta Cred.', 'Volume', 'Meta Volume', '% Meta Volume', 'Visitas', 'Meta Visitas', '% Meta Visitas', 'Status Geral']
@@ -157,8 +158,8 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
       gn.totalCredenciamentos,
       metas.credenciamentosPorSemana,
       formatPercent(perfCred.percentual),
-      formatCurrency(gn.totalAtivacoes),
-      formatCurrency(metas.volumePorSemana),
+      formatCurrencyUtil(gn.totalAtivacoes),
+      formatCurrencyUtil(metas.volumePorSemana),
       formatPercent(perfVolume.percentual),
       gn.totalVisitas,
       metas.visitasPorSemana,
@@ -184,7 +185,7 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
       ['META vs REALIZADO'],
       ['Indicador', 'Realizado', 'Meta', 'Percentual', 'Status'],
       ['Credenciamentos', gn.totalCredenciamentos, metas.credenciamentosPorSemana, formatPercent(perfCred.percentual), perfCred.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'],
-      ['Volume (R$)', formatCurrency(gn.totalAtivacoes), formatCurrency(metas.volumePorSemana), formatPercent(perfVolume.percentual), perfVolume.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'],
+      ['Volume (R$)', formatCurrencyUtil(gn.totalAtivacoes), formatCurrencyUtil(metas.volumePorSemana), formatPercent(perfVolume.percentual), perfVolume.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'],
       ['Visitas', gn.totalVisitas, metas.visitasPorSemana, formatPercent(perfVisitas.percentual), perfVisitas.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'],
       [''],
       ['RESUMO DA SEMANA'],
@@ -196,7 +197,7 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
       ['Total Interações:', gn.totalInteracoes],
       ['Total Bra Expre:', gn.totalBraExpre],
       ['Total CNPJs Simulados:', gn.totalCnpjsSimulados],
-      ['Total Faturamento Simulado:', formatCurrency(gn.totalFaturamentoSimulado)],
+      ['Total Faturamento Simulado:', formatCurrencyUtil(gn.totalFaturamentoSimulado)],
       [''],
       ['DETALHAMENTO POR DIA'],
       ['Data', 'Agência', 'Visitas', 'Interações', 'Bra Expre', 'Credenciamentos', 'Volume Cred.', 'CNPJs Simulados', 'Faturamento Sim.']
@@ -215,9 +216,9 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
         fechamento.qtdInteracoes.toString(),
         fechamento.qtdBraExpre.toString(),
         totalCreds.toString(),
-        formatCurrency(totalVolume),
+        formatCurrencyUtil(totalVolume),
         totalCnpjs.toString(),
-        formatCurrency(totalFaturamento)
+        formatCurrencyUtil(totalFaturamento)
       ])
     })
 
@@ -230,7 +231,7 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
         gnData.push([
           new Date(fechamento.data).toLocaleDateString('pt-BR'),
           cred.ec,
-          formatCurrency(cred.volumeRS),
+          formatCurrencyUtil(cred.volumeRS),
           cred.ra ? 'Sim' : 'Não',
           cred.cesta,
           cred.instalaDireto ? 'Sim' : 'Não',
@@ -249,7 +250,7 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
           new Date(fechamento.data).toLocaleDateString('pt-BR'),
           cnpj.cnpj,
           cnpj.nomeEmpresa,
-          formatCurrency(cnpj.faturamento),
+          formatCurrencyUtil(cnpj.faturamento),
           cnpj.comentarios || '-'
         ])
       })
@@ -303,7 +304,7 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
     comparativoData.push([
       (index + 1).toString(),
       gn.executivo,
-      formatCurrency(gn.totalAtivacoes),
+      formatCurrencyUtil(gn.totalAtivacoes),
       formatCurrency(gn.metas.volumePorSemana),
       formatPercent(gn.performance.percentual),
       gn.performance.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'
@@ -336,12 +337,12 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
     [''],
     ['📊 RESUMO GERAL'],
     ['Total de Credenciamentos:', data.totaisGerais.totalCredenciamentos],
-    ['Total de Volume R$:', formatCurrency(data.totaisGerais.totalAtivacoes)],
+    ['Total de Volume R$:', formatCurrencyUtil(data.totaisGerais.totalAtivacoes)],
     ['Total de Visitas:', data.totaisGerais.totalVisitas],
     ['Total de Interações:', data.totaisGerais.totalInteracoes],
     ['Total Bra Expre:', data.totaisGerais.totalBraExpre],
     ['Total CNPJs Simulados:', data.totaisGerais.totalCnpjsSimulados],
-    ['Total Faturamento Simulado:', formatCurrency(data.totaisGerais.totalFaturamentoSimulado)],
+    ['Total Faturamento Simulado:', formatCurrencyUtil(data.totaisGerais.totalFaturamentoSimulado)],
     [''],
     ['👥 PERFORMANCE POR GN'],
     ['GN', 'Agência', 'Credenciamentos', 'Meta Cred.', '% Meta Cred.', 'Volume', 'Meta Volume', '% Meta Volume', 'Visitas', 'Meta Visitas', '% Meta Visitas', 'Status Geral', 'Dias Trabalhados', 'Presença %']
@@ -361,8 +362,8 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
       gn.totalCredenciamentos,
       metas.credenciamentosPorSemana,
       formatPercent(perfCred.percentual),
-      formatCurrency(gn.totalAtivacoes),
-      formatCurrency(metas.volumePorSemana),
+      formatCurrencyUtil(gn.totalAtivacoes),
+      formatCurrencyUtil(metas.volumePorSemana),
       formatPercent(perfVolume.percentual),
       gn.totalVisitas,
       metas.visitasPorSemana,
@@ -391,7 +392,7 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
       ['🎯 META vs REALIZADO'],
       ['Indicador', 'Realizado', 'Meta', 'Percentual', 'Status'],
       ['Credenciamentos', gn.totalCredenciamentos, metas.credenciamentosPorSemana, formatPercent(perfCred.percentual), perfCred.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'],
-      ['Volume (R$)', formatCurrency(gn.totalAtivacoes), formatCurrency(metas.volumePorSemana), formatPercent(perfVolume.percentual), perfVolume.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'],
+      ['Volume (R$)', formatCurrencyUtil(gn.totalAtivacoes), formatCurrencyUtil(metas.volumePorSemana), formatPercent(perfVolume.percentual), perfVolume.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'],
       ['Visitas', gn.totalVisitas, metas.visitasPorSemana, formatPercent(perfVisitas.percentual), perfVisitas.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META'],
       [''],
       ['📊 RESUMO DA SEMANA'],
@@ -403,7 +404,7 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
       ['Total Interações:', gn.totalInteracoes],
       ['Total Bra Expre:', gn.totalBraExpre],
       ['Total CNPJs Simulados:', gn.totalCnpjsSimulados],
-      ['Total Faturamento Simulado:', formatCurrency(gn.totalFaturamentoSimulado)],
+      ['Total Faturamento Simulado:', formatCurrencyUtil(gn.totalFaturamentoSimulado)],
       [''],
       ['📅 DETALHAMENTO POR DIA DA SEMANA'],
       ['Data', 'Dia da Semana', 'Agência', 'Visitas', 'Interações', 'Bra Expre', 'Credenciamentos', 'Volume Cred.', 'Simulações', 'Faturamento Sim.']
@@ -434,7 +435,7 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
           new Date(dia.data).toLocaleDateString('pt-BR'),
           dia.diaSemana,
           cred.ec,
-          formatCurrency(cred.volumeRS),
+          formatCurrencyUtil(cred.volumeRS),
           cred.ra ? 'Sim' : 'Não',
           cred.cesta,
           cred.instalaDireto ? 'Sim' : 'Não',
@@ -455,7 +456,7 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
           dia.diaSemana,
           cnpj.cnpj,
           cnpj.nomeEmpresa,
-          formatCurrency(cnpj.faturamento),
+          formatCurrencyUtil(cnpj.faturamento),
           cnpj.comentarios || '-',
           cnpj.horarioSimulacao || '-'
         ])
@@ -485,7 +486,7 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
       gnData.push([
         nome,
         dados.credenciamentos.toString(),
-        formatCurrency(dados.volume)
+        formatCurrencyUtil(dados.volume)
       ])
     })
 
@@ -549,7 +550,7 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
       (index + 1).toString(),
       gn.executivo,
       gn.agencia,
-      formatCurrency(gn.totalAtivacoes),
+      formatCurrencyUtil(gn.totalAtivacoes),
       formatCurrency(gn.metas.volumePorSemana),
       formatPercent(gn.performance.percentual),
       gn.performance.bateuMeta ? 'META BATIDA' : 'ABAIXO DA META',
