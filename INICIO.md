@@ -91,7 +91,7 @@ http://localhost:3000
 3. No primeiro credenciamento:
    ```
    Qtd Credenciamentos: 2
-   Ativações: 1500.00
+   Volume R$: 1500.00
    EC: 1234567890
    Volume R$: 2500.00
    RA: Sim

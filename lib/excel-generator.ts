@@ -64,7 +64,7 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
     [''],
     ['RESUMO GERAL'],
     ['Total de Credenciamentos:', data.totaisGerais.totalCredenciamentos],
-    ['Total de Ativações:', formatCurrency(data.totaisGerais.totalAtivacoes)],
+    ['Total de Volume R$:', formatCurrency(data.totaisGerais.totalAtivacoes)],
     ['Total de Visitas:', data.totaisGerais.totalVisitas],
     ['Total de Interações:', data.totaisGerais.totalInteracoes],
     ['Total Bra Expre:', data.totaisGerais.totalBraExpre],
@@ -154,7 +154,7 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
 
     gnData.push([''])
     gnData.push(['DETALHAMENTO DOS CREDENCIAMENTOS'])
-    gnData.push(['Data', 'EC', 'Volume (R$)', 'RA', 'Cesta', 'Instala Direto', 'Gerente PJ'])
+    gnData.push(['Data', 'EC', 'Volume (R$)', 'RA', 'Qual Oferta?', 'Instala Direto', 'Gerente PJ'])
 
     gn.fechamentos.forEach(fechamento => {
       fechamento.credenciamentos.forEach(cred => {

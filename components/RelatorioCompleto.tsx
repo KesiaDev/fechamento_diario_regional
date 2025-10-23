@@ -164,8 +164,8 @@ export function RelatorioCompleto() {
   const carregarRelatorios = async () => {
     setLoading(true)
     try {
-      // Carregar relatório diário
-      const responseDiario = await fetch(`/api/relatorios/diario?data=${dataSelecionada}`)
+      // Carregar relatório diário com dados acumulados
+      const responseDiario = await fetch(`/api/relatorios/diario?data=${dataSelecionada}&acumulado=true`)
       if (responseDiario.ok) {
         const diario = await responseDiario.json()
         setRelatorioDiario(diario)
@@ -459,7 +459,7 @@ export function RelatorioCompleto() {
                     <p className="text-xl font-bold text-blue-700">{relatorioDiario.totaisGerais.totalCredenciamentos}</p>
                   </div>
                   <div className="bg-green-50 rounded-lg p-4 text-center">
-                    <p className="text-xs text-green-600 font-medium">Ativações (R$)</p>
+                    <p className="text-xs text-green-600 font-medium">Volume R$</p>
                     <p className="text-xl font-bold text-green-700">{formatCurrency(relatorioDiario.totaisGerais.totalAtivacoes)}</p>
                   </div>
                   <div className="bg-purple-50 rounded-lg p-4 text-center">
@@ -533,7 +533,7 @@ export function RelatorioCompleto() {
                           <p className="text-lg font-bold text-blue-700">{gn.totalCredenciamentos}</p>
                         </div>
                         <div className="bg-green-50 rounded-lg p-3">
-                          <p className="text-xs text-green-600 font-medium">Ativações (R$)</p>
+                          <p className="text-xs text-green-600 font-medium">Volume R$</p>
                           <p className="text-lg font-bold text-green-700">{formatCurrency(gn.totalAtivacoes)}</p>
                         </div>
                         <div className="bg-purple-50 rounded-lg p-3">
@@ -677,7 +677,7 @@ export function RelatorioCompleto() {
                             <p className="text-xs text-gray-500">Média: {gn.mediaCredenciamentosPorDia}/dia</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Ativações (R$)</p>
+                            <p className="text-gray-600">Volume R$</p>
                             <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
                           </div>
                           <div>
@@ -859,7 +859,7 @@ export function RelatorioCompleto() {
                             <p className="text-xs text-gray-500">Média: {gn.mediaCredenciamentosPorDia}/dia</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Ativações (R$)</p>
+                            <p className="text-gray-600">Volume R$</p>
                             <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
                           </div>
                           <div>

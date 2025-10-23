@@ -57,7 +57,7 @@ Acesse: [http://localhost:3000](http://localhost:3000)
 - Botão "+ Adicionar Credenciamento" para criar cards dinâmicos
 - Campos por credenciamento:
   - Qtd de credenciamentos
-  - Ativações do dia (R$)
+  - Volume R$
   - EC (10 dígitos numéricos)
   - Volume R$
   - RA (Sim/Não)

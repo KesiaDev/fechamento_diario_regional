@@ -1,20 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import { format, startOfDay, endOfDay } from 'date-fns'
+import { prisma } from '@/lib/prisma'
+import { format, startOfDay, endOfDay, startOfWeek } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
-const prisma = new PrismaClient()
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const data = searchParams.get('data') || new Date().toISOString().split('T')[0]
+    const acumulado = searchParams.get('acumulado') === 'true'
     
     const dataReferencia = new Date(data + 'T12:00:00')
-    const startDate = startOfDay(dataReferencia)
-    const endDate = endOfDay(dataReferencia)
+    
+    let startDate: Date
+    let endDate: Date
+    
+    if (acumulado) {
+      // Para acumulado, buscar desde segunda-feira da semana
+      startDate = startOfWeek(dataReferencia, { weekStartsOn: 1 }) // Segunda-feira
+      endDate = endOfDay(dataReferencia) // Até o dia selecionado
+    } else {
+      // Para relatório diário normal, apenas o dia específico
+      startDate = startOfDay(dataReferencia)
+      endDate = endOfDay(dataReferencia)
+    }
 
-    // Buscar todos os fechamentos do dia
+    // Buscar fechamentos do período (dia ou semana acumulada)
     const fechamentos = await prisma.fechamento.findMany({
       where: {
         data: {
@@ -26,9 +38,10 @@ export async function GET(request: NextRequest) {
         credenciamentos: true,
         cnpjsSimulados: true
       },
-      orderBy: {
-        executivo: 'asc'
-      }
+      orderBy: [
+        { data: 'asc' },
+        { executivo: 'asc' }
+      ]
     })
 
     // Calcular totais gerais
@@ -43,36 +56,85 @@ export async function GET(request: NextRequest) {
     }
 
     // Processar dados por GN
-    const dadosPorGN = fechamentos.map(fechamento => {
-      const totalCreds = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.qtdCredenciamentos, 0)
-      const totalAtiv = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.volumeRS, 0)
-      const totalFaturamento = fechamento.cnpjsSimulados.reduce((sum, cnpj) => sum + cnpj.faturamento, 0)
+    let dadosPorGN: any[]
+    
+    if (acumulado) {
+      // Para dados acumulados, agrupar por executivo
+      const gnMap = new Map<string, any>()
       
-      // Atualizar totais gerais
-      totaisGerais.totalCredenciamentos += totalCreds
-      totaisGerais.totalAtivacoes += totalAtiv
-      totaisGerais.totalVisitas += fechamento.qtdVisitas
-      totaisGerais.totalInteracoes += fechamento.qtdInteracoes
-      totaisGerais.totalBraExpre += fechamento.qtdBraExpre
-      totaisGerais.totalCnpjsSimulados += fechamento.cnpjsSimulados.length
-      totaisGerais.totalFaturamentoSimulado += totalFaturamento
-
-      return {
-        executivo: fechamento.executivo,
-        agencia: fechamento.agencia,
-        qtdVisitas: fechamento.qtdVisitas,
-        qtdInteracoes: fechamento.qtdInteracoes,
-        qtdBraExpre: fechamento.qtdBraExpre,
-        totalCredenciamentos: totalCreds,
-        totalAtivacoes: totalAtiv,
-        totalCnpjsSimulados: fechamento.cnpjsSimulados.length,
-        totalFaturamentoSimulado: totalFaturamento,
-        bateuMetaCredenciamentos: totalCreds >= 2,
-        bateuMetaVisitas: fechamento.qtdVisitas >= 6,
-        percentualVisitas: Math.round((fechamento.qtdVisitas / 6) * 100),
-        credenciamentos: fechamento.credenciamentos,
-        cnpjsSimulados: fechamento.cnpjsSimulados
-      }
+      fechamentos.forEach(fechamento => {
+        const existing = gnMap.get(fechamento.executivo) || {
+          executivo: fechamento.executivo,
+          agencia: fechamento.agencia,
+          qtdVisitas: 0,
+          qtdInteracoes: 0,
+          qtdBraExpre: 0,
+          totalCredenciamentos: 0,
+          totalAtivacoes: 0,
+          totalCnpjsSimulados: 0,
+          totalFaturamentoSimulado: 0,
+          credenciamentos: [],
+          cnpjsSimulados: []
+        }
+        
+        const totalCreds = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.qtdCredenciamentos, 0)
+        const totalAtiv = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.volumeRS, 0)
+        const totalFaturamento = fechamento.cnpjsSimulados.reduce((sum, cnpj) => sum + cnpj.faturamento, 0)
+        
+        existing.qtdVisitas += fechamento.qtdVisitas
+        existing.qtdInteracoes += fechamento.qtdInteracoes
+        existing.qtdBraExpre += fechamento.qtdBraExpre
+        existing.totalCredenciamentos += totalCreds
+        existing.totalAtivacoes += totalAtiv
+        existing.totalCnpjsSimulados += fechamento.cnpjsSimulados.length
+        existing.totalFaturamentoSimulado += totalFaturamento
+        existing.credenciamentos.push(...fechamento.credenciamentos)
+        existing.cnpjsSimulados.push(...fechamento.cnpjsSimulados)
+        
+        gnMap.set(fechamento.executivo, existing)
+      })
+      
+      dadosPorGN = Array.from(gnMap.values()).map(gn => ({
+        ...gn,
+        bateuMetaCredenciamentos: gn.totalCredenciamentos >= 2,
+        bateuMetaVisitas: gn.qtdVisitas >= 6,
+        percentualVisitas: Math.round((gn.qtdVisitas / 6) * 100)
+      }))
+    } else {
+      // Para dados diários normais
+      dadosPorGN = fechamentos.map(fechamento => {
+        const totalCreds = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.qtdCredenciamentos, 0)
+        const totalAtiv = fechamento.credenciamentos.reduce((sum, cred) => sum + cred.volumeRS, 0)
+        const totalFaturamento = fechamento.cnpjsSimulados.reduce((sum, cnpj) => sum + cnpj.faturamento, 0)
+        
+        return {
+          executivo: fechamento.executivo,
+          agencia: fechamento.agencia,
+          qtdVisitas: fechamento.qtdVisitas,
+          qtdInteracoes: fechamento.qtdInteracoes,
+          qtdBraExpre: fechamento.qtdBraExpre,
+          totalCredenciamentos: totalCreds,
+          totalAtivacoes: totalAtiv,
+          totalCnpjsSimulados: fechamento.cnpjsSimulados.length,
+          totalFaturamentoSimulado: totalFaturamento,
+          bateuMetaCredenciamentos: totalCreds >= 2,
+          bateuMetaVisitas: fechamento.qtdVisitas >= 6,
+          percentualVisitas: Math.round((fechamento.qtdVisitas / 6) * 100),
+          credenciamentos: fechamento.credenciamentos,
+          cnpjsSimulados: fechamento.cnpjsSimulados
+        }
+      })
+    }
+    
+    // Calcular totais gerais
+    dadosPorGN.forEach(gn => {
+      totaisGerais.totalCredenciamentos += gn.totalCredenciamentos
+      totaisGerais.totalAtivacoes += gn.totalAtivacoes
+      totaisGerais.totalVisitas += gn.qtdVisitas
+      totaisGerais.totalInteracoes += gn.qtdInteracoes
+      totaisGerais.totalBraExpre += gn.qtdBraExpre
+      totaisGerais.totalCnpjsSimulados += gn.totalCnpjsSimulados
+      totaisGerais.totalFaturamentoSimulado += gn.totalFaturamentoSimulado
     })
 
     // Calcular métricas de performance

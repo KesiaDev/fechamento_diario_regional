@@ -154,7 +154,7 @@ Marque o que você já fez:
 ║  │  Qtd Visitas: [___] Bra Expre: [___]        │ ║
 ║  │                                             │ ║
 ║  │  ┌── Credenciamento #1 ──────────────────┐ │ ║
-║  │  │ Qtd: [__] Ativações: R$ [_______]     │ │ ║
+║  │  │ Qtd: [__] Volume R$: [_______]     │ │ ║
 ║  │  │ EC: [__________] Volume: [_______]    │ │ ║
 ║  │  │ RA: [▼] Cesta: [________________]     │ │ ║
 ║  │  │ PJ Instala: [▼]                       │ │ ║

@@ -3,9 +3,11 @@ import { prisma } from '@/lib/prisma'
 import { startOfWeek, endOfWeek, format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams
+    const { searchParams } = new URL(request.url)
     const dataParam = searchParams.get('data')
     
     // Se não especificar data, usa a semana atual
@@ -80,12 +82,14 @@ export async function GET(request: NextRequest) {
         return b.totalAtivacoes - a.totalAtivacoes
       })
 
-    // Encontrar destaques
-    const maiorQuantidade = ranking[0] || null
-    const maiorVolume = ranking.reduce((max, gn) => 
-      gn.totalAtivacoes > max.totalAtivacoes ? gn : max, 
-      ranking[0] || { totalAtivacoes: 0 }
-    )
+    // Encontrar destaques considerando empates
+    const maxCreds = Math.max(...ranking.map(gn => gn.totalCredenciamentos))
+    const gnsEmpatadosCreds = ranking.filter(gn => gn.totalCredenciamentos === maxCreds)
+    const maiorQuantidade = gnsEmpatadosCreds.length > 0 ? gnsEmpatadosCreds[0] : null
+    
+    const maxVolume = Math.max(...ranking.map(gn => gn.totalAtivacoes))
+    const gnsEmpatadosVolume = ranking.filter(gn => gn.totalAtivacoes === maxVolume)
+    const maiorVolume = gnsEmpatadosVolume.length > 0 ? gnsEmpatadosVolume[0] : null
 
     // Estatísticas gerais
     const totalCredenciamentos = ranking.reduce((sum, gn) => sum + gn.totalCredenciamentos, 0)
@@ -104,12 +108,16 @@ export async function GET(request: NextRequest) {
         maiorQuantidade: maiorQuantidade ? {
           executivo: maiorQuantidade.executivo,
           credenciamentos: maiorQuantidade.totalCredenciamentos,
-          ativacoes: maiorQuantidade.totalAtivacoes
+          ativacoes: maiorQuantidade.totalAtivacoes,
+          temEmpate: gnsEmpatadosCreds.length > 1,
+          gnsEmpatados: gnsEmpatadosCreds.map(gn => gn.executivo)
         } : null,
-        maiorVolume: maiorVolume.totalAtivacoes > 0 ? {
+        maiorVolume: maiorVolume && maiorVolume.totalAtivacoes > 0 ? {
           executivo: maiorVolume.executivo,
           credenciamentos: maiorVolume.totalCredenciamentos,
-          ativacoes: maiorVolume.totalAtivacoes
+          ativacoes: maiorVolume.totalAtivacoes,
+          temEmpate: gnsEmpatadosVolume.length > 1,
+          gnsEmpatados: gnsEmpatadosVolume.map(gn => gn.executivo)
         } : null
       },
       estatisticas: {

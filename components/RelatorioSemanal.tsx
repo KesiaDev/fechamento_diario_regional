@@ -21,11 +21,15 @@ type RelatorioSemanal = {
       executivo: string
       credenciamentos: number
       ativacoes: number
+      temEmpate?: boolean
+      gnsEmpatados?: string[]
     } | null
     maiorVolume: {
       executivo: string
       credenciamentos: number
       ativacoes: number
+      temEmpate?: boolean
+      gnsEmpatados?: string[]
     } | null
   }
   estatisticas: {
@@ -251,19 +255,37 @@ export function RelatorioSemanal() {
                 <p className="text-xs text-yellow-600">Destaque da semana</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                <span className="text-yellow-700 font-bold text-lg">
-                  {relatorio.destaques.maiorQuantidade.executivo.charAt(0)}
-                </span>
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-yellow-700">{relatorio.destaques.maiorQuantidade.executivo}</div>
-                <div className="text-sm text-yellow-600">
-                  {relatorio.destaques.maiorQuantidade.credenciamentos} creds • {formatCurrency(relatorio.destaques.maiorQuantidade.ativacoes)}
+            {relatorio.destaques.maiorQuantidade.temEmpate ? (
+              <div className="space-y-2">
+                <div className="text-xs text-yellow-600 font-medium">
+                  {relatorio.destaques.maiorQuantidade.gnsEmpatados?.length} GNs empatados com {relatorio.destaques.maiorQuantidade.credenciamentos} creds
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {relatorio.destaques.maiorQuantidade.gnsEmpatados?.map((gn, index) => (
+                    <div key={gn} className="flex items-center gap-2 bg-yellow-100 rounded-lg px-2 py-1">
+                      <div className="w-8 h-8 bg-yellow-200 rounded-full flex items-center justify-center">
+                        <span className="text-yellow-700 font-bold text-sm">{gn.charAt(0)}</span>
+                      </div>
+                      <span className="text-xs font-medium text-yellow-700">{gn}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <span className="text-yellow-700 font-bold text-lg">
+                    {relatorio.destaques.maiorQuantidade.executivo.charAt(0)}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-yellow-700">{relatorio.destaques.maiorQuantidade.executivo}</div>
+                  <div className="text-sm text-yellow-600">
+                    {relatorio.destaques.maiorQuantidade.credenciamentos} creds • {formatCurrency(relatorio.destaques.maiorQuantidade.ativacoes)}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -279,19 +301,37 @@ export function RelatorioSemanal() {
                 <p className="text-xs text-green-600">Destaque da semana</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <span className="text-green-700 font-bold text-lg">
-                  {relatorio.destaques.maiorVolume.executivo.charAt(0)}
-                </span>
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-green-700">{relatorio.destaques.maiorVolume.executivo}</div>
-                <div className="text-sm text-green-600">
-                  {formatCurrency(relatorio.destaques.maiorVolume.ativacoes)} • {relatorio.destaques.maiorVolume.credenciamentos} creds
+            {relatorio.destaques.maiorVolume.temEmpate ? (
+              <div className="space-y-2">
+                <div className="text-xs text-green-600 font-medium">
+                  {relatorio.destaques.maiorVolume.gnsEmpatados?.length} GNs empatados com {formatCurrency(relatorio.destaques.maiorVolume.ativacoes)}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {relatorio.destaques.maiorVolume.gnsEmpatados?.map((gn, index) => (
+                    <div key={gn} className="flex items-center gap-2 bg-green-100 rounded-lg px-2 py-1">
+                      <div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center">
+                        <span className="text-green-700 font-bold text-sm">{gn.charAt(0)}</span>
+                      </div>
+                      <span className="text-xs font-medium text-green-700">{gn}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-700 font-bold text-lg">
+                    {relatorio.destaques.maiorVolume.executivo.charAt(0)}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-green-700">{relatorio.destaques.maiorVolume.executivo}</div>
+                  <div className="text-sm text-green-600">
+                    {formatCurrency(relatorio.destaques.maiorVolume.ativacoes)} • {relatorio.destaques.maiorVolume.credenciamentos} creds
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

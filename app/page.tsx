@@ -907,11 +907,11 @@ export default function Home() {
                               </div>
 
                               <div className="space-y-2 sm:col-span-2 lg:col-span-3">
-                                <Label>Cesta *</Label>
+                                <Label>Qual Oferta? *</Label>
                                 <Input
                                   value={cred.cesta}
                                   onChange={(e) => atualizarCredenciamento(cred.id, 'cesta', e.target.value)}
-                                  placeholder="Descrição da cesta"
+                                  placeholder="Qual oferta foi credenciada?"
                                   required
                                 />
                               </div>
@@ -1129,18 +1129,45 @@ export default function Home() {
                     <div className="flex-1">
                       <div className="text-sm font-semibold text-yellow-700">Maior Quantidade</div>
                       <div className="text-xs text-yellow-600">
-                        {filtro === 'dia' ? `Dia ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                         filtro === 'semana' ? `Semana ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                         new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
+                        {filtro === 'dia' ? `Dia ${formatDate(dataFiltro)}` : 
+                         filtro === 'semana' ? `Semana ${formatDate(dataFiltro)}` : 
+                         formatDate(dataFiltro, { month: 'short', year: 'numeric' })}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 mt-3">
-                    <FotoGN nome={ranking[0]?.executivo || ''} tamanho="sm" />
-                    <div className="flex-1">
-                      <div className="font-bold text-yellow-700 text-sm">{ranking[0]?.executivo || 'N/A'}</div>
-                      <div className="text-xs text-yellow-600">{ranking[0]?.totalCredenciamentos || 0} creds</div>
-                    </div>
+                  <div className="mt-3">
+                    {(() => {
+                      const maxCreds = Math.max(...ranking.map(gn => gn.totalCredenciamentos))
+                      const gnsEmpatados = ranking.filter(gn => gn.totalCredenciamentos === maxCreds)
+                      
+                      if (gnsEmpatados.length === 1) {
+                        return (
+                          <div className="flex items-center gap-3">
+                            <FotoGN nome={gnsEmpatados[0].executivo} tamanho="sm" />
+                            <div className="flex-1">
+                              <div className="font-bold text-yellow-700 text-sm">{gnsEmpatados[0].executivo}</div>
+                              <div className="text-xs text-yellow-600">{gnsEmpatados[0].totalCredenciamentos} creds</div>
+                            </div>
+                          </div>
+                        )
+                      } else {
+                        return (
+                          <div className="space-y-2">
+                            <div className="text-xs text-yellow-600 font-medium">
+                              {gnsEmpatados.length} GNs empatados com {maxCreds} creds
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {gnsEmpatados.map((gn, index) => (
+                                <div key={gn.executivo} className="flex items-center gap-2 bg-yellow-100 rounded-lg px-2 py-1">
+                                  <FotoGN nome={gn.executivo} tamanho="sm" />
+                                  <span className="text-xs font-medium text-yellow-700">{gn.executivo}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      }
+                    })()}
                   </div>
                 </div>
 
@@ -1153,24 +1180,44 @@ export default function Home() {
                     <div className="flex-1">
                       <div className="text-sm font-semibold text-green-700">Maior Volume</div>
                       <div className="text-xs text-green-600">
-                        {filtro === 'dia' ? `Dia ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                         filtro === 'semana' ? `Semana ${new Date(dataFiltro).toLocaleDateString('pt-BR')}` : 
-                         new Date(dataFiltro).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
+                        {filtro === 'dia' ? `Dia ${formatDate(dataFiltro)}` : 
+                         filtro === 'semana' ? `Semana ${formatDate(dataFiltro)}` : 
+                         formatDate(dataFiltro, { month: 'short', year: 'numeric' })}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 mt-3">
+                  <div className="mt-3">
                     {(() => {
-                      const maiorVolume = ranking.reduce((max, gn) => gn.totalAtivacoes > max.totalAtivacoes ? gn : max, ranking[0])
-                      return (
-                        <>
-                          <FotoGN nome={maiorVolume?.executivo || ''} tamanho="sm" />
-                          <div className="flex-1">
-                            <div className="font-bold text-green-700 text-sm">{maiorVolume?.executivo || 'N/A'}</div>
-                            <div className="text-xs text-green-600">{formatCurrency(maiorVolume?.totalAtivacoes || 0)}</div>
+                      const maxVolume = Math.max(...ranking.map(gn => gn.totalAtivacoes))
+                      const gnsEmpatadosVolume = ranking.filter(gn => gn.totalAtivacoes === maxVolume)
+                      
+                      if (gnsEmpatadosVolume.length === 1) {
+                        return (
+                          <div className="flex items-center gap-3">
+                            <FotoGN nome={gnsEmpatadosVolume[0].executivo} tamanho="sm" />
+                            <div className="flex-1">
+                              <div className="font-bold text-green-700 text-sm">{gnsEmpatadosVolume[0].executivo}</div>
+                              <div className="text-xs text-green-600">{formatCurrency(gnsEmpatadosVolume[0].totalAtivacoes)}</div>
+                            </div>
                           </div>
-                        </>
-                      )
+                        )
+                      } else {
+                        return (
+                          <div className="space-y-2">
+                            <div className="text-xs text-green-600 font-medium">
+                              {gnsEmpatadosVolume.length} GNs empatados com {formatCurrency(maxVolume)}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {gnsEmpatadosVolume.map((gn, index) => (
+                                <div key={gn.executivo} className="flex items-center gap-2 bg-green-100 rounded-lg px-2 py-1">
+                                  <FotoGN nome={gn.executivo} tamanho="sm" />
+                                  <span className="text-xs font-medium text-green-700">{gn.executivo}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      }
                     })()}
                   </div>
                 </div>
@@ -1202,27 +1249,48 @@ export default function Home() {
               </Card>
             ) : (
               <div className="space-y-2">
-                {ranking.map((item, index) => (
-                  <div 
-                    key={item.executivo} 
-                    className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
-                      index === 0 ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-200' :
-                      index === 1 ? 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200' :
-                      index === 2 ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-200' :
-                      item.totalCredenciamentos === 0 ? 'bg-red-50 border-red-200' :
-                      'bg-white border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    {/* Posição e Foto */}
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                        index === 0 ? 'bg-yellow-400 text-yellow-900' :
-                        index === 1 ? 'bg-gray-400 text-gray-900' :
-                        index === 2 ? 'bg-orange-400 text-orange-900' :
-                        'bg-gray-200 text-gray-700'
-                      }`}>
-                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
-                      </div>
+                {ranking.map((item, index) => {
+                  // Calcular posição real considerando empates
+                  const calcularPosicao = (currentIndex: number) => {
+                    if (currentIndex === 0) return 1
+                    
+                    let posicao = currentIndex + 1
+                    for (let i = 0; i < currentIndex; i++) {
+                      if (ranking[i].totalCredenciamentos === item.totalCredenciamentos && 
+                          ranking[i].totalAtivacoes === item.totalAtivacoes) {
+                        posicao = i + 1
+                        break
+                      }
+                    }
+                    return posicao
+                  }
+                  
+                  const posicaoReal = calcularPosicao(index)
+                  const isPrimeiroLugar = posicaoReal === 1
+                  const isSegundoLugar = posicaoReal === 2
+                  const isTerceiroLugar = posicaoReal === 3
+                  
+                  return (
+                    <div 
+                      key={item.executivo} 
+                      className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
+                        isPrimeiroLugar ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-200' :
+                        isSegundoLugar ? 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200' :
+                        isTerceiroLugar ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-200' :
+                        item.totalCredenciamentos === 0 ? 'bg-red-50 border-red-200' :
+                        'bg-white border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      {/* Posição e Foto */}
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                          isPrimeiroLugar ? 'bg-yellow-400 text-yellow-900' :
+                          isSegundoLugar ? 'bg-gray-400 text-gray-900' :
+                          isTerceiroLugar ? 'bg-orange-400 text-orange-900' :
+                          'bg-gray-200 text-gray-700'
+                        }`}>
+                          {isPrimeiroLugar ? '🥇' : isSegundoLugar ? '🥈' : isTerceiroLugar ? '🥉' : posicaoReal}
+                        </div>
                       <FotoGN nome={item.executivo} tamanho="sm" />
                       <div>
                         <h3 className="font-semibold text-gray-900">{item.executivo}</h3>
@@ -1260,7 +1328,8 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </TabsContent>
@@ -1390,7 +1459,7 @@ export default function Home() {
                             </div>
                             
                             <div className="bg-gray-50 rounded-lg p-3">
-                              <p className="text-xs text-gray-600 font-medium mb-1">Cesta</p>
+                              <p className="text-xs text-gray-600 font-medium mb-1">Qual Oferta?</p>
                               <p className="font-semibold text-gray-700">{cred.cesta}</p>
                             </div>
                             

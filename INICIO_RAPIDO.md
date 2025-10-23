@@ -56,7 +56,7 @@ http://localhost:3000
    - **Visitas**: 5
    - **Bra Expre**: 3
    - **Qtd Credenciamentos**: 2
-   - **Ativações**: 1500.00
+   - **Volume R$**: 1500.00
    - **EC**: 1234567890
    - **Volume R$**: 2500.00
    - **RA**: Sim

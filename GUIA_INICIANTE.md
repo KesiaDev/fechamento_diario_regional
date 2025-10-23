@@ -275,7 +275,7 @@ Vamos criar um lançamento manualmente!
 
 **Credenciamento #1:**
 - **Qtd Credenciamentos:** Digite 2
-- **Ativações do Dia (R$):** Digite 1500.00
+- **Volume R$:** Digite 1500.00
 - **EC (10 números):** Digite 1234567890
 - **Volume R$:** Digite 2500.00
 - **RA:** Selecione "Sim"
