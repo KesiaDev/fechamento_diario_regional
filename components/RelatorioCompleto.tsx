@@ -11,6 +11,7 @@ import { Calendar, TrendingUp, Users, Award, Target, CheckCircle, XCircle, Downl
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { gerarPDFRelatorio, PDFData } from '@/lib/pdf-generator'
 import { gerarExcelRelatorioCompleto, ExcelDataCompleto } from '@/lib/excel-generator'
+import { QuadroKesiaNandi } from '@/components/QuadroKesiaNandi'
 
 interface RelatorioDiario {
   data: string
@@ -468,71 +469,11 @@ export function RelatorioCompleto() {
               </div>
 
               {/* Acumulado Regional — Késia Nandi */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={`/fotos/Kesia.jpeg?v=${Date.now()}`}
-                      alt="Késia Nandi"
-                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
-                      onError={(e) => {
-                        const img = e.currentTarget as HTMLImageElement
-                        // Tenta outras extensões comuns antes de desistir
-                        if (!img.dataset.tryjpg) {
-                          img.dataset.tryjpg = '1'
-                          img.src = '/fotos/Kesia.jpg'
-                          return
-                        }
-                        if (!img.dataset.trypng) {
-                          img.dataset.trypng = '1'
-                          img.src = '/fotos/Kesia.png'
-                          return
-                        }
-                        // Se nenhuma existir, mantém um avatar de fallback simples
-                        img.style.display = 'none'
-                        const parent = img.parentElement
-                        if (parent) {
-                          const fallback = document.createElement('div')
-                          fallback.className = 'w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold'
-                          fallback.textContent = 'K'
-                          parent.appendChild(fallback)
-                        }
-                      }}
-                    />
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">Acumulado Regional — Késia Nandi</h3>
-                      <p className="text-sm text-gray-600">Gerente Estadual • {formatDate(relatorioDiario.dataISO)}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                  <div className="bg-blue-50 rounded-lg p-4 text-center">
-                    <p className="text-xs text-blue-600 font-medium">Credenciamentos</p>
-                    <p className="text-xl font-bold text-blue-700">{relatorioDiario.totaisGerais.totalCredenciamentos}</p>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-4 text-center">
-                    <p className="text-xs text-green-600 font-medium">Volume R$</p>
-                    <p className="text-xl font-bold text-green-700">{formatCurrency(relatorioDiario.totaisGerais.totalAtivacoes)}</p>
-                  </div>
-                  <div className="bg-purple-50 rounded-lg p-4 text-center">
-                    <p className="text-xs text-purple-600 font-medium">Visitas</p>
-                    <p className="text-xl font-bold text-purple-700">{relatorioDiario.totaisGerais.totalVisitas}</p>
-                  </div>
-                  <div className="bg-orange-50 rounded-lg p-4 text-center">
-                    <p className="text-xs text-orange-600 font-medium">Interações</p>
-                    <p className="text-xl font-bold text-orange-700">{relatorioDiario.totaisGerais.totalInteracoes}</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 text-center">
-                    <p className="text-xs text-gray-600 font-medium">CNPJs Simulados</p>
-                    <p className="text-xl font-bold text-gray-700">{relatorioDiario.totaisGerais.totalCnpjsSimulados}</p>
-                  </div>
-                  <div className="bg-pink-50 rounded-lg p-4 text-center">
-                    <p className="text-xs text-pink-600 font-medium">Faturamento Simulado</p>
-                    <p className="text-xl font-bold text-pink-700">{formatCurrency(relatorioDiario.totaisGerais.totalFaturamentoSimulado)}</p>
-                  </div>
-                </div>
-              </div>
+              <QuadroKesiaNandi 
+                totaisGerais={relatorioDiario.totaisGerais}
+                data={formatDate(relatorioDiario.dataISO)}
+                tipoRelatorio="diario"
+              />
 
               {/* Detalhamento por GN - Design Moderno */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -629,6 +570,13 @@ export function RelatorioCompleto() {
         <TabsContent value="semanal" className="space-y-6">
           {relatorioSemanal && (
             <>
+              {/* Acumulado Regional — Késia Nandi */}
+              <QuadroKesiaNandi 
+                totaisGerais={relatorioSemanal.totaisGerais}
+                data={relatorioSemanal.periodo}
+                tipoRelatorio="semanal"
+              />
+
               {/* Resumo Executivo */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
@@ -780,6 +728,13 @@ export function RelatorioCompleto() {
         <TabsContent value="mensal" className="space-y-6">
           {relatorioMensal && (
             <>
+              {/* Acumulado Regional — Késia Nandi */}
+              <QuadroKesiaNandi 
+                totaisGerais={relatorioMensal.totaisGerais}
+                data={relatorioMensal.mes}
+                tipoRelatorio="mensal"
+              />
+
               {/* Resumo Executivo */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
