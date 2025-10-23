@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     const todosOsDias = eachDayOfInterval({ start: startDate, end: endDate })
 
     const dadosPorGN = Object.entries(fechamentosPorExecutivo).map(([executivo, fechamentosGN]) => {
-      const totalCredenciamentos = fechamentosGN.reduce((sum, f) => sum + f.credenciamentos.length, 0)
+      const totalCredenciamentos = fechamentosGN.reduce((sum, f) => sum + f.credenciamentos.reduce((s, c) => s + c.qtdCredenciamentos, 0), 0)
       const totalAtivacoes = fechamentosGN.reduce((sum, f) => sum + f.credenciamentos.reduce((s, c) => s + c.volumeRS, 0), 0)
       const totalVisitas = fechamentosGN.reduce((sum, f) => sum + f.qtdVisitas, 0)
       const totalInteracoes = fechamentosGN.reduce((sum, f) => sum + f.qtdInteracoes, 0)
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
           format(f.data, 'yyyy-MM-dd') === format(dia, 'yyyy-MM-dd')
         )
 
-        const totalCredsDia = fechamentosDoDia.reduce((sum, f) => sum + f.credenciamentos.length, 0)
+        const totalCredsDia = fechamentosDoDia.reduce((sum, f) => sum + f.credenciamentos.reduce((s, c) => s + c.qtdCredenciamentos, 0), 0)
         const totalVolumeDia = fechamentosDoDia.reduce((sum, f) => sum + f.credenciamentos.reduce((s, c) => s + c.volumeRS, 0), 0)
         const totalSimulacoesDia = fechamentosDoDia.reduce((sum, f) => sum + f.cnpjsSimulados.length, 0)
         const totalFaturamentoDia = fechamentosDoDia.reduce((sum, f) => sum + f.cnpjsSimulados.reduce((s, c) => s + c.faturamento, 0), 0)
