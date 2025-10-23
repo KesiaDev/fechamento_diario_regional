@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Calendar, TrendingUp, Users, Award, Target, CheckCircle, XCircle, Download } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { gerarPDFRelatorio, PDFData } from '@/lib/pdf-generator'
+import { gerarExcelRelatorioCompleto, ExcelDataCompleto } from '@/lib/excel-generator'
 
 interface RelatorioDiario {
   data: string
@@ -194,6 +195,46 @@ export function RelatorioCompleto() {
   useEffect(() => {
     carregarRelatorios()
   }, [dataSelecionada])
+
+  const exportarExcelCompleto = async (tipo: 'diario' | 'semanal' | 'mensal') => {
+    try {
+      let dataInicio = ''
+      let dataFim = ''
+      
+      if (tipo === 'diario' && relatorioDiario) {
+        dataInicio = relatorioDiario.dataISO
+        dataFim = relatorioDiario.dataISO
+      } else if (tipo === 'semanal' && relatorioSemanal) {
+        dataInicio = relatorioSemanal.periodo.inicio
+        dataFim = relatorioSemanal.periodo.fim
+      } else if (tipo === 'mensal' && relatorioMensal) {
+        dataInicio = relatorioMensal.periodo.inicio
+        dataFim = relatorioMensal.periodo.fim
+      }
+
+      if (!dataInicio || !dataFim) {
+        alert('Dados não disponíveis para exportação')
+        return
+      }
+
+      // Buscar dados completos da API
+      const response = await fetch(`/api/relatorios/excel-completo?dataInicio=${dataInicio}&dataFim=${dataFim}&tipo=${tipo}`)
+      
+      if (!response.ok) {
+        throw new Error('Erro ao buscar dados completos')
+      }
+
+      const excelData: ExcelDataCompleto = await response.json()
+      
+      // Gerar Excel completo
+      const filename = gerarExcelRelatorioCompleto(excelData)
+      
+      alert(`Relatório Excel completo gerado: ${filename}`)
+    } catch (error) {
+      console.error('Erro ao gerar Excel completo:', error)
+      alert('Erro ao gerar Excel completo')
+    }
+  }
 
   const exportarRelatorio = async (tipo: 'diario' | 'semanal' | 'mensal') => {
     try {
@@ -488,10 +529,16 @@ export function RelatorioCompleto() {
                     <h3 className="text-xl font-bold text-gray-900">👥 Performance por GN</h3>
                     <p className="text-sm text-gray-600">{relatorioDiario.data} - Detalhamento individual</p>
                   </div>
-                  <Button onClick={() => exportarRelatorio('diario')} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
-                    <Download className="w-4 h-4 mr-2" />
-                    Exportar
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button onClick={() => exportarRelatorio('diario')} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
+                      <Download className="w-4 h-4 mr-2" />
+                      PDF
+                    </Button>
+                    <Button onClick={() => exportarExcelCompleto('diario')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
+                      <Download className="w-4 h-4 mr-2" />
+                      Excel Completo
+                    </Button>
+                  </div>
                 </div>
                 
                 <div className="space-y-4">
@@ -635,10 +682,16 @@ export function RelatorioCompleto() {
                       <CardTitle>Performance Semanal por GN</CardTitle>
                       <CardDescription>Resumo da semana de trabalho</CardDescription>
                     </div>
-                    <Button onClick={() => exportarRelatorio('semanal')} variant="outline" size="sm">
-                      <Download className="w-4 h-4 mr-2" />
-                      Exportar
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button onClick={() => exportarRelatorio('semanal')} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
+                        <Download className="w-4 h-4 mr-2" />
+                        PDF
+                      </Button>
+                      <Button onClick={() => exportarExcelCompleto('semanal')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
+                        <Download className="w-4 h-4 mr-2" />
+                        Excel Completo
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -780,10 +833,16 @@ export function RelatorioCompleto() {
                       <CardTitle>Ranking Mensal</CardTitle>
                       <CardDescription>Classificação por credenciamentos e ativações</CardDescription>
                     </div>
-                    <Button onClick={() => exportarRelatorio('mensal')} variant="outline" size="sm">
-                      <Download className="w-4 h-4 mr-2" />
-                      Exportar
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button onClick={() => exportarRelatorio('mensal')} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
+                        <Download className="w-4 h-4 mr-2" />
+                        PDF
+                      </Button>
+                      <Button onClick={() => exportarExcelCompleto('mensal')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
+                        <Download className="w-4 h-4 mr-2" />
+                        Excel Completo
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>

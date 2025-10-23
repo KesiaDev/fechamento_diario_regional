@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatCurrency } from '@/lib/utils'
 import { gerarPDFRelatorio, PDFData } from '@/lib/pdf-generator'
-import { gerarExcelRelatorio, ExcelData } from '@/lib/excel-generator'
+import { gerarExcelRelatorio, gerarExcelRelatorioCompleto, ExcelData, ExcelDataCompleto } from '@/lib/excel-generator'
 import { Download, Mail, Calendar, FileSpreadsheet } from 'lucide-react'
 
 type RelatorioSemanal = {
@@ -170,6 +170,29 @@ export function RelatorioSemanal() {
     }
   }
 
+  const gerarRelatorioExcelCompleto = async () => {
+    if (!relatorio) return
+
+    try {
+      // Buscar dados completos da API
+      const response = await fetch(`/api/relatorios/excel-completo?dataInicio=${relatorio.periodo.inicio}&dataFim=${relatorio.periodo.fim}&tipo=semanal`)
+      
+      if (!response.ok) {
+        throw new Error('Erro ao buscar dados completos')
+      }
+
+      const excelData: ExcelDataCompleto = await response.json()
+      
+      // Gerar Excel completo
+      const filename = gerarExcelRelatorioCompleto(excelData)
+      
+      alert(`Relatório Excel completo gerado: ${filename}`)
+    } catch (error) {
+      console.error('Erro ao gerar Excel completo:', error)
+      alert('Erro ao gerar Excel completo')
+    }
+  }
+
   const enviarPorEmail = () => {
     // Implementar envio por email (futuro)
     alert('Funcionalidade de email será implementada em breve!')
@@ -233,6 +256,10 @@ export function RelatorioSemanal() {
           <Button onClick={gerarRelatorioExcel} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200">
             <FileSpreadsheet className="w-4 h-4 mr-2" />
             Excel
+          </Button>
+          <Button onClick={gerarRelatorioExcelCompleto} variant="outline" size="sm" className="hover:bg-emerald-50 hover:border-emerald-200 bg-emerald-100">
+            <FileSpreadsheet className="w-4 h-4 mr-2" />
+            Excel Completo
           </Button>
           <Button onClick={enviarPorEmail} variant="outline" size="sm" className="hover:bg-blue-50 hover:border-blue-200">
             <Mail className="w-4 h-4 mr-2" />
