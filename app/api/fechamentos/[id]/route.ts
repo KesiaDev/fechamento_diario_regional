@@ -41,6 +41,19 @@ export async function PUT(
       )
     }
 
+    // Filtrar credenciamentos válidos (que têm pelo menos EC e volumeRS preenchidos)
+    const credenciamentosValidos = (credenciamentos || []).filter((cred: any) => 
+      cred && cred.ec && cred.volumeRS && cred.ec.toString().trim() !== '' && cred.volumeRS.toString().trim() !== ''
+    )
+
+    console.log('Credenciamentos válidos:', credenciamentosValidos.length)
+
+    // Filtrar CNPJs simulados válidos
+    const cnpjsValidos = (cnpjsSimulados || []).filter((cnpj: any) =>
+      cnpj && cnpj.cnpj && cnpj.nomeEmpresa && cnpj.faturamento &&
+      cnpj.cnpj.toString().trim() !== '' && cnpj.nomeEmpresa.toString().trim() !== ''
+    )
+
     // Atualizar fechamento com credenciamentos e CNPJs simulados
     const fechamento = await prisma.fechamento.update({
       where: { id },
@@ -53,20 +66,20 @@ export async function PUT(
         data: data ? new Date(data + 'T12:00:00') : fechamentoExistente.data,
         credenciamentos: {
           deleteMany: {},
-          create: (credenciamentos || []).map((cred: any) => ({
+          create: credenciamentosValidos.map((cred: any) => ({
             qtdCredenciamentos: 1, // Cada credenciamento adicionado = 1 credenciamento
             ativacoesValor: 0, // Campo removido, sempre 0
             ec: cred.ec,
             volumeRS: parseFloat(cred.volumeRS),
-            ra: cred.ra === 'true' || cred.ra === true,
+            ra: cred.ra === 'true' || cred.ra === true || cred.ra === 'True' || cred.ra === 'TRUE',
             cesta: cred.cesta,
-            instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true,
+            instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true || cred.instalaDireto === 'True' || cred.instalaDireto === 'TRUE',
             nomeGerentePJ: cred.nomeGerentePJ || null,
           }))
         },
         cnpjsSimulados: {
           deleteMany: {},
-          create: (cnpjsSimulados || []).map((cnpj: any) => ({
+          create: cnpjsValidos.map((cnpj: any) => ({
             cnpj: cnpj.cnpj,
             nomeEmpresa: cnpj.nomeEmpresa,
             faturamento: parseFloat(cnpj.faturamento),
@@ -83,8 +96,9 @@ export async function PUT(
     return NextResponse.json(fechamento, { status: 200 })
   } catch (error) {
     console.error('Erro ao atualizar fechamento:', error)
+    console.error('Erro completo:', JSON.stringify(error, null, 2))
     return NextResponse.json(
-      { error: 'Erro ao atualizar fechamento' },
+      { error: 'Erro ao atualizar fechamento', details: error instanceof Error ? error.message : 'Erro desconhecido' },
       { status: 500 }
     )
   }

@@ -22,6 +22,20 @@ export async function POST(request: NextRequest) {
     console.log('Criando fechamento com data:', dataFechamento)
     console.log('Data original:', data)
     console.log('Executivo:', executivo)
+    console.log('Credenciamentos recebidos:', credenciamentos)
+
+    // Filtrar credenciamentos válidos (que têm pelo menos EC e volumeRS preenchidos)
+    const credenciamentosValidos = (credenciamentos || []).filter((cred: any) => 
+      cred && cred.ec && cred.volumeRS && cred.ec.toString().trim() !== '' && cred.volumeRS.toString().trim() !== ''
+    )
+
+    console.log('Credenciamentos válidos:', credenciamentosValidos.length)
+
+    // Filtrar CNPJs simulados válidos
+    const cnpjsValidos = (cnpjsSimulados || []).filter((cnpj: any) =>
+      cnpj && cnpj.cnpj && cnpj.nomeEmpresa && cnpj.faturamento &&
+      cnpj.cnpj.toString().trim() !== '' && cnpj.nomeEmpresa.toString().trim() !== ''
+    )
 
     const fechamento = await prisma.fechamento.create({
       data: {
@@ -32,19 +46,19 @@ export async function POST(request: NextRequest) {
         qtdBraExpre: parseInt(qtdBraExpre),
         data: dataFechamento,
         credenciamentos: {
-          create: (credenciamentos || []).map((cred: any) => ({
+          create: credenciamentosValidos.map((cred: any) => ({
             qtdCredenciamentos: 1, // Cada credenciamento adicionado = 1 credenciamento
             ativacoesValor: 0, // Campo removido, sempre 0
             ec: cred.ec,
             volumeRS: parseFloat(cred.volumeRS),
-            ra: cred.ra === 'true' || cred.ra === true,
+            ra: cred.ra === 'true' || cred.ra === true || cred.ra === 'True' || cred.ra === 'TRUE',
             cesta: cred.cesta,
-            instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true,
+            instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true || cred.instalaDireto === 'True' || cred.instalaDireto === 'TRUE',
             nomeGerentePJ: cred.nomeGerentePJ || null,
           }))
         },
         cnpjsSimulados: {
-          create: (cnpjsSimulados || []).map((cnpj: any) => ({
+          create: cnpjsValidos.map((cnpj: any) => ({
             cnpj: cnpj.cnpj,
             nomeEmpresa: cnpj.nomeEmpresa,
             faturamento: parseFloat(cnpj.faturamento),
@@ -61,8 +75,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(fechamento, { status: 201 })
   } catch (error) {
     console.error('Erro ao criar fechamento:', error)
+    console.error('Erro completo:', JSON.stringify(error, null, 2))
     return NextResponse.json(
-      { error: 'Erro ao salvar fechamento' },
+      { error: 'Erro ao salvar fechamento', details: error instanceof Error ? error.message : 'Erro desconhecido' },
       { status: 500 }
     )
   }
