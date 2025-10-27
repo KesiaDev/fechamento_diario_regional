@@ -623,47 +623,49 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
             Fechamento Diário - CIELO Regional
           </h1>
-          <p className="text-sm sm:text-base text-gray-600 mb-4">Sistema de acompanhamento dos Gerentes de Negócios - Regional Completa          </p>
+          <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-2 sm:mb-4 px-2">
+            Sistema de acompanhamento dos Gerentes de Negócios - Regional Completa
+          </p>
         </div>
 
         {/* Banner Cielo e Bradesco */}
-        <div className="w-full mb-6 max-w-4xl mx-auto">
+        <div className="w-full mb-充实 sm:mb-6 max-w-4xl mx-auto">
           <img 
             src="/banner-cielo-bradesco.webp" 
             alt="Parceria Cielo e Bradesco" 
-            className="w-full h-48 sm:h-56 md:h-64 object-cover rounded-lg shadow-lg"
+            className="w-full h-24 sm:h-36 md:h-48 lg:h-56 xl:h-64 object-cover rounded-lg shadow-lg"
           />
         </div>
 
         <Tabs defaultValue="lancamento" className="w-full">
-          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-4 mb-6 sm:mb-8 h-auto">
-            <TabsTrigger value="lancamento" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
-              <span className="hidden sm:inline">📝 </span>Lançamento
+          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-2 sm:grid-cols-4 mb-4 sm:mb-6 gap-1 sm:gap-2 h-auto">
+            <TabsTrigger value="lancamento" className="text-[10px] sm:text-xs md:text-sm py-1.5 sm:py-2 px-2 sm:px-3">
+              <span className="hidden md:inline">📝 </span>Lançamento
             </TabsTrigger>
-            <TabsTrigger value="ranking" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
-              <span className="hidden sm:inline">📊 </span>Ranking
+            <TabsTrigger value="ranking" className="text-[10px] sm:text-xs md:text-sm py-1.5 sm:py-2 px-2 sm:px-3">
+              <span className="hidden md:inline">📊 </span>Ranking
             </TabsTrigger>
-            <TabsTrigger value="relatorio" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
-              <span className="hidden sm:inline">📋 </span>Relatório
+            <TabsTrigger value="relatorio" className="text-[10px] sm:text-xs md:text-sm py-1.5 sm:py-2 px-2 sm:px-3">
+              <span className="hidden md:inline">📋 </span>Relatório
             </TabsTrigger>
-            <TabsTrigger value="relatorio-completo" className="text-xs sm:text-sm py-2 px-1 sm:px-3">
-              <span className="hidden sm:inline">📊 </span>Prestação
+            <TabsTrigger value="relatorio-completo" className="text-[10px] sm:text-xs md:text-sm py-1.5 sm:py-2 px-2 sm:px-3">
+              <span className="hidden md:inline">📊 </span>Prestação
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="lancamento" className="space-y-4 sm:space-y-8">
+          <TabsContent value="lancamento" className="space-y-3 sm:space-y-6 lg:space-y-8">
             {/* Formulário */}
             <Card>
-              <CardHeader className="pb-4 sm:pb-6">
-                <CardTitle className="text-lg sm:text-xl">Novo Lançamento</CardTitle>
-                <CardDescription className="text-sm">Registre o fechamento do dia</CardDescription>
+              <CardHeader className="pb-3 sm:pb-4 md:pb-6 px-4 sm:px-6">
+                <CardTitle className="text-base sm:text-lg md:text-xl">Novo Lançamento</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">Registre o fechamento do dia</CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <CardContent className="px-4 sm:px-6">
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="dataFechamento">Data do Fechamento *</Label>
                       <Input
@@ -741,7 +743,7 @@ export default function Home() {
 
                     {/* Campos de Porte e Gerente PJ - aparecem automaticamente quando agência é selecionada */}
                     {agencia && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-200 col-span-full">
                         <div className="space-y-2">
                           <Label htmlFor="porteAgencia">Porte da Agência</Label>
                           <Input
@@ -786,7 +788,7 @@ export default function Home() {
                     )}
 
                     <div className="space-y-2">
-                      <Label htmlFor="qtdVisitas">Qtd de Visitas (Presenciais) *</Label>
+                      <Label htmlFor="qtdVisitas" className="text-xs sm:text-sm">Qtd Visitas *</Label>
                       <Input
                         id="qtdVisitas"
                         type="number"
@@ -795,6 +797,7 @@ export default function Home() {
                         placeholder="0"
                         min="0"
                         required
+                        className="text-sm sm:text-base"
                       />
                     </div>
 
