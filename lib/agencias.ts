@@ -11,92 +11,92 @@ export interface Agencia {
 export const agenciasPorExecutivo: Record<string, Agencia[]> = {
   // EQUIPE KESIA WEIGE NANDI
   'Dionei': [
-    { codigo: '1775', nome: 'Farroupilha' 'Grande', gerentesPJ: ['MATHEUS GALLIO CERON', 'BRUNA PEGORARO'] },
-    { codigo: '2869', nome: 'Rua Marques Herval_Ucs' 'Médio', gerentesPJ: ['RAFAEL BINOTTI', 'ADRIANO PEDRO TOSS'] },
-    { codigo: '2176', nome: 'Pio X' 'Grande' },
-    { codigo: '2162', nome: 'Flores da Cunha' 'Médio', gerentesPJ: ['JUSCELAINE BAGGIO PADILHA'] },
-    { codigo: '269', nome: 'Caxias Do Sul_Cto' 'Mega', gerentesPJ: ['FRANCIELE ARCARO NAZARIO', 'GABRIEL MULLER MARTINS', 'NATHAN SCHROEDER', 'MORGANA ZATTERA'] },
-    { codigo: '1619', nome: 'S.Marcos' 'Pequeno', gerentesPJ: ['RAFAELA DENISE MOREIRA'] },
-    { codigo: '1778', nome: 'Torres' 'Médio', gerentesPJ: ['MARCELO DE MATOS CARNEIRO'] }
+    { codigo: '1775', nome: 'Farroupilha', porte: 'Grande', gerentesPJ: ['MATHEUS GALLIO CERON', 'BRUNA PEGORARO'] },
+    { codigo: '2869', nome: 'Rua Marques Herval_Ucs', porte: 'Médio', gerentesPJ: ['RAFAEL BINOTTI', 'ADRIANO PEDRO TOSS'] },
+    { codigo: '2176', nome: 'Pio X', porte: 'Grande' },
+    { codigo: '2162', nome: 'Flores da Cunha', porte: 'Médio', gerentesPJ: ['JUSCELAINE BAGGIO PADILHA'] },
+    { codigo: '269', nome: 'Caxias Do Sul_Cto', porte: 'Mega', gerentesPJ: ['FRANCIELE ARCARO NAZARIO', 'GABRIEL MULLER MARTINS', 'NATHAN SCHROEDER', 'MORGANA ZATTERA'] },
+    { codigo: '1619', nome: 'S.Marcos', porte: 'Pequeno', gerentesPJ: ['RAFAELA DENISE MOREIRA'] },
+    { codigo: '1778', nome: 'Torres', porte: 'Médio', gerentesPJ: ['MARCELO DE MATOS CARNEIRO'] }
   ],
   'Sheila': [],
   'Jeferson': [],
   'Jhonattan': [],
   'Renan': [],
   'Cristian': [
-    { codigo: '3159', nome: 'Uruguaiana' 'Grande', gerentesPJ: ['ERICSON FERNANDES', 'MAURICIO ROLDEN ESTEVEZ'] },
-    { codigo: '1635', nome: 'Dom Pedrito' 'Pequeno', gerentesPJ: ['ROBERTO CARLOS RUOSO'] },
-    { codigo: '1306', nome: 'Rosário do Sul' 'Pequeno', gerentesPJ: ['JOAO PAULO PEREIRA'] },
-    { codigo: '1649', nome: 'Santiago' 'Pequeno', gerentesPJ: ['JOSE ANTONIO DE PAULA'] },
-    { codigo: '3278', nome: 'São Borja' 'Médio', gerentesPJ: ['ALESSANDRO LEONELLI DE SOUZA', 'MARCOS PAULO DE OLIVEIRA'] },
-    { codigo: '3268', nome: 'Alegrete' 'Grande', gerentesPJ: ['KAREN FLORIANO', 'NATHALIE LUZ COSTA'] },
-    { codigo: '3157', nome: 'Santana do Livramento' 'Médio', gerentesPJ: ['JOEL MARTINS PEDROSO'] },
-    { codigo: '0439', nome: 'Bagé' 'Mega', gerentesPJ: ['CAROLINA BRUM BARBOZA', 'FLORIANO RODRIGUES DA SILVA JR', 'FLAVIA PINO CORA', 'GABRIEL VASCONCELOS'] },
-    { codigo: '3279', nome: 'São Gabriel' 'Pequeno' },
-    { codigo: '1533', nome: 'S. Sepé' 'Pequeno' }
+    { codigo: '3159', nome: 'Uruguaiana', porte: 'Grande', gerentesPJ: ['ERICSON FERNANDES', 'MAURICIO ROLDEN ESTEVEZ'] },
+    { codigo: '1635', nome: 'Dom Pedrito', porte: 'Pequeno', gerentesPJ: ['ROBERTO CARLOS RUOSO'] },
+    { codigo: '1306', nome: 'Rosário do Sul', porte: 'Pequeno', gerentesPJ: ['JOAO PAULO PEREIRA'] },
+    { codigo: '1649', nome: 'Santiago', porte: 'Pequeno', gerentesPJ: ['JOSE ANTONIO DE PAULA'] },
+    { codigo: '3278', nome: 'São Borja', porte: 'Médio', gerentesPJ: ['ALESSANDRO LEONELLI DE SOUZA', 'MARCOS PAULO DE OLIVEIRA'] },
+    { codigo: '3268', nome: 'Alegrete', porte: 'Grande', gerentesPJ: ['KAREN FLORIANO', 'NATHALIE LUZ COSTA'] },
+    { codigo: '3157', nome: 'Santana do Livramento', porte: 'Médio', gerentesPJ: ['JOEL MARTINS PEDROSO'] },
+    { codigo: '0439', nome: 'Bagé', porte: 'Mega', gerentesPJ: ['CAROLINA BRUM BARBOZA', 'FLORIANO RODRIGUES DA SILVA JR', 'FLAVIA PINO CORA', 'GABRIEL VASCONCELOS'] },
+    { codigo: '3279', nome: 'São Gabriel', porte: 'Pequeno' },
+    { codigo: '1533', nome: 'S. Sepé', porte: 'Pequeno' }
   ],
 
   // EQUIPE AMANDA ALINE TRINDADE JUSTI
   'Vitor Hugo': [
-    { codigo: '1588', nome: 'Sto.Antonio Platina' 'Médio', gerentesPJ: ['ROGERS ALAN FERREIRA', 'LYGIA MARCELINO RODRIGUES DE LIMA'] },
-    { codigo: '6697', nome: 'Siqueira Campos' 'Médio', gerentesPJ: ['JOAO ANTONIO DIAS'] },
-    { codigo: '969', nome: 'Ibaiti' 'Médio', gerentesPJ: ['LUIZ FERNANDO DE SOUZA'] },
-    { codigo: '1559', nome: 'Andira' 'Médio', gerentesPJ: ['GUSTAVO DIAS SANTOS'] },
-    { codigo: '71', nome: 'Bandeirantes' 'Médio', gerentesPJ: ['GUSTAVO JUSTINO FERRARI'] },
-    { codigo: '941', nome: 'Av. Tiradentes_Ulond' 'Grande', gerentesPJ: ['ANA MARIA FERNANDES EVANGELISTA', 'MARCOS AURELIO SERVANTES JESUS', 'DIEGO HENRIQUE MORAES'] },
-    { codigo: '51', nome: 'Cornelio Procopio' 'Grande', gerentesPJ: ['JESSICA GOMES PINA HADDAD MANFIO', 'ALISSON MATHEUS DAMACENO'] },
-    { codigo: '5672', nome: 'Arapoti' 'Médio', gerentesPJ: ['LUIS FELIPE URBANOVICZ'] },
-    { codigo: '1578', nome: 'Jacarezinho' 'Pequeno', gerentesPJ: ['MARCELO ROBERTO CARDOSO DO CARMO'] },
-    { codigo: '6269', nome: 'Joaquim Tavora' 'Médio', gerentesPJ: ['DAIANY SPINA DOMINGUES'] },
-    { codigo: '57', nome: 'Assai' 'Médio', gerentesPJ: ['MATHEUS HENRIQUE ZANETTI'] }
+    { codigo: '1588', nome: 'Sto.Antonio Platina', porte: 'Médio', gerentesPJ: ['ROGERS ALAN FERREIRA', 'LYGIA MARCELINO RODRIGUES DE LIMA'] },
+    { codigo: '6697', nome: 'Siqueira Campos', porte: 'Médio', gerentesPJ: ['JOAO ANTONIO DIAS'] },
+    { codigo: '969', nome: 'Ibaiti', porte: 'Médio', gerentesPJ: ['LUIZ FERNANDO DE SOUZA'] },
+    { codigo: '1559', nome: 'Andira', porte: 'Médio', gerentesPJ: ['GUSTAVO DIAS SANTOS'] },
+    { codigo: '71', nome: 'Bandeirantes', porte: 'Médio', gerentesPJ: ['GUSTAVO JUSTINO FERRARI'] },
+    { codigo: '941', nome: 'Av. Tiradentes_Ulond', porte: 'Grande', gerentesPJ: ['ANA MARIA FERNANDES EVANGELISTA', 'MARCOS AURELIO SERVANTES JESUS', 'DIEGO HENRIQUE MORAES'] },
+    { codigo: '51', nome: 'Cornelio Procopio', porte: 'Grande', gerentesPJ: ['JESSICA GOMES PINA HADDAD MANFIO', 'ALISSON MATHEUS DAMACENO'] },
+    { codigo: '5672', nome: 'Arapoti', porte: 'Médio', gerentesPJ: ['LUIS FELIPE URBANOVICZ'] },
+    { codigo: '1578', nome: 'Jacarezinho', porte: 'Pequeno', gerentesPJ: ['MARCELO ROBERTO CARDOSO DO CARMO'] },
+    { codigo: '6269', nome: 'Joaquim Tavora', porte: 'Médio', gerentesPJ: ['DAIANY SPINA DOMINGUES'] },
+    { codigo: '57', nome: 'Assai', porte: 'Médio', gerentesPJ: ['MATHEUS HENRIQUE ZANETTI'] }
   ],
   'Wagner': [
-    { codigo: '32', nome: 'Rolandia' 'Médio', gerentesPJ: ['VANESSA APARECIDA KAUFMANN', 'ELZIANI APARECIDA BERALDO'] },
-    { codigo: '52', nome: 'Arapongas_Cto' 'Grande', gerentesPJ: ['VIVIANE CRISTINE GRECCO MACHADO', 'FLAVIO LUIS HAYASHI', 'DANIEL GONCALVES FONCATTI'] },
-    { codigo: '923', nome: 'Telemaco Borba' 'Mega', gerentesPJ: ['FELIPE ELAN PRADO', 'RENAN CAMARGO KANZLER', 'GEISIELE MARI DE MELO MACHADO'] },
-    { codigo: '871', nome: 'Maua Da Serra' 'Pequeno', gerentesPJ: ['VANESSA CRISTINA GONZALES FATINANSI'] },
-    { codigo: '47', nome: 'Apucarana_Cto' 'Grande', gerentesPJ: ['FELIPE CAMPANA MAIOLI GARCIA', 'HENRIQUE MANTOVANI', 'RODRIGO FENATO'] },
-    { codigo: '27', nome: 'Cambe_Cto' 'Grande', gerentesPJ: ['VILMA RENATA CAMPAGNOLI SELLA'] },
-    { codigo: '1498', nome: 'Ivaipora' 'Pequeno' },
-    { codigo: '6016', nome: 'Faxinal' 'Pequeno' }
+    { codigo: '32', nome: 'Rolandia', porte: 'Médio', gerentesPJ: ['VANESSA APARECIDA KAUFMANN', 'ELZIANI APARECIDA BERALDO'] },
+    { codigo: '52', nome: 'Arapongas_Cto', porte: 'Grande', gerentesPJ: ['VIVIANE CRISTINE GRECCO MACHADO', 'FLAVIO LUIS HAYASHI', 'DANIEL GONCALVES FONCATTI'] },
+    { codigo: '923', nome: 'Telemaco Borba', porte: 'Mega', gerentesPJ: ['FELIPE ELAN PRADO', 'RENAN CAMARGO KANZLER', 'GEISIELE MARI DE MELO MACHADO'] },
+    { codigo: '871', nome: 'Maua Da Serra', porte: 'Pequeno', gerentesPJ: ['VANESSA CRISTINA GONZALES FATINANSI'] },
+    { codigo: '47', nome: 'Apucarana_Cto', porte: 'Grande', gerentesPJ: ['FELIPE CAMPANA MAIOLI GARCIA', 'HENRIQUE MANTOVANI', 'RODRIGO FENATO'] },
+    { codigo: '27', nome: 'Cambe_Cto', porte: 'Grande', gerentesPJ: ['VILMA RENATA CAMPAGNOLI SELLA'] },
+    { codigo: '1498', nome: 'Ivaipora', porte: 'Pequeno' },
+    { codigo: '6016', nome: 'Faxinal', porte: 'Pequeno' }
   ],
   'Patricia': [
-    { codigo: '53', nome: 'Pc.W.Davids_Ulondr' 'Grande', gerentesPJ: ['KELY KARINA TOLOVI ALTAFIN', 'JOAO FELIPE DA COSTA CARVALHO', 'LUCAS EMANUEL DOS SANTOS RODRIGUES', 'NATALIA MENDONCA VASCONCELOS VERONEZ'] },
-    { codigo: '560', nome: 'Londrina_Cto' 'Grande', gerentesPJ: ['LAURYANE APARECIDA DIAS DA SILVA', 'RENATO CEZAR BALESTRI', 'LUCIANE FEIJO SOARES IKEDA', 'AYMEE PARIETTI RAMOS ROMEIRO', 'LEANDRO CASTOLDI'] },
-    { codigo: '141', nome: 'Ibipora' 'Médio', gerentesPJ: ['CAMILA DE SOUSA SORGE DE ANGELI', 'PEDRO HENRIQUE FARIAS LIMA'] },
-    { codigo: '1581', nome: 'Porecatu' 'Pequeno', gerentesPJ: ['LEONARDO RAMOS OTAVIANO'] },
-    { codigo: '50', nome: 'Sertanopolis' 'Médio', gerentesPJ: ['WILLIAM DONIZETTI VIOTTO'] },
-    { codigo: '6239', nome: 'Lago Parque_Ulond' 'Médio', gerentesPJ: ['KARINE MARIA PAUCIC MOREIRA'] },
-    { codigo: '147', nome: 'Bela Vista Paraiso' 'Pequeno', gerentesPJ: ['RENATA BUAROLLI TOREZAN'] },
-    { codigo: '778', nome: 'Cinco Cjtos_Ulondrin' 'Pequeno', gerentesPJ: ['LIZ CAROLINE TARDIN GODOY DE ALMEIDA'] }
+    { codigo: '53', nome: 'Pc.W.Davids_Ulondr', porte: 'Grande', gerentesPJ: ['KELY KARINA TOLOVI ALTAFIN', 'JOAO FELIPE DA COSTA CARVALHO', 'LUCAS EMANUEL DOS SANTOS RODRIGUES', 'NATALIA MENDONCA VASCONCELOS VERONEZ'] },
+    { codigo: '560', nome: 'Londrina_Cto', porte: 'Grande', gerentesPJ: ['LAURYANE APARECIDA DIAS DA SILVA', 'RENATO CEZAR BALESTRI', 'LUCIANE FEIJO SOARES IKEDA', 'AYMEE PARIETTI RAMOS ROMEIRO', 'LEANDRO CASTOLDI'] },
+    { codigo: '141', nome: 'Ibipora', porte: 'Médio', gerentesPJ: ['CAMILA DE SOUSA SORGE DE ANGELI', 'PEDRO HENRIQUE FARIAS LIMA'] },
+    { codigo: '1581', nome: 'Porecatu', porte: 'Pequeno', gerentesPJ: ['LEONARDO RAMOS OTAVIANO'] },
+    { codigo: '50', nome: 'Sertanopolis', porte: 'Médio', gerentesPJ: ['WILLIAM DONIZETTI VIOTTO'] },
+    { codigo: '6239', nome: 'Lago Parque_Ulond', porte: 'Médio', gerentesPJ: ['KARINE MARIA PAUCIC MOREIRA'] },
+    { codigo: '147', nome: 'Bela Vista Paraiso', porte: 'Pequeno', gerentesPJ: ['RENATA BUAROLLI TOREZAN'] },
+    { codigo: '778', nome: 'Cinco Cjtos_Ulondrin', porte: 'Pequeno', gerentesPJ: ['LIZ CAROLINE TARDIN GODOY DE ALMEIDA'] }
   ],
   'Augusto': [
-    { codigo: '69', nome: 'Maringa_Cto' 'Mega', gerentesPJ: ['MONICA DE SOUZA FRAIRE', 'HILDA CHRISTINA RIBEIRO', 'ANGELICA COLARES MANGOLIN DA CUNHA', 'NAIARA TARITA DA SILVA BORNIA', 'CAIO LEONARDO DE OLIVEIRA PEDROSO', 'JESSICA BENTO DE PAULA', 'RICARDO GOTARDO DE OLIVEIRA', 'MARCIO ROGERIO SOARES INOUE', 'LUAN FELIPE SARAPIAO'] },
-    { codigo: '182', nome: 'Colorado' 'Médio' },
-    { codigo: '6254', nome: 'Mandaguari' 'Médio', gerentesPJ: ['HUDSON GABRIEL GONCALVES'] },
-    { codigo: '1921', nome: 'Engenheiro Beltrao' 'Médio', gerentesPJ: ['RENATO ROZEIRA'] },
-    { codigo: '1881', nome: 'Sarandi' 'Médio', gerentesPJ: ['LUANA RODRIGUES SOPPA', 'MARIA FERNANDA GOMES DE MENEZES'] },
-    { codigo: '6455', nome: 'Paicandu' 'Pequeno', gerentesPJ: ['PAULA JULIANA RODRIGUES PINA CARDIN'] },
-    { codigo: '68', nome: 'Jandaia Do Sul' 'Médio', gerentesPJ: ['EDUARDA MARIA GONCALVES VIANNA'] },
-    { codigo: '59', nome: 'Marialva' 'Médio', gerentesPJ: ['NATALIA CAROLINE ANOTTI SILVA'] },
-    { codigo: '161', nome: 'Itambe' 'Médio' }
+    { codigo: '69', nome: 'Maringa_Cto', porte: 'Mega', gerentesPJ: ['MONICA DE SOUZA FRAIRE', 'HILDA CHRISTINA RIBEIRO', 'ANGELICA COLARES MANGOLIN DA CUNHA', 'NAIARA TARITA DA SILVA BORNIA', 'CAIO LEONARDO DE OLIVEIRA PEDROSO', 'JESSICA BENTO DE PAULA', 'RICARDO GOTARDO DE OLIVEIRA', 'MARCIO ROGERIO SOARES INOUE', 'LUAN FELIPE SARAPIAO'] },
+    { codigo: '182', nome: 'Colorado', porte: 'Médio' },
+    { codigo: '6254', nome: 'Mandaguari', porte: 'Médio', gerentesPJ: ['HUDSON GABRIEL GONCALVES'] },
+    { codigo: '1921', nome: 'Engenheiro Beltrao', porte: 'Médio', gerentesPJ: ['RENATO ROZEIRA'] },
+    { codigo: '1881', nome: 'Sarandi', porte: 'Médio', gerentesPJ: ['LUANA RODRIGUES SOPPA', 'MARIA FERNANDA GOMES DE MENEZES'] },
+    { codigo: '6455', nome: 'Paicandu', porte: 'Pequeno', gerentesPJ: ['PAULA JULIANA RODRIGUES PINA CARDIN'] },
+    { codigo: '68', nome: 'Jandaia Do Sul', porte: 'Médio', gerentesPJ: ['EDUARDA MARIA GONCALVES VIANNA'] },
+    { codigo: '59', nome: 'Marialva', porte: 'Médio', gerentesPJ: ['NATALIA CAROLINE ANOTTI SILVA'] },
+    { codigo: '161', nome: 'Itambe', porte: 'Médio' }
   ],
   'Tiago': [
-    { codigo: '5001', nome: 'Agência Tiago 1' 'Médio' },
-    { codigo: '5002', nome: 'Agência Tiago 2' 'Médio' },
-    { codigo: '5003', nome: 'Agência Tiago 3' 'Médio' }
+    { codigo: '5001', nome: 'Agência Tiago 1', porte: 'Médio' },
+    { codigo: '5002', nome: 'Agência Tiago 2', porte: 'Médio' },
+    { codigo: '5003', nome: 'Agência Tiago 3', porte: 'Médio' }
   ],
   'Abner': [
-    { codigo: '142', nome: 'Cianorte' 'Grande', gerentesPJ: ['JOSEPH CARLOS OLIVEIRA CONCEICAO', 'RODRIGO RODRIGUES SHIGUEMOTO'] },
-    { codigo: '180', nome: 'Umuarama_Cto' 'Mega', gerentesPJ: ['JHONATAN FELIPE DA SILVA', 'FLAVIA ANDREA PETROLINI FORTE MORI', 'GABRIELA FRASQUETTI BECCARI FACHIN', 'DOUGLAS HENRIQUE VIGO CRIVELARO', 'ERICA SIMONE DE OLIVEIRA', 'RAFAEL NASCE CALDERON'] },
-    { codigo: '179', nome: 'Campo Mourao_Cto' 'Grande', gerentesPJ: ['FLAVIA PANIZZON ESTELLAI', 'ROBERTA TOLONI COSTA RIBEIRO', 'DAELI CAVALCANTE DE OLIVEIRA'] },
-    { codigo: '5815', nome: 'Araruna' 'Pequeno', gerentesPJ: ['EMERSON TOMAZI'] },
-    { codigo: '202', nome: 'Goioere' 'Médio', gerentesPJ: ['IAM DE ANDRADE ISMAIL'] },
-    { codigo: '181', nome: 'Terra Boa' 'Médio', gerentesPJ: ['ALISSON HENRIQUE DE PIERRI'] },
-    { codigo: '2479', nome: 'Tapejara' 'Pequeno', gerentesPJ: ['HELLEN KAROLINE GUILHERME VIDAL'] },
-    { codigo: '1641', nome: 'Loanda' 'Médio', gerentesPJ: ['VANESSA GUERMANDI SARAIVA'] },
-    { codigo: '1490', nome: 'Altonia' 'Pequeno', gerentesPJ: ['ALICE CORNICELLI BIDOIA'] },
-    { codigo: '6211', nome: 'Douradina Do Parana' 'Pequeno', gerentesPJ: ['HENRIQUE TIAGO CHERON DA SILVA'] }
+    { codigo: '142', nome: 'Cianorte', porte: 'Grande', gerentesPJ: ['JOSEPH CARLOS OLIVEIRA CONCEICAO', 'RODRIGO RODRIGUES SHIGUEMOTO'] },
+    { codigo: '180', nome: 'Umuarama_Cto', porte: 'Mega', gerentesPJ: ['JHONATAN FELIPE DA SILVA', 'FLAVIA ANDREA PETROLINI FORTE MORI', 'GABRIELA FRASQUETTI BECCARI FACHIN', 'DOUGLAS HENRIQUE VIGO CRIVELARO', 'ERICA SIMONE DE OLIVEIRA', 'RAFAEL NASCE CALDERON'] },
+    { codigo: '179', nome: 'Campo Mourao_Cto', porte: 'Grande', gerentesPJ: ['FLAVIA PANIZZON ESTELLAI', 'ROBERTA TOLONI COSTA RIBEIRO', 'DAELI CAVALCANTE DE OLIVEIRA'] },
+    { codigo: '5815', nome: 'Araruna', porte: 'Pequeno', gerentesPJ: ['EMERSON TOMAZI'] },
+    { codigo: '202', nome: 'Goioere', porte: 'Médio', gerentesPJ: ['IAM DE ANDRADE ISMAIL'] },
+    { codigo: '181', nome: 'Terra Boa', porte: 'Médio', gerentesPJ: ['ALISSON HENRIQUE DE PIERRI'] },
+    { codigo: '2479', nome: 'Tapejara', porte: 'Pequeno', gerentesPJ: ['HELLEN KAROLINE GUILHERME VIDAL'] },
+    { codigo: '1641', nome: 'Loanda', porte: 'Médio', gerentesPJ: ['VANESSA GUERMANDI SARAIVA'] },
+    { codigo: '1490', nome: 'Altonia', porte: 'Pequeno', gerentesPJ: ['ALICE CORNICELLI BIDOIA'] },
+    { codigo: '6211', nome: 'Douradina Do Parana', porte: 'Pequeno', gerentesPJ: ['HENRIQUE TIAGO CHERON DA SILVA'] }
   ],
 
   // EQUIPE ADRIANO CORREA GOMES
@@ -185,54 +185,54 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
       { codigo: '1078', nome: 'Irati' }
     ],
     'Willyam': [
-      { codigo: '5749', nome: 'R.M.V. Macedo_Uctba' 'GRANDE' },
-      { codigo: '5719', nome: 'B.Portao_Uctba' 'MÉDIA' },
-      { codigo: '5751', nome: 'B.Cajuru_Uctba' 'PEQUENA' },
-      { codigo: '5752', nome: 'B.Boqueirao_Uctba' 'MÉDIA' },
-      { codigo: '5753', nome: 'B.S.Francisco_Uctba' 'GRANDE' },
-      { codigo: '5754', nome: 'B.Centro_Uctba' 'MEGA' },
-      { codigo: '5755', nome: 'B.Agua Verde_Uctba' 'PEQUENA' },
-      { codigo: '5756', nome: 'B.Reboucas_Uctba' 'MÉDIA' }
+      { codigo: '5749', nome: 'R.M.V. Macedo_Uctba', porte: 'GRANDE' },
+      { codigo: '5719', nome: 'B.Portao_Uctba', porte: 'MÉDIA' },
+      { codigo: '5751', nome: 'B.Cajuru_Uctba', porte: 'PEQUENA' },
+      { codigo: '5752', nome: 'B.Boqueirao_Uctba', porte: 'MÉDIA' },
+      { codigo: '5753', nome: 'B.S.Francisco_Uctba', porte: 'GRANDE' },
+      { codigo: '5754', nome: 'B.Centro_Uctba', porte: 'MEGA' },
+      { codigo: '5755', nome: 'B.Agua Verde_Uctba', porte: 'PEQUENA' },
+      { codigo: '5756', nome: 'B.Reboucas_Uctba', porte: 'MÉDIA' }
     ],
     'Alexsandro': [
-      { codigo: '5757', nome: 'B.Pinheirinho_Uctba' 'GRANDE' },
-      { codigo: '5758', nome: 'B.S.Jose Pinhais_Uctba' 'MÉDIA' },
-      { codigo: '5759', nome: 'B.Fazenda Rio Grande_Uctba' 'PEQUENA' },
-      { codigo: '5761', nome: 'B.Campo Largo_Uctba' 'MÉDIA' },
-      { codigo: '5762', nome: 'B.Araucaria_Uctba' 'GRANDE' },
-      { codigo: '5763', nome: 'B.Colombo_Uctba' 'MEGA' },
-      { codigo: '5764', nome: 'B.Almirante Tamandare_Uctba' 'PEQUENA' },
-      { codigo: '5765', nome: 'B.Piraquara_Uctba' 'MÉDIA' }
+      { codigo: '5757', nome: 'B.Pinheirinho_Uctba', porte: 'GRANDE' },
+      { codigo: '5758', nome: 'B.S.Jose Pinhais_Uctba', porte: 'MÉDIA' },
+      { codigo: '5759', nome: 'B.Fazenda Rio Grande_Uctba', porte: 'PEQUENA' },
+      { codigo: '5761', nome: 'B.Campo Largo_Uctba', porte: 'MÉDIA' },
+      { codigo: '5762', nome: 'B.Araucaria_Uctba', porte: 'GRANDE' },
+      { codigo: '5763', nome: 'B.Colombo_Uctba', porte: 'MEGA' },
+      { codigo: '5764', nome: 'B.Almirante Tamandare_Uctba', porte: 'PEQUENA' },
+      { codigo: '5765', nome: 'B.Piraquara_Uctba', porte: 'MÉDIA' }
     ],
     'Cristian Alfonso': [
-      { codigo: '5766', nome: 'B.Pinhais_Uctba' 'GRANDE' },
-      { codigo: '5767', nome: 'B.Campina Grande do Sul_Uctba' 'MÉDIA' },
-      { codigo: '5768', nome: 'B.Quatro Barras_Uctba' 'PEQUENA' },
-      { codigo: '5769', nome: 'B.Mandirituba_Uctba' 'MÉDIA' },
-      { codigo: '5770', nome: 'B.Contenda_Uctba' 'GRANDE' },
-      { codigo: '5771', nome: 'B.Rio Negro_Uctba' 'MEGA' },
-      { codigo: '5772', nome: 'B.Mafra_Uctba' 'PEQUENA' },
-      { codigo: '5773', nome: 'B.Campo do Tenente_Uctba' 'MÉDIA' }
+      { codigo: '5766', nome: 'B.Pinhais_Uctba', porte: 'GRANDE' },
+      { codigo: '5767', nome: 'B.Campina Grande do Sul_Uctba', porte: 'MÉDIA' },
+      { codigo: '5768', nome: 'B.Quatro Barras_Uctba', porte: 'PEQUENA' },
+      { codigo: '5769', nome: 'B.Mandirituba_Uctba', porte: 'MÉDIA' },
+      { codigo: '5770', nome: 'B.Contenda_Uctba', porte: 'GRANDE' },
+      { codigo: '5771', nome: 'B.Rio Negro_Uctba', porte: 'MEGA' },
+      { codigo: '5772', nome: 'B.Mafra_Uctba', porte: 'PEQUENA' },
+      { codigo: '5773', nome: 'B.Campo do Tenente_Uctba', porte: 'MÉDIA' }
     ],
     'Kelvin': [
-      { codigo: '5774', nome: 'B.Lapa_Uctba' 'GRANDE' },
-      { codigo: '5775', nome: 'B.Sao Mateus do Sul_Uctba' 'MÉDIA' },
-      { codigo: '5776', nome: 'B.Uniao da Vitoria_Uctba' 'PEQUENA' },
-      { codigo: '5777', nome: 'B.General Carneiro_Uctba' 'MÉDIA' },
-      { codigo: '5778', nome: 'B.Palmas_Uctba' 'GRANDE' },
-      { codigo: '5779', nome: 'B.Francisco Beltrao_Uctba' 'MEGA' },
-      { codigo: '5780', nome: 'B.Pato Branco_Uctba' 'PEQUENA' },
-      { codigo: '5781', nome: 'B.Dois Vizinhos_Uctba' 'MÉDIA' }
+      { codigo: '5774', nome: 'B.Lapa_Uctba', porte: 'GRANDE' },
+      { codigo: '5775', nome: 'B.Sao Mateus do Sul_Uctba', porte: 'MÉDIA' },
+      { codigo: '5776', nome: 'B.Uniao da Vitoria_Uctba', porte: 'PEQUENA' },
+      { codigo: '5777', nome: 'B.General Carneiro_Uctba', porte: 'MÉDIA' },
+      { codigo: '5778', nome: 'B.Palmas_Uctba', porte: 'GRANDE' },
+      { codigo: '5779', nome: 'B.Francisco Beltrao_Uctba', porte: 'MEGA' },
+      { codigo: '5780', nome: 'B.Pato Branco_Uctba', porte: 'PEQUENA' },
+      { codigo: '5781', nome: 'B.Dois Vizinhos_Uctba', porte: 'MÉDIA' }
     ],
     'Willian': [
-      { codigo: '5782', nome: 'B.Realeza_Uctba' 'GRANDE' },
-      { codigo: '5783', nome: 'B.Capanema_Uctba' 'MÉDIA' },
-      { codigo: '5784', nome: 'B.Santo Antonio do Sudoeste_Uctba' 'PEQUENA' },
-      { codigo: '5785', nome: 'B.Barracao_Uctba' 'MÉDIA' },
-      { codigo: '5786', nome: 'B.Ampere_Uctba' 'GRANDE' },
-      { codigo: '5787', nome: 'B.Salto do Lontra_Uctba' 'MEGA' },
-      { codigo: '5788', nome: 'B.Santa Izabel do Oeste_Uctba' 'PEQUENA' },
-      { codigo: '5789', nome: 'B.Verê_Uctba' 'MÉDIA' }
+      { codigo: '5782', nome: 'B.Realeza_Uctba', porte: 'GRANDE' },
+      { codigo: '5783', nome: 'B.Capanema_Uctba', porte: 'MÉDIA' },
+      { codigo: '5784', nome: 'B.Santo Antonio do Sudoeste_Uctba', porte: 'PEQUENA' },
+      { codigo: '5785', nome: 'B.Barracao_Uctba', porte: 'MÉDIA' },
+      { codigo: '5786', nome: 'B.Ampere_Uctba', porte: 'GRANDE' },
+      { codigo: '5787', nome: 'B.Salto do Lontra_Uctba', porte: 'MEGA' },
+      { codigo: '5788', nome: 'B.Santa Izabel do Oeste_Uctba', porte: 'PEQUENA' },
+      { codigo: '5789', nome: 'B.Verê_Uctba', porte: 'MÉDIA' }
     ],
 
   // EQUIPE GUILHERME MORAES DORNEMANN
