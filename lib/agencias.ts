@@ -28,15 +28,6 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
     { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
     { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
   ],
-  'Cristian': [
-    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentePJ: 'MARCELO' },
-    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
-  ],
   'Jeferson': [
     { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentePJ: 'MARCELO' },
     { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
