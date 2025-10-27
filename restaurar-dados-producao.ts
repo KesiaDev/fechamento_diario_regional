@@ -21,6 +21,7 @@ async function restaurarDadosProducao() {
     console.log('\n📊 Criando dados do Jhonattan...')
     const fechamentoJhonattan = await prisma.fechamento.create({
       data: {
+        gerenteEstadual: 'KESIA WEIGE NANDI',
         executivo: 'Jhonattan',
         agencia: '563 - Lajeado',
         qtdVisitas: 6,
@@ -70,6 +71,7 @@ async function restaurarDadosProducao() {
     console.log('\n📊 Criando dados do Renan...')
     const fechamentoRenan = await prisma.fechamento.create({
       data: {
+        gerenteEstadual: 'KESIA WEIGE NANDI',
         executivo: 'Renan',
         agencia: '3275 - Ijuí',
         qtdVisitas: 9,
@@ -139,6 +141,7 @@ async function restaurarDadosProducao() {
     console.log('\n📊 Criando dados da Sheila...')
     const fechamentoSheila = await prisma.fechamento.create({
       data: {
+        gerenteEstadual: 'KESIA WEIGE NANDI',
         executivo: 'Sheila',
         agencia: '1775 - Farroupilha',
         qtdVisitas: 5,
