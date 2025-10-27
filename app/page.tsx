@@ -632,7 +632,7 @@ export default function Home() {
         </div>
 
         {/* Banner Cielo e Bradesco */}
-        <div className="w-full mb-充实 sm:mb-6 max-w-4xl mx-auto">
+        <div className="w-full mb-4 sm:mb-6 max-w-4xl mx-auto">
           <img 
             src="/banner-cielo-bradesco.webp" 
             alt="Parceria Cielo e Bradesco" 
