@@ -221,6 +221,7 @@ export default function Home() {
   const [agencia, setAgencia] = useState('')
   const [porteAgencia, setPorteAgencia] = useState('')
   const [gerentePJ, setGerentePJ] = useState('')
+  const [gerentesPJDisponiveis, setGerentesPJDisponiveis] = useState<string[]>([])
   const [qtdVisitas, setQtdVisitas] = useState('')
   const [qtdInteracoes, setQtdInteracoes] = useState('')
   const [qtdBraExpre, setQtdBraExpre] = useState('')
@@ -450,11 +451,28 @@ export default function Home() {
       const agenciaData = getAgenciaData(executivo, agencia)
       if (agenciaData) {
         setPorteAgencia(agenciaData.porte || '')
-        setGerentePJ(agenciaData.gerentePJ || '')
+        
+        // Se tem gerentes PJ disponíveis
+        if (agenciaData.gerentesPJ) {
+          setGerentesPJDisponiveis(agenciaData.gerentesPJ)
+          
+          // Se tem apenas 1 PJ, selecionar automaticamente
+          if (agenciaData.gerentesPJ.length === 1) {
+            setGerentePJ(agenciaData.gerentesPJ[0])
+          } else {
+            // Se tem mais de 1, deixar vazio para usuário escolher
+            setGerentePJ('')
+          }
+        } else {
+          // Sem gerente PJ definido
+          setGerentesPJDisponiveis([])
+          setGerentePJ('')
+        }
       }
     } else {
       setPorteAgencia('')
       setGerentePJ('')
+      setGerentesPJDisponiveis([])
     }
   }, [executivo, agencia])
 
@@ -736,13 +754,33 @@ export default function Home() {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="gerentePJ">Gerente PJ</Label>
-                          <Input
-                            id="gerentePJ"
-                            value={gerentePJ}
-                            readOnly
-                            className="bg-white"
-                            placeholder="Selecione uma agência"
-                          />
+                          {gerentesPJDisponiveis.length > 1 ? (
+                            <Select value={gerentePJ} onValueChange={setGerentePJ}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione o Gerente PJ" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {gerentesPJDisponiveis.map((pj) => (
+                                  <SelectItem key={pj} value={pj}>{pj}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : gerentesPJDisponiveis.length === 1 ? (
+                            <Input
+                              id="gerentePJ"
+                              value={gerentePJ}
+                              readOnly
+                              className="bg-white"
+                            />
+                          ) : (
+                            <Input
+                              id="gerentePJ"
+                              value={gerentePJ}
+                              readOnly
+                              className="bg-white"
+                              placeholder="Agência sem gerente PJ definido"
+                            />
+                          )}
                         </div>
                       </div>
                     )}

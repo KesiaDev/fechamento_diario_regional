@@ -5,55 +5,55 @@ export interface Agencia {
   codigo: string
   nome: string
   porte?: string
-  gerentePJ?: string
+  gerentesPJ?: string[] // Array para múltiplos gerentes PJ
 }
 
 export const agenciasPorExecutivo: Record<string, Agencia[]> = {
   // EQUIPE KESIA WEIGE NANDI
   'Dionei': [
-    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentePJ: 'MARCELO' },
-    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
   ],
   'Sheila': [
-    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentePJ: 'MARCELO' },
-    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
   ],
   'Jeferson': [
-    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentePJ: 'MARCELO' },
-    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
   ],
   'Jhonattan': [
-    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentePJ: 'MARCELO' },
-    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
   ],
   'Renan': [
-    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentePJ: 'MARCELO' },
-    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+    { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2869', nome: 'Marquês', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '2176', nome: 'Pio X', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+    { codigo: '2162', nome: 'Flores da Cunha', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+    { codigo: '269', nome: 'Caxias Centro', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1619', nome: 'S. Marcos', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+    { codigo: '1778', nome: 'Torres', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
   ],
   'Cristian': [
     { codigo: '3159', nome: 'Uruguaiana' },
@@ -83,14 +83,14 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
     { codigo: '57', nome: 'Assai' }
   ],
   'Wagner': [
-    { codigo: '32', nome: 'Rolandia' },
-    { codigo: '52', nome: 'Arapongas_Cto' },
-    { codigo: '923', nome: 'Telemaco Borba' },
-    { codigo: '871', nome: 'Maua Da Serra' },
-    { codigo: '47', nome: 'Apucarana_Cto' },
-    { codigo: '27', nome: 'Cambe_Cto' },
-    { codigo: '1498', nome: 'Ivaipora' },
-    { codigo: '6016', nome: 'Faxinal' }
+    { codigo: '32', nome: 'Rolandia', porte: 'Médio', gerentesPJ: ['VANESSA APARECIDA KAUFMANN', 'ELZIANI APARECIDA BERALDO'] },
+    { codigo: '52', nome: 'Arapongas_Cto', porte: 'Grande', gerentesPJ: ['VIVIANE CRISTINE GRECCO MACHADO', 'FLAVIO LUIS HAYASHI', 'DANIEL GONCALVES FONCATTI'] },
+    { codigo: '923', nome: 'Telemaco Borba', porte: 'Mega', gerentesPJ: ['FELIPE ELAN PRADO', 'RENAN CAMARGO KANZLER', 'GEISIELE MARI DE MELO MACHADO'] },
+    { codigo: '871', nome: 'Maua Da Serra', porte: 'Pequeno', gerentesPJ: ['VANESSA CRISTINA GONZALES FATINANSI'] },
+    { codigo: '47', nome: 'Apucarana_Cto', porte: 'Grande', gerentesPJ: ['FELIPE CAMPANA MAIOLI GARCIA', 'HENRIQUE MANTOVANI', 'RODRIGO FENATO'] },
+    { codigo: '27', nome: 'Cambe_Cto', porte: 'Grande', gerentesPJ: ['VILMA RENATA CAMPAGNOLI SELLA'] },
+    { codigo: '1498', nome: 'Ivaipora', porte: 'Pequeno' },
+    { codigo: '6016', nome: 'Faxinal', porte: 'Pequeno' }
   ],
   'Patricia': [
     { codigo: '53', nome: 'Pc.W.Davids Ulondr' },
@@ -192,79 +192,79 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
 
     // EQUIPE BRUNA PASSOS LEMES
     'Raymi': [
-      { codigo: '5750', nome: 'Avenida_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5717', nome: 'Ahu_Urb.Curitiba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '3158', nome: 'Alto Maracana_Ucolom', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5760', nome: 'Bairro Merces_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+      { codigo: '5750', nome: 'Avenida_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5717', nome: 'Ahu_Urb.Curitiba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '3158', nome: 'Alto Maracana_Ucolom', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5760', nome: 'Bairro Merces_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
     ],
     'William': [
-      { codigo: '929', nome: 'Pinhais_Cto', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '1197', nome: 'Bacacheri_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '1369', nome: 'Piraquara', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5693', nome: 'Campina Grande Sul', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '6472', nome: 'Quatro Barras', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5718', nome: 'Rua Xv Novembro_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5716', nome: 'B.Agua Verde_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+      { codigo: '929', nome: 'Pinhais_Cto', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '1197', nome: 'Bacacheri_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '1369', nome: 'Piraquara', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5693', nome: 'Campina Grande Sul', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '6472', nome: 'Quatro Barras', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5718', nome: 'Rua Xv Novembro_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5716', nome: 'B.Agua Verde_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
     ],
     'Adler': [
-      { codigo: '430', nome: 'Palmeira', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '1553', nome: 'Castro', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '6172', nome: 'Imbituva', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '6453', nome: 'Avenida D.Pedro li_Upgros', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '3881', nome: 'B.Oficinas_Upgrossa', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '646', nome: 'Ponta Grossa_Cto', porte: 'MEGA', gerentePJ: 'MARCELO' },
-      { codigo: '6102', nome: 'Teixeira Soares', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '1078', nome: 'Irati', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+      { codigo: '430', nome: 'Palmeira', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '1553', nome: 'Castro', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '6172', nome: 'Imbituva', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '6453', nome: 'Avenida D.Pedro li_Upgros', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '3881', nome: 'B.Oficinas_Upgrossa', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '646', nome: 'Ponta Grossa_Cto', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+      { codigo: '6102', nome: 'Teixeira Soares', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '1078', nome: 'Irati', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
     ],
     'Willyam': [
-      { codigo: '5749', nome: 'R.M.V. Macedo_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5719', nome: 'B.Portao_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5751', nome: 'B.Cajuru_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5752', nome: 'B.Boqueirao_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5753', nome: 'B.S.Francisco_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5754', nome: 'B.Centro_Uctba', porte: 'MEGA', gerentePJ: 'MARCELO' },
-      { codigo: '5755', nome: 'B.Agua Verde_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5756', nome: 'B.Reboucas_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+      { codigo: '5749', nome: 'R.M.V. Macedo_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5719', nome: 'B.Portao_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5751', nome: 'B.Cajuru_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5752', nome: 'B.Boqueirao_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5753', nome: 'B.S.Francisco_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5754', nome: 'B.Centro_Uctba', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5755', nome: 'B.Agua Verde_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5756', nome: 'B.Reboucas_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
     ],
     'Alexsandro': [
-      { codigo: '5757', nome: 'B.Pinheirinho_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5758', nome: 'B.S.Jose Pinhais_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5759', nome: 'B.Fazenda Rio Grande_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5761', nome: 'B.Campo Largo_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5762', nome: 'B.Araucaria_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5763', nome: 'B.Colombo_Uctba', porte: 'MEGA', gerentePJ: 'MARCELO' },
-      { codigo: '5764', nome: 'B.Almirante Tamandare_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5765', nome: 'B.Piraquara_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+      { codigo: '5757', nome: 'B.Pinheirinho_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5758', nome: 'B.S.Jose Pinhais_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5759', nome: 'B.Fazenda Rio Grande_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5761', nome: 'B.Campo Largo_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5762', nome: 'B.Araucaria_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5763', nome: 'B.Colombo_Uctba', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5764', nome: 'B.Almirante Tamandare_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5765', nome: 'B.Piraquara_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
     ],
     'Cristian Alfonso': [
-      { codigo: '5766', nome: 'B.Pinhais_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5767', nome: 'B.Campina Grande do Sul_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5768', nome: 'B.Quatro Barras_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5769', nome: 'B.Mandirituba_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5770', nome: 'B.Contenda_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5771', nome: 'B.Rio Negro_Uctba', porte: 'MEGA', gerentePJ: 'MARCELO' },
-      { codigo: '5772', nome: 'B.Mafra_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5773', nome: 'B.Campo do Tenente_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+      { codigo: '5766', nome: 'B.Pinhais_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5767', nome: 'B.Campina Grande do Sul_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5768', nome: 'B.Quatro Barras_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5769', nome: 'B.Mandirituba_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5770', nome: 'B.Contenda_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5771', nome: 'B.Rio Negro_Uctba', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5772', nome: 'B.Mafra_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5773', nome: 'B.Campo do Tenente_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
     ],
     'Kelvin': [
-      { codigo: '5774', nome: 'B.Lapa_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5775', nome: 'B.Sao Mateus do Sul_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5776', nome: 'B.Uniao da Vitoria_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5777', nome: 'B.General Carneiro_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5778', nome: 'B.Palmas_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5779', nome: 'B.Francisco Beltrao_Uctba', porte: 'MEGA', gerentePJ: 'MARCELO' },
-      { codigo: '5780', nome: 'B.Pato Branco_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5781', nome: 'B.Dois Vizinhos_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+      { codigo: '5774', nome: 'B.Lapa_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5775', nome: 'B.Sao Mateus do Sul_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5776', nome: 'B.Uniao da Vitoria_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5777', nome: 'B.General Carneiro_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5778', nome: 'B.Palmas_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5779', nome: 'B.Francisco Beltrao_Uctba', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5780', nome: 'B.Pato Branco_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5781', nome: 'B.Dois Vizinhos_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
     ],
     'Willian': [
-      { codigo: '5782', nome: 'B.Realeza_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5783', nome: 'B.Capanema_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5784', nome: 'B.Santo Antonio do Sudoeste_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5785', nome: 'B.Barracao_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' },
-      { codigo: '5786', nome: 'B.Ampere_Uctba', porte: 'GRANDE', gerentePJ: 'MARCELO' },
-      { codigo: '5787', nome: 'B.Salto do Lontra_Uctba', porte: 'MEGA', gerentePJ: 'MARCELO' },
-      { codigo: '5788', nome: 'B.Santa Izabel do Oeste_Uctba', porte: 'PEQUENA', gerentePJ: 'MARCELO' },
-      { codigo: '5789', nome: 'B.Verê_Uctba', porte: 'MÉDIA', gerentePJ: 'MARCELO' }
+      { codigo: '5782', nome: 'B.Realeza_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5783', nome: 'B.Capanema_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5784', nome: 'B.Santo Antonio do Sudoeste_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5785', nome: 'B.Barracao_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5786', nome: 'B.Ampere_Uctba', porte: 'GRANDE', gerentesPJ: ['MARCELO'] },
+      { codigo: '5787', nome: 'B.Salto do Lontra_Uctba', porte: 'MEGA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5788', nome: 'B.Santa Izabel do Oeste_Uctba', porte: 'PEQUENA', gerentesPJ: ['MARCELO'] },
+      { codigo: '5789', nome: 'B.Verê_Uctba', porte: 'MÉDIA', gerentesPJ: ['MARCELO'] }
     ],
 
   // EQUIPE GUILHERME MORAES DORNEMANN
