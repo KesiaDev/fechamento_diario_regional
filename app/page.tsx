@@ -9,22 +9,90 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { getAgenciasPorExecutivo, executivos } from '@/lib/agencias'
+
+// Configuração dos Gerentes Estaduais e suas equipes
+const gerentesEstaduais = {
+  'KESIA WEIGE NANDI': ['Sheila', 'Jeferson', 'Jhonattan', 'Renan', 'Dionei', 'Cristian'],
+  'AMANDA ALINE TRINDADE JUSTI': ['Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner'],
+  'ADRIANO CORREA GOMES': ['Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos'],
+  'BRUNA PASSOS LEMES': ['Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian'],
+  'GUILHERME MORAES DORNEMANN': ['Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina'],
+  'TBA ESTADUAL BRA PARANA 2': ['Joslayne', 'Lyon', 'Elisandra', 'Jessyka', 'Nicodemos', 'Lilian']
+}
+
+// Função para obter GNs de um Gerente Estadual
+const getGNsPorGerenteEstadual = (gerente: string) => {
+  return gerentesEstaduais[gerente as keyof typeof gerentesEstaduais] || []
+}
+
+// Função para obter dados da agência selecionada
+const getAgenciaData = (executivo: string, agenciaSelecionada: string) => {
+  if (!executivo || !agenciaSelecionada) return null
+  
+  const agencias = getAgenciasPorExecutivo(executivo)
+  const agenciaEncontrada = agencias.find(ag => `${ag.codigo} - ${ag.nome}` === agenciaSelecionada)
+  
+  return agenciaEncontrada || null
+}
 import { Plus, Trash2, TrendingUp, Users, Award, Check, Eye, Edit, X } from 'lucide-react'
 import { RelatorioSemanal } from '@/components/RelatorioSemanal'
 import { RelatorioCompleto } from '@/components/RelatorioCompleto'
 
-// Função para obter foto do GN
+// Função para obter foto do GN - Regional Completa
 const getFotoGN = (nome: string) => {
   const nomeLimpo = nome.toLowerCase().trim()
   
-  // Lista de nomes base para identificar o GN
+  // Lista de nomes base para identificar o GN - Regional Completa
   const nomesGN = {
+    // EQUIPE KESIA WEIGE NANDI
     'dionei': '/fotos/Dionei.jpeg',
     'sheila': '/fotos/Sheila.jpeg',
     'renan': '/fotos/Renan.jpeg',
     'jeferson': '/fotos/Jeferson.jpeg',
     'jhonattan': '/fotos/Jhonattan.jpeg',
-    'cristian': '/fotos/Cristian.jpeg'
+    'cristian': '/fotos/Cristian.jpeg',
+    
+    // EQUIPE AMANDA ALINE TRINDADE JUSTI
+    'vitor hugo': '/fotos/VitorHugo.jpeg',
+    'wagner': '/fotos/Wagner.jpeg',
+    'patricia': '/fotos/Patricia.jpeg',
+    'augusto': '/fotos/Augusto.jpeg',
+    'tiago': '/fotos/Tiago.jpeg',
+    'abner': '/fotos/Abner.jpeg',
+    
+    // EQUIPE ADRIANO CORREA GOMES
+    'vander': '/fotos/Vander.jpeg',
+    'in koo': '/fotos/InKoo.jpeg',
+    'fabio': '/fotos/Fabio.jpeg',
+    'henrique': '/fotos/Henrique.jpeg',
+    'paulo': '/fotos/Paulo.jpeg',
+    'carlos': '/fotos/Carlos.jpeg',
+    
+    // EQUIPE BRUNA PASSOS LEMES
+    'raymi': '/fotos/Raymi.jpeg',
+    'william': '/fotos/William.jpeg',
+    'adler': '/fotos/Adler.jpeg',
+    'willyam': '/fotos/Willyam.jpeg',
+    'alexsandro': '/fotos/Alexsandro.jpeg',
+    'cristian alfonso': '/fotos/CristianAlfonso.jpeg',
+    'kelvin': '/fotos/Kelvin.jpeg',
+    'willian': '/fotos/Willian.jpeg',
+    
+    // EQUIPE GUILHERME MORAES DORNEMANN
+    'ricardo': '/fotos/Ricardo.jpeg',
+    'paola': '/fotos/Paola.jpeg',
+    'josimar': '/fotos/Josimar.jpeg',
+    'edson': '/fotos/Edson.jpeg',
+    'fabiele': '/fotos/Fabiele.jpeg',
+    'sabrina': '/fotos/Sabrina.jpeg',
+    
+    // EQUIPE TBA ESTADUAL BRA PARANA 2
+    'joslayne': '/fotos/Joslayne.jpeg',
+    'lyon': '/fotos/Lyon.jpeg',
+    'elisandra': '/fotos/Elisandra.jpeg',
+    'jessyka': '/fotos/Jessyka.jpeg',
+    'nicodemos': '/fotos/Nicodemos.jpeg',
+    'lilian': '/fotos/Lilian.jpeg'
   }
   
   // Verificar se o nome contém algum dos nomes base
@@ -148,8 +216,11 @@ type RankingItem = {
 }
 
 export default function Home() {
+  const [gerenteEstadual, setGerenteEstadual] = useState('')
   const [executivo, setExecutivo] = useState('')
   const [agencia, setAgencia] = useState('')
+  const [porteAgencia, setPorteAgencia] = useState('')
+  const [gerentePJ, setGerentePJ] = useState('')
   const [qtdVisitas, setQtdVisitas] = useState('')
   const [qtdInteracoes, setQtdInteracoes] = useState('')
   const [qtdBraExpre, setQtdBraExpre] = useState('')
@@ -167,10 +238,21 @@ export default function Home() {
   const [mostrarModal, setMostrarModal] = useState(false)
   const [modoEdicao, setModoEdicao] = useState(false)
 
+  // Função para lidar com mudança de Gerente Estadual
+  const handleGerenteEstadualChange = (novoGerente: string) => {
+    setGerenteEstadual(novoGerente)
+    setExecutivo('') // Limpa o executivo quando muda o gerente
+    setAgencia('') // Limpa a agência
+    setPorteAgencia('') // Limpa o porte
+    setGerentePJ('') // Limpa o gerente PJ
+  }
+
   // Função para lidar com mudança de executivo
   const handleExecutivoChange = (novoExecutivo: string) => {
     setExecutivo(novoExecutivo)
     setAgencia('') // Limpa a agência quando muda o executivo
+    setPorteAgencia('') // Limpa o porte
+    setGerentePJ('') // Limpa o gerente PJ
   }
 
   const adicionarCredenciamento = () => {
@@ -362,11 +444,25 @@ export default function Home() {
     carregarRanking()
   }, [filtro, dataFiltro])
 
+  // Atualizar porte e gerente PJ quando agência for selecionada
+  useEffect(() => {
+    if (executivo && agencia) {
+      const agenciaData = getAgenciaData(executivo, agencia)
+      if (agenciaData) {
+        setPorteAgencia(agenciaData.porte || '')
+        setGerentePJ(agenciaData.gerentePJ || '')
+      }
+    } else {
+      setPorteAgencia('')
+      setGerentePJ('')
+    }
+  }, [executivo, agencia])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     // Validação
-    if (!dataFechamento || !executivo || !agencia || !qtdVisitas || !qtdInteracoes || !qtdBraExpre) {
+    if (!dataFechamento || !gerenteEstadual || !executivo || !agencia || !qtdVisitas || !qtdInteracoes || !qtdBraExpre) {
       alert('Preencha todos os campos principais')
       return
     }
@@ -427,6 +523,8 @@ export default function Home() {
           body: JSON.stringify({
             executivo,
             agencia,
+            porteAgencia,
+            gerentePJ,
             qtdVisitas: parseInt(qtdVisitas),
             qtdInteracoes: parseInt(qtdInteracoes),
             qtdBraExpre: parseInt(qtdBraExpre),
@@ -446,8 +544,11 @@ export default function Home() {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
+            gerenteEstadual,
             executivo,
             agencia,
+            porteAgencia,
+            gerentePJ,
             qtdVisitas: parseInt(qtdVisitas),
             qtdInteracoes: parseInt(qtdInteracoes),
             qtdBraExpre: parseInt(qtdBraExpre),
@@ -463,8 +564,11 @@ export default function Home() {
         
         // Limpar formulário
         setDataFechamento(new Date().toISOString().split('T')[0])
+        setGerenteEstadual('')
         setExecutivo('')
         setAgencia('')
+        setPorteAgencia('')
+        setGerentePJ('')
         setQtdVisitas('')
         setQtdInteracoes('')
         setQtdBraExpre('')
@@ -502,9 +606,14 @@ export default function Home() {
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-            Fechamento Diário - CIELO
+            Fechamento Diário - CIELO Regional
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">Sistema de acompanhamento dos Gerentes de Negócios</p>
+          <p className="text-sm sm:text-base text-gray-600 mb-4">Sistema de acompanhamento dos Gerentes de Negócios - Regional Completa</p>
+          <img 
+            src="/banner-cielo-bradesco.webp" 
+            alt="Cielo + Bradesco" 
+            className="mx-auto w-full max-w-md h-auto rounded-lg shadow-md"
+          />
         </div>
 
         {/* Banner Cielo e Bradesco */}
@@ -554,17 +663,41 @@ export default function Home() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="executivo">Executivo (GN) *</Label>
-                      <Select value={executivo} onValueChange={handleExecutivoChange} required>
+                      <Label htmlFor="gerenteEstadual">Gerente Estadual *</Label>
+                      <Select value={gerenteEstadual} onValueChange={handleGerenteEstadualChange} required>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione o Gerente" />
+                          <SelectValue placeholder="Selecione o Gerente Estadual" />
                         </SelectTrigger>
                         <SelectContent>
-                          {executivos.map((exec) => (
-                            <SelectItem key={exec} value={exec}>{exec}</SelectItem>
+                          {Object.keys(gerentesEstaduais).map((gerente) => (
+                            <SelectItem key={gerente} value={gerente}>{gerente}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="executivo">Executivo (GN) *</Label>
+                      {gerenteEstadual ? (
+                        <Select value={executivo} onValueChange={handleExecutivoChange} required>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o GN" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getGNsPorGerenteEstadual(gerenteEstadual).map((gn) => (
+                              <SelectItem key={gn} value={gn}>{gn}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input
+                          id="executivo"
+                          value={executivo}
+                          onChange={(e) => setExecutivo(e.target.value)}
+                          placeholder="Primeiro selecione o Gerente Estadual"
+                          disabled
+                        />
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -592,6 +725,32 @@ export default function Home() {
                         />
                       )}
                     </div>
+
+                    {/* Campos de Porte e Gerente PJ - aparecem automaticamente quando agência é selecionada */}
+                    {agencia && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="space-y-2">
+                          <Label htmlFor="porteAgencia">Porte da Agência</Label>
+                          <Input
+                            id="porteAgencia"
+                            value={porteAgencia}
+                            readOnly
+                            className="bg-white"
+                            placeholder="Selecione uma agência"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="gerentePJ">Gerente PJ</Label>
+                          <Input
+                            id="gerentePJ"
+                            value={gerentePJ}
+                            readOnly
+                            className="bg-white"
+                            placeholder="Selecione uma agência"
+                          />
+                        </div>
+                      </div>
+                    )}
 
                     <div className="space-y-2">
                       <Label htmlFor="qtdVisitas">Qtd de Visitas (Presenciais) *</Label>

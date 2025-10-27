@@ -6,10 +6,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
-        const { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos, cnpjsSimulados } = body
+        const { gerenteEstadual, executivo, agencia, porteAgencia, gerentePJ, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos, cnpjsSimulados } = body
 
     // Validação básica
-    if (!executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined) {
+    if (!gerenteEstadual || !executivo || !agencia || qtdVisitas === undefined || qtdInteracoes === undefined || qtdBraExpre === undefined) {
       return NextResponse.json(
         { error: 'Todos os campos principais são obrigatórios' },
         { status: 400 }
@@ -39,8 +39,11 @@ export async function POST(request: NextRequest) {
 
     const fechamento = await prisma.fechamento.create({
       data: {
+        gerenteEstadual,
         executivo,
         agencia,
+        porteAgencia: porteAgencia || null,
+        gerentePJ: gerentePJ || null,
         qtdVisitas: parseInt(qtdVisitas),
         qtdInteracoes: parseInt(qtdInteracoes),
         qtdBraExpre: parseInt(qtdBraExpre),
