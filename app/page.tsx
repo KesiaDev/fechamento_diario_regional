@@ -608,12 +608,7 @@ export default function Home() {
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
             Fechamento Diário - CIELO Regional
           </h1>
-          <p className="text-sm sm:text-base text-gray-600 mb-4">Sistema de acompanhamento dos Gerentes de Negócios - Regional Completa</p>
-          <img 
-            src="/banner-cielo-bradesco.webp" 
-            alt="Cielo + Bradesco" 
-            className="mx-auto w-full max-w-md h-auto rounded-lg shadow-md"
-          />
+          <p className="text-sm sm:text-base text-gray-600 mb-4">Sistema de acompanhamento dos Gerentes de Negócios - Regional Completa          </p>
         </div>
 
         {/* Banner Cielo e Bradesco */}
