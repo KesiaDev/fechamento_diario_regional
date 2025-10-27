@@ -1,6 +1,14 @@
 // Configuração das agências por executivo - Regional Completa
-// Estrutura: { codigo, nome, porte, gerentePJ }
-export const agenciasPorExecutivo = {
+// Estrutura: { codigo, nome, porte?, gerentePJ? }
+
+export interface Agencia {
+  codigo: string
+  nome: string
+  porte?: string
+  gerentePJ?: string
+}
+
+export const agenciasPorExecutivo: Record<string, Agencia[]> = {
   // EQUIPE KESIA WEIGE NANDI
   'Dionei': [
     { codigo: '1775', nome: 'Farroupilha', porte: 'GRANDE', gerentePJ: 'MARCELO' },
