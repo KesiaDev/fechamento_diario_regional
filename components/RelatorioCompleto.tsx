@@ -155,7 +155,11 @@ interface RelatorioMensal {
   }
 }
 
-export function RelatorioCompleto() {
+interface RelatorioCompletoProps {
+  gerenteEstadual?: string
+}
+
+export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoProps) {
   const [relatorioDiario, setRelatorioDiario] = useState<RelatorioDiario | null>(null)
   const [relatorioSemanal, setRelatorioSemanal] = useState<RelatorioSemanal | null>(null)
   const [relatorioMensal, setRelatorioMensal] = useState<RelatorioMensal | null>(null)
@@ -165,22 +169,24 @@ export function RelatorioCompleto() {
   const carregarRelatorios = async () => {
     setLoading(true)
     try {
+      const gerenteParam = gerenteEstadual ? `&engaruhiEstadual=${encodeURIComponent(gerenteEstadual)}` : ''
+      
       // Carregar relatório diário com dados acumulados
-      const responseDiario = await fetch(`/api/relatorios/diario?data=${dataSelecionada}&acumulado=true`)
+      const responseDiario = await fetch(`/api/relatorios/diario?data=${dataSelecionada}&acumulado=true${gerenteParam}`)
       if (responseDiario.ok) {
         const diario = await responseDiario.json()
         setRelatorioDiario(diario)
       }
 
       // Carregar relatório semanal
-      const responseSemanal = await fetch(`/api/relatorios/semanal?data=${dataSelecionada}`)
+      const responseSemanal = await fetch(`/api/relatorios/semanal?data=${dataSelecionada}${gerenteParam}`)
       if (responseSemanal.ok) {
         const semanal = await responseSemanal.json()
         setRelatorioSemanal(semanal)
       }
 
       // Carregar relatório mensal
-      const responseMensal = await fetch(`/api/relatorios/mensal?data=${dataSelecionada}`)
+      const responseMensal = await fetch(`/api/relatorios/mensal?data=${dataSelecionada}${gerenteParam}`)
       if (responseMensal.ok) {
         const mensal = await responseMensal.json()
         setRelatorioMensal(mensal)
@@ -194,7 +200,7 @@ export function RelatorioCompleto() {
 
   useEffect(() => {
     carregarRelatorios()
-  }, [dataSelecionada])
+  }, [dataSelecionada, gerenteEstadual])
 
   const exportarExcelCompleto = async (tipo: 'diario' | 'semanal' | 'mensal') => {
     try {

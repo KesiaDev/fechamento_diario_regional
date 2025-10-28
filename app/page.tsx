@@ -234,6 +234,7 @@ export default function Home() {
   const [ranking, setRanking] = useState<RankingItem[]>([])
   const [filtro, setFiltro] = useState('dia')
   const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
+  const [filtroEstadual, setFiltroEstadual] = useState('')
   const [loading, setLoading] = useState(false)
   const [registroSelecionado, setRegistroSelecionado] = useState<Fechamento | null>(null)
   const [mostrarModal, setMostrarModal] = useState(false)
@@ -422,7 +423,8 @@ export default function Home() {
 
   const carregarFechamentos = async () => {
     try {
-      const response = await fetch(`/api/fechamentos?filtro=${filtro}&data=${dataFiltro}`)
+      const url = `/api/fechamentos?filtro=${filtro}&data=${dataFiltro}${filtroEstadual ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
+      const response = await fetch(url)
       const data = await response.json()
       setFechamentos(data)
     } catch (error) {
@@ -432,7 +434,8 @@ export default function Home() {
 
   const carregarRanking = async () => {
     try {
-      const response = await fetch(`/api/fechamentos/ranking?filtro=${filtro}&data=${dataFiltro}`)
+      const url = `/api/fechamentos/ranking?filtro=${filtro}&data=${dataFiltro}${filtroEstadual ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
+      const response = await fetch(url)
       const data = await response.json()
       setRanking(data)
     } catch (error) {
@@ -443,7 +446,7 @@ export default function Home() {
   useEffect(() => {
     carregarFechamentos()
     carregarRanking()
-  }, [filtro, dataFiltro])
+  }, [filtro, dataFiltro, filtroEstadual])
 
   // Atualizar porte e gerente PJ quando agência for selecionada
   useEffect(() => {
@@ -1147,6 +1150,20 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="flex-1">
+                      <Label htmlFor="filtroEstadual" className="text-xs text-gray-600">Regional (Estadual)</Label>
+                      <Select value={filtroEstadual} onValueChange={setFiltroEstadual}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Todos os regionais" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">Todos os regionais</SelectItem>
+                          {Object.keys(gerentesEstaduais).map((gerente) => (
+                            <SelectItem key={gerente} value={gerente}>{gerente}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex-1">
                       <Label htmlFor="dataFiltro" className="text-xs text-gray-600">Data de Referência</Label>
                       <Input
                         id="dataFiltro"
@@ -1537,11 +1554,11 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="relatorio" className="space-y-4 sm:space-y-8">
-            <RelatorioSemanal />
+            <RelatorioSemanal gerenteEstadual={filtroEstadual} />
           </TabsContent>
 
           <TabsContent value="relatorio-completo" className="space-y-4 sm:space-y-8">
-            <RelatorioCompleto />
+            <RelatorioCompleto gerenteEstadual={filtroEstadual} />
           </TabsContent>
         </Tabs>
 

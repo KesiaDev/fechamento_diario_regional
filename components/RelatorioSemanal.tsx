@@ -60,7 +60,11 @@ type RelatorioSemanal = {
   }>
 }
 
-export function RelatorioSemanal() {
+interface RelatorioSemanalProps {
+  gerenteEstadual?: string
+}
+
+export function RelatorioSemanal({ gerenteEstadual = '' }: RelatorioSemanalProps) {
   const [relatorio, setRelatorio] = useState<RelatorioSemanal | null>(null)
   const [loading, setLoading] = useState(false)
   const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
@@ -68,7 +72,8 @@ export function RelatorioSemanal() {
   const carregarRelatorio = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/fechamentos/relatorio-semanal?data=${dataFiltro}`)
+      const url = `/api/fechamentos/relatorio-semanal?data=${dataFiltro}${gerenteEstadual ? `&gerenteEstadual=${encodeURIComponent(gerenteEstadual)}` : ''}`
+      const response = await fetch(url)
       const data = await response.json()
       setRelatorio(data)
     } catch (error) {
@@ -80,7 +85,7 @@ export function RelatorioSemanal() {
 
   useEffect(() => {
     carregarRelatorio()
-  }, [dataFiltro])
+  }, [dataFiltro, gerenteEstadual])
 
   const gerarRelatorioPDF = async () => {
     if (!relatorio) return
