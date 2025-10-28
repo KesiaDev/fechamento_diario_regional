@@ -54,6 +54,8 @@ interface RelatorioDiario {
 
 interface RelatorioSemanal {
   periodo: string
+  dataInicio: string
+  dataFim: string
   resumo: {
     totalGNs: number
     gnsBateramMetaCredenciamentos: number
@@ -86,6 +88,15 @@ interface RelatorioSemanal {
     mediaVisitasPorDia: number
     bateuMetaCredenciamentos: boolean
     bateuMetaVisitas: boolean
+    acumuloPorDia: Array<{
+      dia: string
+      diaSemana: string
+      credenciamentosAcumulados: number
+      ativacoesAcumuladas: number
+      visitasAcumuladas: number
+      interacoesAcumuladas: number
+      braExpreAcumulado: number
+    }>
   }>
   dadosPorDia: Array<{
     data: string
@@ -104,8 +115,11 @@ interface RelatorioSemanal {
 interface RelatorioMensal {
   mes: string
   ano: number
+  dataInicio: string
+  dataFim: string
   resumo: {
     totalGNs: number
+    gnsComDados?: number
     gnsBateramMetaCredenciamentos: number
     gnsBateramMetaVisitas: number
     percentualMetaCredenciamentos: number
@@ -147,6 +161,7 @@ interface RelatorioMensal {
     executivo: string
     totalCredenciamentos: number
     totalAtivacoes: number
+    diasTrabalhados: number
   }>
   metas: {
     credenciamentosPorMes: number
@@ -154,6 +169,7 @@ interface RelatorioMensal {
     totalGNs: number
   }
 }
+
 
 interface RelatorioCompletoProps {
   gerenteEstadual?: string
@@ -169,7 +185,7 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
   const carregarRelatorios = async () => {
     setLoading(true)
     try {
-      const gerenteParam = gerenteEstadual ? `&engaruhiEstadual=${encodeURIComponent(gerenteEstadual)}` : ''
+      const gerenteParam = gerenteEstadual ? `&gerenteEstadual=${encodeURIComponent(gerenteEstadual)}` : ''
       
       // Carregar relatório diário com dados acumulados
       const responseDiario = await fetch(`/api/relatorios/diario?data=${dataSelecionada}&acumulado=true${gerenteParam}`)
@@ -204,56 +220,97 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
 
   const exportarExcelCompleto = async (tipo: 'diario' | 'semanal' | 'mensal') => {
     try {
-      let dataInicio = ''
-      let dataFim = ''
-      
+      let data: ExcelDataCompleto | null = null
+
       if (tipo === 'diario' && relatorioDiario) {
-        dataInicio = relatorioDiario.dataISO
-        dataFim = relatorioDiario.dataISO
+        data = {
+          periodo: relatorioDiario.data,
+          totaisGerais: relatorioDiario.totaisGerais,
+          dadosPorGN: relatorioDiario.dadosPorGN.map(gn => ({
+            executivo: gn.executivo,
+            agencia: gn.agencia,
+            diasTrabalhados: 1,
+            diasEsperados: 1,
+            percentualPresenca: 100,
+            totalCredenciamentos: gn.totalCredenciamentos,
+            totalAtivacoes: gn.totalAtivacoes,
+            totalVisitas: gn.qtdVisitas,
+            totalInteracoes: gn.qtdInteracoes,
+            totalBraExpre: gn.qtdBraExpre,
+            totalCnpjsSimulados: gn.totalCnpjsSimulados,
+            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
+            mediaCredenciamentosPorDia: gn.totalCredenciamentos,
+            mediaVisitasPorDia: gn.qtdVisitas,
+            detalhamentoPorDia: []
+          })),
+          metas: relatorioDiario.metas
+        }
       } else if (tipo === 'semanal' && relatorioSemanal) {
-        // Para relatório semanal, usar a data selecionada como referência
-        const dataRef = new Date(dataSelecionada)
-        const startOfWeek = new Date(dataRef)
-        startOfWeek.setDate(dataRef.getDate() - dataRef.getDay() + 1) // Segunda-feira
-        const endOfWeek = new Date(startOfWeek)
-        endOfWeek.setDate(startOfWeek.getDate() + 6) // Domingo
-        
-        dataInicio = startOfWeek.toISOString().split('T')[0]
-        dataFim = endOfWeek.toISOString().split('T')[0]
+        data = {
+          periodo: relatorioSemanal.periodo,
+          totaisGerais: relatorioSemanal.totaisGerais,
+          dadosPorGN: relatorioSemanal.dadosPorGN.map(gn => ({
+            executivo: gn.executivo,
+            agencia: '', // Não disponível no semanal
+            diasTrabalhados: gn.diasTrabalhados,
+            diasEsperados: gn.diasEsperados,
+            percentualPresenca: gn.percentualPresenca,
+            totalCredenciamentos: gn.totalCredenciamentos,
+            totalAtivacoes: gn.totalAtivacoes,
+            totalVisitas: gn.totalVisitas,
+            totalInteracoes: gn.totalInteracoes,
+            totalBraExpre: gn.totalBraExpre,
+            totalCnpjsSimulados: gn.totalCnpjsSimulados,
+            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
+            mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
+            mediaVisitasPorDia: gn.mediaVisitasPorDia,
+            detalhamentoPorDia: gn.acumuloPorDia.map(dia => ({
+              data: dia.dia,
+              diaSemana: dia.diaSemana,
+              agencia: '',
+              visitas: 0,
+              interacoes: dia.interacoesAcumuladas,
+              braExpre: dia.braExpreAcumulado,
+              credenciamentos: dia.credenciamentosAcumulados,
+              volumeCred: dia.ativacoesAcumuladas,
+              simulações: 0,
+              faturamentoSim: 0
+            }))
+          })),
+          metas: relatorioSemanal.metas
+        }
       } else if (tipo === 'mensal' && relatorioMensal) {
-        // Para relatório mensal, usar o mês e ano
-        const dataRef = new Date(dataSelecionada)
-        const startOfMonth = new Date(dataRef.getFullYear(), dataRef.getMonth(), 1)
-        const endOfMonth = new Date(dataRef.getFullYear(), dataRef.getMonth() + 1, 0)
-        
-        dataInicio = startOfMonth.toISOString().split('T')[0]
-        dataFim = endOfMonth.toISOString().split('T')[0]
+        data = {
+          periodo: `${relatorioMensal.mes} ${relatorioMensal.ano}`,
+          totaisGerais: relatorioMensal.totaisGerais,
+          dadosPorGN: relatorioMensal.dadosPorGN.map(gn => ({
+            executivo: gn.executivo,
+            agencia: '', // Não disponível no mensal
+            diasTrabalhados: gn.diasTrabalhados,
+            diasEsperados: gn.diasUteisEsperados,
+            percentualPresenca: gn.percentualPresenca,
+            totalCredenciamentos: gn.totalCredenciamentos,
+            totalAtivacoes: gn.totalAtivacoes,
+            totalVisitas: gn.totalVisitas,
+            totalInteracoes: gn.totalInteracoes,
+            totalBraExpre: gn.totalBraExpre,
+            totalCnpjsSimulados: gn.totalCnpjsSimulados,
+            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
+            mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
+            mediaVisitasPorDia: gn.mediaVisitasPorDia,
+            detalhamentoPorDia: []
+          })),
+          metas: relatorioMensal.metas
+        }
       }
 
-      if (!dataInicio || !dataFim) {
-        alert('Dados não disponíveis para exportação')
-        return
+      if (data) {
+        gerarExcelRelatorioCompleto(data, tipo)
       }
-
-      // Buscar dados completos da API
-      const response = await fetch(`/api/relatorios/excel-completo?dataInicio=${dataInicio}&dataFim=${dataFim}&tipo=${tipo}`)
-      
-      if (!response.ok) {
-        throw new Error('Erro ao buscar dados completos')
-      }
-
-      const excelData: ExcelDataCompleto = await response.json()
-      
-      // Gerar Excel completo
-      const filename = gerarExcelRelatorioCompleto(excelData)
-      
-      alert(`Relatório Excel completo gerado: ${filename}`)
     } catch (error) {
-      console.error('Erro ao gerar Excel completo:', error)
-      alert('Erro ao gerar Excel completo')
+      console.error('Erro ao exportar Excel:', error)
     }
   }
-
 
   if (loading) {
     return (
@@ -268,229 +325,161 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
 
   return (
     <div className="space-y-6">
-      {/* Cabeçalho Moderno */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 className="text-2xl font-bold mb-2">📈 Prestação de Resultados</h2>
-            <p className="text-indigo-100">Acompanhamento completo da equipe CIELO</p>
+      {/* Filtro de Data */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Filtros</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 items-end">
+            <div className="flex-1">
+              <Label htmlFor="dataSelecionada">Data de Referência</Label>
+              <Input
+                id="dataSelecionada"
+                type="date"
+                value={dataSelecionada}
+                onChange={(e) => setDataSelecionada(e.target.value)}
+                className="w-full"
+              />
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Input
-              type="date"
-              value={dataSelecionada}
-              onChange={(e) => setDataSelecionada(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-indigo-200"
-              aria-label="Selecionar data para relatórios"
-            />
-            <Button onClick={carregarRelatorios} variant="secondary" size="sm">
-              <Calendar className="w-4 h-4 mr-2" />
-              Atualizar
-            </Button>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <Tabs defaultValue="diario" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-gray-100 p-1 rounded-lg">
-          <TabsTrigger value="diario" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            📅 Diário
-          </TabsTrigger>
-          <TabsTrigger value="semanal" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            📊 Semanal
-          </TabsTrigger>
-          <TabsTrigger value="mensal" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-            📈 Mensal
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="diario">Relatório Diário</TabsTrigger>
+          <TabsTrigger value="semanal">Relatório Semanal</TabsTrigger>
+          <TabsTrigger value="mensal">Relatório Mensal</TabsTrigger>
         </TabsList>
 
         {/* Relatório Diário */}
         <TabsContent value="diario" className="space-y-6">
-          {relatorioDiario && (
+          {relatorioDiario ? (
             <>
-              {/* Resumo Executivo - Design Moderno */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Users className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-blue-600">{relatorioDiario.resumo.totalGNs}</div>
-                      <div className="text-xs text-gray-600">Total GNs</div>
-                      <div className="text-xs text-gray-500">com dados nesta data</div>
-                    </div>
-                  </div>
-                </div>
+              {/* Resumo Geral */}
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Credenciamentos</CardTitle>
+                    <Award className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{relatorioDiario.totaisGerais.totalCredenciamentos}</div>
+                  </CardContent>
+                </Card>
 
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Target className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-green-600">
-                        {relatorioDiario.resumo.percentualMetaCredenciamentos}%
-                      </div>
-                      <div className="text-xs text-gray-600">Meta Credenciamentos</div>
-                      <div className="text-xs text-gray-500">
-                        {relatorioDiario.resumo.gnsBateramMetaCredenciamentos} de {relatorioDiario.resumo.totalGNs} GNs
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Volume Total R$</CardTitle>
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{formatCurrency(relatorioDiario.totaisGerais.totalAtivacoes)}</div>
+                  </CardContent>
+                </Card>
 
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="h-5 w-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-purple-600">
-                        {relatorioDiario.resumo.percentualMetaVisitas}%
-                      </div>
-                      <div className="text-xs text-gray-600">Meta Visitas</div>
-                      <div className="text-xs text-gray-500">
-                        {relatorioDiario.resumo.gnsBateramMetaVisitas} de {relatorioDiario.resumo.totalGNs} GNs
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Visitas</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{relatorioDiario.totaisGerais.totalVisitas}</div>
+                  </CardContent>
+                </Card>
 
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <Award className="h-5 w-5 text-orange-600" />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-orange-600">{relatorioDiario.totaisGerais.totalCredenciamentos}</div>
-                      <div className="text-xs text-gray-600">Total Credenciamentos</div>
-                      <div className="text-xs text-gray-500">
-                        Meta: {relatorioDiario.metas.credenciamentosPorDia * relatorioDiario.metas.totalGNs}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Interações</CardTitle>
+                    <Target className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{relatorioDiario.totaisGerais.totalInteracoes}</div>
+                  </CardContent>
+                </Card>
               </div>
 
-              {/* Acumulado Regional — Francielen */}
-              <QuadroKesiaNandi 
-                totaisGerais={relatorioDiario.totaisGerais}
-                data={formatDate(relatorioDiario.dataISO)}
-                tipoRelatorio="diario"
-              />
-
-              {/* Detalhamento por GN - Design Moderno */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">👥 Performance por GN</h3>
-                    <p className="text-sm text-gray-600">{relatorioDiario.data} - Detalhamento individual</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button onClick={() => exportarExcelCompleto('diario')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
+              {/* Performance por GN */}
+              <Card>
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <CardTitle>Performance Diária por GN</CardTitle>
+                      <CardDescription>Dados do dia {relatorioDiario.data}</CardDescription>
+                    </div>
+                    <Button onClick={() => exportarExcelCompleto('diario')} variant="outline" size="sm">
                       <Download className="w-4 h-4 mr-2" />
-                      Excel
+                      Exportar Excel
                     </Button>
                   </div>
-                </div>
-                
-                <div className="space-y-4">
-                  {relatorioDiario.dadosPorGN.map((gn, index) => (
-                    <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                            <span className="text-gray-700 font-bold text-sm">
-                              {gn.executivo.charAt(0)}
-                            </span>
-                          </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {relatorioDiario.dadosPorGN.map((gn, index) => (
+                      <div key={index} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-3">
                           <div>
-                            <h4 className="font-semibold text-lg text-gray-900">{gn.executivo}</h4>
+                            <h4 className="font-semibold text-lg">{gn.executivo}</h4>
                             <p className="text-sm text-gray-600">{gn.agencia}</p>
                           </div>
+                          <div className="flex gap-2">
+                            <Badge variant={gn.bateuMetaCredenciamentos ? "default" : "secondary"}>
+                              {gn.bateuMetaCredenciamentos ? (
+                                <><CheckCircle className="w-3 h-3 mr-1" /> Meta Creds</>
+                              ) : (
+                                <><XCircle className="w-3 h-3 mr-1" /> Meta Creds</>
+                              )}
+                            </Badge>
+                            <Badge variant={gn.bateuMetaVisitas ? "default" : "secondary"}>
+                              {gn.bateuMetaVisitas ? (
+                                <><CheckCircle className="w-3 h-3 mr-1" /> Meta Visitas</>
+                              ) : (
+                                <><XCircle className="w-3 h-3 mr-1" /> Meta Visitas</>
+                              )}
+                            </Badge>
+                          </div>
                         </div>
-                        <div className="flex gap-2">
-                          <Badge variant={gn.bateuMetaCredenciamentos ? "default" : "secondary"} className="text-xs">
-                            {gn.bateuMetaCredenciamentos ? (
-                              <><CheckCircle className="w-3 h-3 mr-1" /> Meta Creds</>
-                            ) : (
-                              <><XCircle className="w-3 h-3 mr-1" /> Meta Creds</>
-                            )}
-                          </Badge>
-                          <Badge variant={gn.bateuMetaVisitas ? "default" : "secondary"} className="text-xs">
-                            {gn.bateuMetaVisitas ? (
-                              <><CheckCircle className="w-3 h-3 mr-1" /> Meta Visitas</>
-                            ) : (
-                              <><XCircle className="w-3 h-3 mr-1" /> Meta Visitas</>
-                            )}
-                          </Badge>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-blue-50 rounded-lg p-3">
-                          <p className="text-xs text-blue-600 font-medium">Credenciamentos</p>
-                          <p className="text-lg font-bold text-blue-700">{gn.totalCredenciamentos}</p>
-                        </div>
-                        <div className="bg-green-50 rounded-lg p-3">
-                          <p className="text-xs text-green-600 font-medium">Volume R$</p>
-                          <p className="text-lg font-bold text-green-700">{formatCurrency(gn.totalAtivacoes)}</p>
-                        </div>
-                        <div className="bg-purple-50 rounded-lg p-3">
-                          <p className="text-xs text-purple-600 font-medium">Visitas</p>
-                          <p className="text-lg font-bold text-purple-700">{gn.qtdVisitas}</p>
-                          <p className="text-xs text-purple-500">({gn.percentualVisitas}%)</p>
-                        </div>
-                        <div className="bg-orange-50 rounded-lg p-3">
-                          <p className="text-xs text-orange-600 font-medium">Interações</p>
-                          <p className="text-lg font-bold text-orange-700">{gn.qtdInteracoes}</p>
-                        </div>
-                        <div className="bg-gray-50 rounded-lg p-3">
-                          <p className="text-xs text-gray-600 font-medium">Bra Expre</p>
-                          <p className="text-lg font-bold text-gray-700">{gn.qtdBraExpre}</p>
-                        </div>
-                        <div className="bg-indigo-50 rounded-lg p-3">
-                          <p className="text-xs text-indigo-600 font-medium">CNPJs Simulados</p>
-                          <p className="text-lg font-bold text-indigo-700">{gn.totalCnpjsSimulados}</p>
-                        </div>
-                        <div className="bg-pink-50 rounded-lg p-3">
-                          <p className="text-xs text-pink-600 font-medium">Faturamento Simulado</p>
-                          <p className="text-lg font-bold text-pink-700">{formatCurrency(gn.totalFaturamentoSimulado)}</p>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                          <div>
+                            <p className="text-gray-600">Credenciamentos:</p>
+                            <p className="font-semibold">{gn.totalCredenciamentos}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Volume R$:</p>
+                            <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Visitas:</p>
+                            <p className="font-semibold">{gn.qtdVisitas}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Interações:</p>
+                            <p className="font-semibold">{gn.qtdInteracoes}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </>
+          ) : (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-center text-gray-500">Nenhum dado disponível para o relatório diário.</p>
+              </CardContent>
+            </Card>
           )}
         </TabsContent>
 
         {/* Relatório Semanal */}
         <TabsContent value="semanal" className="space-y-6">
-          {relatorioSemanal && (
+          {relatorioSemanal ? (
             <>
-              {/* Acumulado Regional — Késia Nandi */}
-              <QuadroKesiaNandi 
-                totaisGerais={relatorioSemanal.totaisGerais}
-                data={relatorioSemanal.periodo}
-                tipoRelatorio="semanal"
-              />
-
-              {/* Resumo Executivo */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Período</CardTitle>
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-lg font-bold">{relatorioSemanal.periodo}</div>
-                    <p className="text-xs text-muted-foreground">Semana de trabalho</p>
-                  </CardContent>
-                </Card>
-
+              {/* Resumo Geral */}
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Meta Credenciamentos</CardTitle>
@@ -533,22 +522,73 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                     </p>
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Visitas</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{relatorioSemanal.totaisGerais.totalVisitas}</div>
+                    <p className="text-xs text-muted-foreground">
+                      Meta: {relatorioSemanal.metas.visitasPorSemana * relatorioSemanal.metas.totalGNs}
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
 
-              {/* Performance por GN */}
+              {/* Ranking Semanal */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Ranking Semanal</CardTitle>
+                  <CardDescription>Top performers da semana</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {relatorioSemanal.dadosPorGN
+                      .filter(gn => gn.totalCredenciamentos > 0)
+                      .sort((a, b) => {
+                        if (b.totalCredenciamentos !== a.totalCredenciamentos) {
+                          return b.totalCredenciamentos - a.totalCredenciamentos
+                        }
+                        return b.totalAtivacoes - a.totalAtivacoes
+                      })
+                      .slice(0, 10)
+                      .map((gn, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold">
+                              {index + 1}
+                            </div>
+                            <div>
+                              <p className="font-semibold">{gn.executivo}</p>
+                              <p className="text-sm text-gray-600">
+                                {gn.diasTrabalhados} de {gn.diasEsperados} dias ({gn.percentualPresenca}% presença)
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold text-green-600">{gn.totalCredenciamentos} creds</p>
+                            <p className="text-sm text-gray-600">{formatCurrency(gn.totalAtivacoes)}</p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Performance Semanal por GN */}
               <Card>
                 <CardHeader>
                   <div className="flex justify-between items-center">
                     <div>
                       <CardTitle>Performance Semanal por GN</CardTitle>
-                      <CardDescription>Resumo da semana de trabalho</CardDescription>
+                      <CardDescription>Resumo da semana - {relatorioSemanal.periodo}</CardDescription>
                     </div>
-                    <div className="flex gap-2">
-                      <Button onClick={() => exportarExcelCompleto('semanal')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
-                        <Download className="w-4 h-4 mr-2" />
-                        Excel
-                      </Button>
-                    </div>
+                    <Button onClick={() => exportarExcelCompleto('semanal')} variant="outline" size="sm">
+                      <Download className="w-4 h-4 mr-2" />
+                      Exportar Excel
+                    </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -559,7 +599,7 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                           <div>
                             <h4 className="font-semibold text-lg">{gn.executivo}</h4>
                             <p className="text-sm text-gray-600">
-                              {gn.diasTrabalhados} de {gn.diasEsperados} dias ({gn.percentualPresenca}% presença)
+                              {gn.diasTrabalhados} de {gn.diasEsperados} dias úteis ({gn.percentualPresenca}% presença)
                             </p>
                           </div>
                           <div className="flex gap-2">
@@ -582,69 +622,62 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                         
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                           <div>
-                            <p className="text-gray-600">Credenciamentos</p>
+                            <p className="text-gray-600">Credenciamentos:</p>
                             <p className="font-semibold">{gn.totalCredenciamentos}</p>
-                            <p className="text-xs text-gray-500">Média: {gn.mediaCredenciamentosPorDia}/dia</p>
+                            <p className="text-xs text-gray-500">Média: {gn.mediaCredenciamentosPorDia.toFixed(2)}/dia</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Volume R$</p>
+                            <p className="text-gray-600">Volume R$:</p>
                             <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Visitas</p>
+                            <p className="text-gray-600">Visitas:</p>
                             <p className="font-semibold">{gn.totalVisitas}</p>
-                            <p className="text-xs text-gray-500">Média: {gn.mediaVisitasPorDia}/dia</p>
+                            <p className="text-xs text-gray-500">Média: {gn.mediaVisitasPorDia.toFixed(2)}/dia</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Interações</p>
+                            <p className="text-gray-600">Interações:</p>
                             <p className="font-semibold">{gn.totalInteracoes}</p>
                           </div>
-                          <div>
-                            <p className="text-gray-600">Bra Expre</p>
-                            <p className="font-semibold">{gn.totalBraExpre}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">CNPJs Simulados</p>
-                            <p className="font-semibold">{gn.totalCnpjsSimulados}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Faturamento Simulado</p>
-                            <p className="font-semibold">{formatCurrency(gn.totalFaturamentoSimulado)}</p>
-                          </div>
                         </div>
+
+                        {/* Acúmulo Progressivo por Dia */}
+                        {gn.acumuloPorDia.length > 0 && (
+                          <div className="mt-4 pt-4 border-t">
+                            <p className="text-sm font-semibold mb-2">Evolução da Semana:</p>
+                            <div className="grid grid-cols-5 gap-2 text-xs">
+                              {gn.acumuloPorDia.map((dia, idx) => (
+                                <div key={idx} className="text-center p-2 bg-gray-50 rounded">
+                                  <p className="font-semibold">{dia.dia}</p>
+                                  <p className="text-gray-600">{dia.diaSemana.split(',')[0]}</p>
+                                  <p className="text-green-600 font-bold mt-1">{dia.credenciamentosAcumulados}</p>
+                                  <p className="text-xs text-gray-500">{formatCurrency(dia.ativacoesAcumuladas)}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
             </>
+          ) : (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-center text-gray-500">Nenhum dado disponível para o relatório semanal.</p>
+              </CardContent>
+            </Card>
           )}
         </TabsContent>
 
         {/* Relatório Mensal */}
         <TabsContent value="mensal" className="space-y-6">
-          {relatorioMensal && (
+          {relatorioMensal ? (
             <>
-              {/* Acumulado Regional — Késia Nandi */}
-              <QuadroKesiaNandi 
-                totaisGerais={relatorioMensal.totaisGerais}
-                data={relatorioMensal.mes}
-                tipoRelatorio="mensal"
-              />
-
-              {/* Resumo Executivo */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Mês/Ano</CardTitle>
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-lg font-bold">{relatorioMensal.mes}</div>
-                    <p className="text-xs text-muted-foreground">Período completo</p>
-                  </CardContent>
-                </Card>
-
+              {/* Resumo Geral */}
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Meta Credenciamentos</CardTitle>
@@ -687,49 +720,46 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                     </p>
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Visitas</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{relatorioMensal.totaisGerais.totalVisitas}</div>
+                    <p className="text-xs text-muted-foreground">
+                      Meta: {relatorioMensal.metas.visitasPorMes * relatorioMensal.metas.totalGNs}
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Ranking Mensal */}
               <Card>
                 <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle>Ranking Mensal</CardTitle>
-                      <CardDescription>Classificação por credenciamentos e ativações</CardDescription>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button onClick={() => exportarExcelCompleto('mensal')} variant="outline" size="sm" className="hover:bg-green-50 hover:border-green-200 bg-green-100">
-                        <Download className="w-4 h-4 mr-2" />
-                        Excel
-                      </Button>
-                    </div>
-                  </div>
+                  <CardTitle>Ranking Mensal</CardTitle>
+                  <CardDescription>Top performers do mês de {relatorioMensal.mes}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {relatorioMensal.ranking.map((gn, index) => (
                       <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
-                            index === 0 ? 'bg-yellow-500' : 
-                            index === 1 ? 'bg-gray-400' : 
-                            index === 2 ? 'bg-orange-600' : 'bg-blue-500'
-                          }`}>
+                          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold">
                             {index + 1}
                           </div>
                           <div>
-                            <h4 className="font-semibold">{gn.executivo}</h4>
+                            <p className="font-semibold">{gn.executivo}</p>
                             <p className="text-sm text-gray-600">
-                              {gn.totalCredenciamentos} credenciamentos • {formatCurrency(gn.totalAtivacoes)}
+                              {gn.diasTrabalhados} dias trabalhados
                             </p>
                           </div>
                         </div>
-                        {index < 3 && (
-                          <Badge variant="default">
-                            {index === 0 ? '🥇 1º Lugar' : 
-                             index === 1 ? '🥈 2º Lugar' : '🥉 3º Lugar'}
-                          </Badge>
-                        )}
+                        <div className="text-right">
+                          <p className="font-semibold text-green-600">{gn.totalCredenciamentos} creds</p>
+                          <p className="text-sm text-gray-600">{formatCurrency(gn.totalAtivacoes)}</p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -739,8 +769,16 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
               {/* Performance por GN */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Performance Mensal por GN</CardTitle>
-                  <CardDescription>Resumo completo do mês</CardDescription>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <CardTitle>Performance Mensal por GN</CardTitle>
+                      <CardDescription>Resumo completo do mês</CardDescription>
+                    </div>
+                    <Button onClick={() => exportarExcelCompleto('mensal')} variant="outline" size="sm">
+                      <Download className="w-4 h-4 mr-2" />
+                      Exportar Excel
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -773,34 +811,34 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                         
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                           <div>
-                            <p className="text-gray-600">Credenciamentos</p>
+                            <p className="text-gray-600">Credenciamentos:</p>
                             <p className="font-semibold">{gn.totalCredenciamentos}</p>
-                            <p className="text-xs text-gray-500">Média: {gn.mediaCredenciamentosPorDia}/dia</p>
+                            <p className="text-xs text-gray-500">Média: {gn.mediaCredenciamentosPorDia.toFixed(2)}/dia</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Volume R$</p>
+                            <p className="text-gray-600">Volume R$:</p>
                             <p className="font-semibold">{formatCurrency(gn.totalAtivacoes)}</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Visitas</p>
-                            <p className="font-semibold">{gn.totalVisitas}</p>
-                            <p className="text-xs text-gray-500">Média: {gn.mediaVisitasPorDia}/dia</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Interações</p>
-                            <p className="font-semibold">{gn.totalInteracoes}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Bra Expre</p>
+                            <p className="text-gray-600">Bra Expre:</p>
                             <p className="font-semibold">{gn.totalBraExpre}</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">CNPJs Simulados</p>
+                            <p className="text-gray-600">CNPJs Simulados:</p>
                             <p className="font-semibold">{gn.totalCnpjsSimulados}</p>
                           </div>
                           <div>
-                            <p className="text-gray-600">Faturamento Simulado</p>
+                            <p className="text-gray-600">Visitas:</p>
+                            <p className="font-semibold">{gn.totalVisitas}</p>
+                            <p className="text-xs text-gray-500">Média: {gn.mediaVisitasPorDia.toFixed(2)}/dia</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Faturamento Simulado:</p>
                             <p className="font-semibold">{formatCurrency(gn.totalFaturamentoSimulado)}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-600">Interações:</p>
+                            <p className="font-semibold">{gn.totalInteracoes}</p>
                           </div>
                         </div>
                       </div>
@@ -809,6 +847,12 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                 </CardContent>
               </Card>
             </>
+          ) : (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-center text-gray-500">Nenhum dado disponível para o relatório mensal.</p>
+              </CardContent>
+            </Card>
           )}
         </TabsContent>
       </Tabs>
