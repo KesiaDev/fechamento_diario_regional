@@ -372,7 +372,10 @@ export default function Home() {
 
   const fecharModal = () => {
     setMostrarModal(false)
-    setRegistroSelecionado(null)
+    // Não limpar registroSelecionado se estiver em modo edição
+    if (!modoEdicao) {
+      setRegistroSelecionado(null)
+    }
   }
 
   const excluirRegistro = async (id: string) => {
@@ -434,16 +437,22 @@ export default function Home() {
     setCnpjsSalvos(cnpjsFormatados)
     setCnpjsSimulados([])
     
-    // Configurar modo de edição
+    // Configurar modo de edição - IMPORTANTE: fazer ANTES de fechar modal
     setRegistroSelecionado(fechamento)
     setModoEdicao(true)
-    fecharModal()
+    
+    // Fechar modal sem limpar registroSelecionado
+    setMostrarModal(false)
     
     // Ir para aba de lançamento
     const lancamentoTab = document.querySelector('[value="lancamento"]') as HTMLElement
     if (lancamentoTab) {
       lancamentoTab.click()
     }
+    
+    console.log('✅ Modo edição ativado para registro:', fechamento.id)
+    console.log('✅ Registro selecionado:', fechamento.id)
+    console.log('✅ Modo edição:', true)
   }
 
   const excluirRegistroDireto = async (id: string) => {
@@ -578,7 +587,17 @@ export default function Home() {
     try {
       let response
       
-      if (modoEdicao && registroSelecionado && registroSelecionado.id) {
+      // Verificação mais rigorosa do modo edição
+      const emModoEdicao = modoEdicao && registroSelecionado && registroSelecionado.id
+      
+      console.log('🔍 Verificação modo edição:', {
+        modoEdicao,
+        temRegistroSelecionado: !!registroSelecionado,
+        temId: registroSelecionado?.id,
+        emModoEdicao
+      })
+      
+      if (emModoEdicao) {
         // Modo edição - atualizar registro existente
         console.log('🔄 Editando registro:', registroSelecionado.id)
         console.log('📝 Modo edição ativo:', modoEdicao)
