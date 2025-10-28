@@ -1549,29 +1549,43 @@ export default function Home() {
                   <div className="mt-3">
                     {(() => {
                       const maxCreds = Math.max(...ranking.map(gn => gn.totalCredenciamentos))
-                      const gnsEmpatados = ranking.filter(gn => gn.totalCredenciamentos === maxCreds)
+                      // Filtra apenas quem tem máximo de credenciamentos
+                      const candidatosCreds = ranking.filter(gn => gn.totalCredenciamentos === maxCreds)
                       
-                      if (gnsEmpatados.length === 1) {
+                      // Verifica se há empate em volume também
+                      const maxVolumeEntreCandidatos = Math.max(...candidatosCreds.map(gn => gn.totalAtivacoes))
+                      // Filtra quem tem empate em AMBOS: creds E volume
+                      const gnsEmpatados = candidatosCreds.filter(gn => gn.totalAtivacoes === maxVolumeEntreCandidatos)
+                      
+                      // Se todos os candidatos a maior quantidade também têm o mesmo volume, mostra todos
+                      // Caso contrário, mostra só os que têm empate em ambos os critérios
+                      const gnsParaMostrar = gnsEmpatados.length > 0 ? gnsEmpatados : candidatosCreds
+                      
+                      if (gnsParaMostrar.length === 1) {
                         return (
                           <div className="flex items-center gap-3">
-                            <FotoGN nome={gnsEmpatados[0].executivo} tamanho="sm" />
+                            <FotoGN nome={gnsParaMostrar[0].executivo} tamanho="sm" />
                             <div className="flex-1">
-                              <div className="font-bold text-yellow-700 text-sm">{gnsEmpatados[0].executivo}</div>
-                              <div className="text-xs text-yellow-600">{gnsEmpatados[0].totalCredenciamentos} creds</div>
+                              <div className="font-bold text-yellow-700 text-sm">{gnsParaMostrar[0].executivo}</div>
+                              <div className="text-xs text-yellow-600">{gnsParaMostrar[0].totalCredenciamentos} creds</div>
                             </div>
                           </div>
                         )
                       } else {
+                        const temEmpateAmbos = gnsEmpatados.length > 1
                         return (
                           <div className="space-y-2">
                             <div className="text-xs text-yellow-600 font-medium">
-                              {gnsEmpatados.length} GNs empatados com {maxCreds} creds
+                              {temEmpateAmbos 
+                                ? `${gnsEmpatados.length} GNs empatados: ${maxCreds} creds e R$ ${formatCurrency(maxVolumeEntreCandidatos)}`
+                                : `${gnsParaMostrar.length} GNs empatados com ${maxCreds} creds`}
                             </div>
                             <div className="flex flex-wrap gap-2">
-                              {gnsEmpatados.map((gn, index) => (
+                              {gnsParaMostrar.map((gn) => (
                                 <div key={gn.executivo} className="flex items-center gap-2 bg-yellow-100 rounded-lg px-2 py-1">
                                   <FotoGN nome={gn.executivo} tamanho="sm" />
                                   <span className="text-xs font-medium text-yellow-700">{gn.executivo}</span>
+                                  <span className="text-xs text-yellow-600">({gn.totalCredenciamentos} creds / R$ {formatCurrency(gn.totalAtivacoes)})</span>
                                 </div>
                               ))}
                             </div>
