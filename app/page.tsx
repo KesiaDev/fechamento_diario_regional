@@ -218,8 +218,11 @@ type CnpjSimulado = {
 
 type Fechamento = {
   id: string
+  gerenteEstadual?: string | null
   executivo: string
   agencia: string
+  porteAgencia?: string | null
+  gerentePJ?: string | null
   qtdVisitas: number
   qtdInteracoes: number
   qtdBraExpre: number
@@ -233,14 +236,14 @@ type Fechamento = {
     ra: boolean
     cesta: string
     instalaDireto: boolean
-    nomeGerentePJ: string
+    nomeGerentePJ: string | null
   }>
   cnpjsSimulados: Array<{
     id: string
     cnpj: string
     nomeEmpresa: string
     faturamento: number
-    comentarios: string
+    comentarios: string | null
   }>
 }
 
