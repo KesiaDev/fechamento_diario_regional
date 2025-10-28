@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, endOfDay, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { executivos } from '@/lib/agencias'
+import { executivos, getGNsPorGerenteEstadual } from '@/lib/agencias'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const data = searchParams.get('data') || new Date().toISOString().split('T')[0]
+    const gerenteEstadual = searchParams.get('gerenteEstadual')
     
     const dataReferencia = new Date(data + 'T12:00:00')
     const startDate = startOfWeek(dataReferencia, { weekStartsOn: 1 }) // Segunda-feira
@@ -21,7 +22,8 @@ export async function GET(request: NextRequest) {
         data: {
           gte: startDate,
           lte: endDate
-        }
+        },
+        ...(gerenteEstadual && gerenteEstadual !== 'todas' ? { gerenteEstadual } : {})
       },
       include: {
         credenciamentos: true,
@@ -32,9 +34,15 @@ export async function GET(request: NextRequest) {
       ]
     })
 
-    // Usar a lista completa de executivos da regional
-    // Isso garante que todos os GNs cadastrados apareçam, mesmo sem fechamentos
-    const gnsEsperados = [...executivos].sort()
+    // Filtrar GNs baseado no gerente estadual, se fornecido
+    let gnsEsperados: string[]
+    if (gerenteEstadual && gerenteEstadual !== 'todas') {
+      // Obter apenas os GNs do gerente estadual selecionado
+      gnsEsperados = getGNsPorGerenteEstadual(gerenteEstadual).sort()
+    } else {
+      // Usar a lista completa de executivos da regional
+      gnsEsperados = [...executivos].sort()
+    }
     
     // Calcular totais gerais da semana
     const totaisGerais = {
