@@ -11,29 +11,64 @@ export interface Agencia {
 export const agenciasPorExecutivo: Record<string, Agencia[]> = {
   // EQUIPE KESIA WEIGE NANDI
   'Dionei': [
-    { codigo: '1775', nome: 'Farroupilha', porte: 'Grande', gerentesPJ: ['MATHEUS GALLIO CERON', 'BRUNA PEGORARO'] },
-    { codigo: '2869', nome: 'Rua Marques Herval_Ucs', porte: 'Médio', gerentesPJ: ['RAFAEL BINOTTI', 'ADRIANO PEDRO TOSS'] },
-    { codigo: '2176', nome: 'Pio X', porte: 'Grande' },
-    { codigo: '2162', nome: 'Flores da Cunha', porte: 'Médio', gerentesPJ: ['JUSCELAINE BAGGIO PADILHA'] },
-    { codigo: '269', nome: 'Caxias Do Sul_Cto', porte: 'Mega', gerentesPJ: ['FRANCIELE ARCARO NAZARIO', 'GABRIEL MULLER MARTINS', 'NATHAN SCHROEDER', 'MORGANA ZATTERA'] },
-    { codigo: '1619', nome: 'S.Marcos', porte: 'Pequeno', gerentesPJ: ['RAFAELA DENISE MOREIRA'] },
-    { codigo: '1778', nome: 'Torres', porte: 'Médio', gerentesPJ: ['MARCELO DE MATOS CARNEIRO'] }
+    { codigo: '1587', nome: 'Sta.Cruz Do Sul', porte: 'Grande' },
+    { codigo: '388', nome: 'Santa Maria_Cto', porte: 'Grande' },
+    { codigo: '3273', nome: 'Cruz Alta', porte: 'Pequeno' },
+    { codigo: '2074', nome: 'Venancio Aires', porte: 'Medio' },
+    { codigo: '1532', nome: 'Ibiruba', porte: 'Pequeno' },
+    { codigo: '1299', nome: 'Nao Me Toque', porte: 'Pequeno' },
+    { codigo: '3270', nome: 'Cachoeira Do Sul', porte: 'Pequeno' }
   ],
-  'Sheila': [],
-  'Jeferson': [],
-  'Jhonattan': [],
-  'Renan': [],
+  'Sheila': [
+    { codigo: '269', nome: 'Caxias Do Sul_Cto', porte: 'Mega' },
+    { codigo: '2162', nome: 'Flores Da Cunha', porte: 'Medio' },
+    { codigo: '2869', nome: 'Rua Marques Herval_Ucs', porte: 'Medio' },
+    { codigo: '1778', nome: 'Torres', porte: 'Medio' },
+    { codigo: '1775', nome: 'Farroupilha', porte: 'Grande' },
+    { codigo: '1619', nome: 'S.Marcos', porte: 'Pequeno' },
+    { codigo: '2176', nome: 'Pio X_Ucxdosul', porte: 'Pequeno' }
+  ],
+  'Jeferson': [
+    { codigo: '3274', nome: 'Erechim', porte: 'Medio' },
+    { codigo: '1393', nome: 'Vacaria', porte: 'Medio' },
+    { codigo: '3153', nome: 'Passo Fundo_Cto', porte: 'Grande' },
+    { codigo: '908', nome: 'Nova Prata', porte: 'Medio' },
+    { codigo: '2954', nome: 'Guapore', porte: 'Pequeno' },
+    { codigo: '1900', nome: 'Soledade', porte: 'Pequeno' },
+    { codigo: '2382', nome: 'Lagoa Vermelha', porte: 'Medio' },
+    { codigo: '1571', nome: 'Marau', porte: 'Pequeno' }
+  ],
+  'Jhonattan': [
+    { codigo: '1797', nome: 'Gramado', porte: 'Grande' },
+    { codigo: '1590', nome: 'Canela', porte: 'Medio' },
+    { codigo: '3269', nome: 'Bento Goncalves_Cto', porte: 'Grande' },
+    { codigo: '563', nome: 'Lajeado', porte: 'Grande' },
+    { codigo: '2166', nome: 'Estrela', porte: 'Pequeno' },
+    { codigo: '1636', nome: 'Encantado', porte: 'Medio' },
+    { codigo: '1779', nome: 'Garibaldi', porte: 'Medio' }
+  ],
+  'Renan': [
+    { codigo: '3276', nome: 'Sta.Rosa', porte: 'Medio' },
+    { codigo: '1252', nome: 'Palmeira Das Missoes', porte: 'Medio' },
+    { codigo: '3275', nome: 'Ijui', porte: 'Medio' },
+    { codigo: '1674', nome: 'Panambi', porte: 'Medio' },
+    { codigo: '1596', nome: 'Frederico Westphalen', porte: 'Pequeno' },
+    { codigo: '3277', nome: 'Sto.Angelo', porte: 'Medio' },
+    { codigo: '1534', nome: 'V2', porte: 'Medio' },
+    { codigo: '3272', nome: 'Carazinho', porte: 'Medio' },
+    { codigo: '1798', nome: 'S.Luiz Gonzaga', porte: 'Pequeno' }
+  ],
   'Cristian': [
-    { codigo: '3159', nome: 'Uruguaiana', porte: 'Grande', gerentesPJ: ['ERICSON FERNANDES', 'MAURICIO ROLDEN ESTEVEZ'] },
-    { codigo: '1635', nome: 'Dom Pedrito', porte: 'Pequeno', gerentesPJ: ['ROBERTO CARLOS RUOSO'] },
-    { codigo: '1306', nome: 'Rosário do Sul', porte: 'Pequeno', gerentesPJ: ['JOAO PAULO PEREIRA'] },
-    { codigo: '1649', nome: 'Santiago', porte: 'Pequeno', gerentesPJ: ['JOSE ANTONIO DE PAULA'] },
-    { codigo: '3278', nome: 'São Borja', porte: 'Médio', gerentesPJ: ['ALESSANDRO LEONELLI DE SOUZA', 'MARCOS PAULO DE OLIVEIRA'] },
-    { codigo: '3268', nome: 'Alegrete', porte: 'Grande', gerentesPJ: ['KAREN FLORIANO', 'NATHALIE LUZ COSTA'] },
-    { codigo: '3157', nome: 'Santana do Livramento', porte: 'Médio', gerentesPJ: ['JOEL MARTINS PEDROSO'] },
-    { codigo: '0439', nome: 'Bagé', porte: 'Mega', gerentesPJ: ['CAROLINA BRUM BARBOZA', 'FLORIANO RODRIGUES DA SILVA JR', 'FLAVIA PINO CORA', 'GABRIEL VASCONCELOS'] },
-    { codigo: '3279', nome: 'São Gabriel', porte: 'Pequeno' },
-    { codigo: '1533', nome: 'S. Sepé', porte: 'Pequeno' }
+    { codigo: '439', nome: 'Bage', porte: 'Medio' },
+    { codigo: '3159', nome: 'Uruguaiana', porte: 'Grande' },
+    { codigo: '3268', nome: 'Alegrete', porte: 'Medio' },
+    { codigo: '3157', nome: 'Santana Livramento', porte: 'Medio' },
+    { codigo: '1649', nome: 'Santiago', porte: 'Medio' },
+    { codigo: '1635', nome: 'Dom Pedrito', porte: 'Pequeno' },
+    { codigo: '3279', nome: 'Sao Gabriel', porte: 'Medio' },
+    { codigo: '3278', nome: 'Sao Borja', porte: 'Medio' },
+    { codigo: '1306', nome: 'Rosario Do Sul', porte: 'Pequeno' },
+    { codigo: '1533', nome: 'S.Sepe', porte: 'Pequeno' }
   ],
 
   // EQUIPE AMANDA ALINE TRINDADE JUSTI
