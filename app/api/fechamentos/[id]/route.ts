@@ -52,46 +52,48 @@ export async function PUT(
       cnpj.cnpj.toString().trim() !== '' && cnpj.nomeEmpresa.toString().trim() !== ''
     )
 
-    // Atualizar fechamento com credenciamentos e CNPJs simulados
-    const fechamento = await prisma.fechamento.update({
-      where: { id },
-      data: {
-        gerenteEstadual: gerenteEstadual || fechamentoExistente.gerenteEstadual,
-        executivo,
-        agencia,
-        porteAgencia: porteAgencia || null,
-        gerentePJ: gerentePJ || null,
-        qtdVisitas: parseInt(qtdVisitas),
-        qtdInteracoes: parseInt(qtdInteracoes),
-        qtdBraExpre: parseInt(qtdBraExpre),
-        data: data ? new Date(data + 'T12:00:00') : fechamentoExistente.data,
-        credenciamentos: {
-          deleteMany: {},
-          create: credenciamentosValidos.map((cred: any) => ({
-            qtdCredenciamentos: 1, // Cada credenciamento adicionado = 1 credenciamento
-            ativacoesValor: 0, // Campo removido, sempre 0
-            ec: cred.ec,
-            volumeRS: parseFloat(cred.volumeRS),
-            ra: cred.ra === 'true' || cred.ra === true || cred.ra === 'True' || cred.ra === 'TRUE',
-            cesta: cred.cesta,
-            instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true || cred.instalaDireto === 'True' || cred.instalaDireto === 'TRUE',
-            nomeGerentePJ: cred.nomeGerentePJ || null,
-          }))
+    // Atualizar fechamento com credenciamentos e CNPJs simulados usando transação
+    const fechamento = await prisma.$transaction(async (tx) => {
+      return await tx.fechamento.update({
+        where: { id },
+        data: {
+          gerenteEstadual: gerenteEstadual || fechamentoExistente.gerenteEstadual,
+          executivo,
+          agencia,
+          porteAgencia: porteAgencia || null,
+          gerentePJ: gerentePJ || null,
+          qtdVisitas: parseInt(qtdVisitas),
+          qtdInteracoes: parseInt(qtdInteracoes),
+          qtdBraExpre: parseInt(qtdBraExpre),
+          data: data ? new Date(data + 'T12:00:00') : fechamentoExistente.data,
+          credenciamentos: {
+            deleteMany: {},
+            create: credenciamentosValidos.map((cred: any) => ({
+              qtdCredenciamentos: 1, // Cada credenciamento adicionado = 1 credenciamento
+              ativacoesValor: 0, // Campo removido, sempre 0
+              ec: cred.ec,
+              volumeRS: parseFloat(cred.volumeRS),
+              ra: cred.ra === 'true' || cred.ra === true || cred.ra === 'True' || cred.ra === 'TRUE',
+              cesta: cred.cesta,
+              instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true || cred.instalaDireto === 'True' || cred.instalaDireto === 'TRUE',
+              nomeGerentePJ: cred.nomeGerentePJ || null,
+            }))
+          },
+          cnpjsSimulados: {
+            deleteMany: {},
+            create: cnpjsValidos.map((cnpj: any) => ({
+              cnpj: cnpj.cnpj,
+              nomeEmpresa: cnpj.nomeEmpresa,
+              faturamento: parseFloat(cnpj.faturamento),
+              comentarios: cnpj.comentarios || null,
+            }))
+          }
         },
-        cnpjsSimulados: {
-          deleteMany: {},
-          create: cnpjsValidos.map((cnpj: any) => ({
-            cnpj: cnpj.cnpj,
-            nomeEmpresa: cnpj.nomeEmpresa,
-            faturamento: parseFloat(cnpj.faturamento),
-            comentarios: cnpj.comentarios || null,
-          }))
+        include: {
+          credenciamentos: true,
+          cnpjsSimulados: true
         }
-      },
-      include: {
-        credenciamentos: true,
-        cnpjsSimulados: true
-      }
+      })
     })
 
     return NextResponse.json(fechamento, { status: 200 })

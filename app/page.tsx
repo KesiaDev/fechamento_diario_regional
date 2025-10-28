@@ -76,7 +76,7 @@ const getAgenciaData = (executivo: string, agenciaSelecionada: string) => {
   
   return agenciaEncontrada || null
 }
-import { Plus, Trash2, TrendingUp, Users, Award, Check, Eye, Edit, X } from 'lucide-react'
+import { Plus, Trash2, TrendingUp, Users, Award, Check, Eye, Edit, X, Download } from 'lucide-react'
 import { RelatorioSemanal } from '@/components/RelatorioSemanal'
 import { RelatorioCompleto } from '@/components/RelatorioCompleto'
 
@@ -735,7 +735,7 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="lancamento" className="w-full">
-          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-2 sm:grid-cols-4 mb-4 sm:mb-6 gap-1 sm:gap-2 h-auto">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-2 sm:grid-cols-5 mb-4 sm:mb-6 gap-1 sm:gap-2 h-auto">
             <TabsTrigger value="lancamento" className="text-[10px] sm:text-xs md:text-sm py-1.5 sm:py-2 px-2 sm:px-3">
               <span className="hidden md:inline">📝 </span>Lançamento
             </TabsTrigger>
@@ -747,6 +747,9 @@ export default function Home() {
             </TabsTrigger>
             <TabsTrigger value="relatorio-completo" className="text-[10px] sm:text-xs md:text-sm py-1.5 sm:py-2 px-2 sm:px-3">
               <span className="hidden md:inline">📊 </span>Prestação
+            </TabsTrigger>
+            <TabsTrigger value="backup" className="text-[10px] sm:text-xs md:text-sm py-1.5 sm:py-2 px-2 sm:px-3">
+              <span className="hidden md:inline">🔒 </span>Backup
             </TabsTrigger>
           </TabsList>
 
