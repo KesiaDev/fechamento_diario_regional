@@ -11,44 +11,13 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 import { getAgenciasPorExecutivo, executivos } from '@/lib/agencias'
 
 // Função para formatar número para exibição (com pontos e vírgulas)
-const formatCurrencyInput = (value: string | number): string => {
+const formatCurrencyDisplay = (value: string | number): string => {
   if (!value || value === '') return ''
-  const strValue = typeof value === 'string' ? value : value.toString()
   
-  // Se já está formatado, retorna como está
-  if (strValue.includes(',') || strValue.includes('.')) {
-    // Remove tudo exceto dígitos e vírgula
-    const cleaned = strValue.replace(/[^\d,]/g, '')
-    // Garante que só tem uma vírgula
-    const parts = cleaned.split(',')
-    if (parts.length > 2) {
-      // Se tem múltiplas vírgulas, mantém apenas números
-      const numbers = cleaned.replace(/[^\d]/g, '')
-      return numbers
-    }
-    
-    // Se tem vírgula, formata corretamente
-    if (parts.length === 2) {
-      const intPart = parts[0].replace(/\D/g, '')
-      const decPart = parts[1].slice(0, 2).replace(/\D/g, '')
-      
-      if (intPart === '') return `0,${decPart.padEnd(2, '0')}`
-      
-      const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-      return `${formattedInt},${decPart.padEnd(2, '0')}`
-    }
-    
-    // Sem vírgula, apenas números inteiros
-    const numbers = cleaned.replace(/\D/g, '')
-    if (numbers === '') return ''
-    
-    const formatted = numbers.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-    return formatted
-  }
+  // Converte para número
+  const numValue = typeof value === 'string' ? parseFloat(value.replace(',', '.')) : value
   
-  // Se é número puro
-  const numValue = parseFloat(strValue.replace(',', '.'))
-  if (isNaN(numValue)) return strValue
+  if (isNaN(numValue)) return ''
   
   return new Intl.NumberFormat('pt-BR', {
     minimumFractionDigits: 2,
@@ -60,7 +29,8 @@ const formatCurrencyInput = (value: string | number): string => {
 const parseCurrencyInput = (value: string): string => {
   if (!value) return ''
   // Remove pontos (separadores de milhar) e substitui vírgula por ponto
-  return value.replace(/\./g, '').replace(',', '.')
+  const cleaned = value.replace(/\./g, '').replace(',', '.')
+  return cleaned
 }
 
 // Configuração dos Gerentes Estaduais e suas equipes
@@ -1037,27 +1007,36 @@ export default function Home() {
                                 <Label>Faturamento (R$) *</Label>
                                 <Input
                                   type="text"
-                                  value={cnpj.faturamento ? formatCurrencyInput(cnpj.faturamento) : ''}
+                                  value={cnpj.faturamento || ''}
                                   onChange={(e) => {
                                     let inputValue = e.target.value
-                                    // Permite apenas números, vírgula e ponto
-                                    inputValue = inputValue.replace(/[^\d,.]/g, '')
-                                    // Remove pontos e mantém apenas a última vírgula se houver
+                                    // Remove caracteres inválidos, mantém apenas números e uma vírgula
+                                    inputValue = inputValue.replace(/[^\d,]/g, '')
+                                    
+                                    // Garante apenas uma vírgula
                                     const parts = inputValue.split(',')
                                     if (parts.length > 2) {
                                       inputValue = parts[0] + ',' + parts.slice(1).join('')
                                     }
-                                    // Salva o valor formatado
+                                    
+                                    // Limita decimais a 2 casas
+                                    if (parts.length === 2 && parts[1].length > 2) {
+                                      inputValue = parts[0] + ',' + parts[1].slice(0, 2)
+                                    }
+                                    
                                     atualizarCnpjSimulado(cnpj.id, 'faturamento', inputValue)
                                   }}
                                   onBlur={(e) => {
-                                    // Ao sair do campo, garante formatação correta
+                                    // Ao sair do campo, formata e salva como número
                                     const rawValue = parseCurrencyInput(e.target.value)
                                     if (rawValue && !isNaN(parseFloat(rawValue))) {
+                                      // Salva como número (ponto decimal) para o backend
                                       atualizarCnpjSimulado(cnpj.id, 'faturamento', rawValue)
+                                    } else if (!e.target.value || e.target.value === '') {
+                                      atualizarCnpjSimulado(cnpj.id, 'faturamento', '')
                                     }
                                   }}
-                                  placeholder="0,00"
+                                  placeholder="Ex: 1000,00 ou 1.000,00"
                                   required
                                 />
                               </div>
@@ -1165,27 +1144,36 @@ export default function Home() {
                                 <Label>Volume R$ *</Label>
                                 <Input
                                   type="text"
-                                  value={cred.volumeRS ? formatCurrencyInput(cred.volumeRS) : ''}
+                                  value={cred.volumeRS || ''}
                                   onChange={(e) => {
                                     let inputValue = e.target.value
-                                    // Permite apenas números, vírgula e ponto
-                                    inputValue = inputValue.replace(/[^\d,.]/g, '')
-                                    // Remove pontos e mantém apenas a última vírgula se houver
+                                    // Remove caracteres inválidos, mantém apenas números e uma vírgula
+                                    inputValue = inputValue.replace(/[^\d,]/g, '')
+                                    
+                                    // Garante apenas uma vírgula
                                     const parts = inputValue.split(',')
                                     if (parts.length > 2) {
                                       inputValue = parts[0] + ',' + parts.slice(1).join('')
                                     }
-                                    // Salva o valor formatado
+                                    
+                                    // Limita decimais a 2 casas
+                                    if (parts.length === 2 && parts[1].length > 2) {
+                                      inputValue = parts[0] + ',' + parts[1].slice(0, 2)
+                                    }
+                                    
                                     atualizarCredenciamento(cred.id, 'volumeRS', inputValue)
                                   }}
                                   onBlur={(e) => {
-                                    // Ao sair do campo, garante formatação correta
+                                    // Ao sair do campo, formata e salva como número
                                     const rawValue = parseCurrencyInput(e.target.value)
                                     if (rawValue && !isNaN(parseFloat(rawValue))) {
+                                      // Salva como número (ponto decimal) para o backend
                                       atualizarCredenciamento(cred.id, 'volumeRS', rawValue)
+                                    } else if (!e.target.value || e.target.value === '') {
+                                      atualizarCredenciamento(cred.id, 'volumeRS', '')
                                     }
                                   }}
-                                  placeholder="0,00"
+                                  placeholder="Ex: 1000,00 ou 1.000,00"
                                   required
                                 />
                               </div>
