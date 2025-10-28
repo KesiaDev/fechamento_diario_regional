@@ -318,7 +318,7 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                     <div>
                       <div className="text-2xl font-bold text-blue-600">{relatorioDiario.resumo.totalGNs}</div>
                       <div className="text-xs text-gray-600">Total GNs</div>
-                      <div className="text-xs text-gray-500">de {relatorioDiario.metas.totalGNs} esperados</div>
+                      <div className="text-xs text-gray-500">com dados nesta data</div>
                     </div>
                   </div>
                 </div>

@@ -160,7 +160,7 @@ export async function GET(request: NextRequest) {
       metas: {
         credenciamentosPorDia: 2,
         visitasPorDia: 6,
-        totalGNs: 5
+        totalGNs: gnsComDados // Quantidade dinâmica de GNs com dados
       },
       geradoEm: new Date().toISOString()
     }

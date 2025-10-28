@@ -158,7 +158,7 @@ export async function GET(request: NextRequest) {
       metas: {
         credenciamentosPorMes: 44, // 2 por dia x 22 dias úteis
         visitasPorMes: 132, // 6 por dia x 22 dias úteis
-        totalGNs: 5
+        totalGNs: gnsComDados // Quantidade dinâmica de GNs com dados
       },
       geradoEm: new Date().toISOString()
     }
