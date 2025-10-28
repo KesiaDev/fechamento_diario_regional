@@ -1006,8 +1006,7 @@ export default function Home() {
               <div className="text-gray-600">
                 <div className="text-2xl mb-2">📋</div>
                 <h4 className="font-semibold mb-2">Nenhum CNPJ Simulado</h4>
-                <p className="text-sm">Você pode adicionar CNPJs simulados se desejar.</p>
-                <p className="text-xs mt-1 text-gray-500">Clique em "Adicionar CNPJ" se houver simulações.</p>
+                <p className="text-sm">Inclua todos os CNPJs simulados do dia de hoje que não foram credenciados e o valor de faturamento dessa empresa.</p>
               </div>
             </CardContent>
           </Card>
