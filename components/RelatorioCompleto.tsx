@@ -224,6 +224,8 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
 
       if (tipo === 'diario' && relatorioDiario) {
         data = {
+          titulo: 'Relatório Diário',
+          tipoRelatorio: 'diario',
           periodo: relatorioDiario.data,
           totaisGerais: relatorioDiario.totaisGerais,
           dadosPorGN: relatorioDiario.dadosPorGN.map(gn => ({
@@ -241,12 +243,20 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
             totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
             mediaCredenciamentosPorDia: gn.totalCredenciamentos,
             mediaVisitasPorDia: gn.qtdVisitas,
-            detalhamentoPorDia: []
-          })),
-          metas: relatorioDiario.metas
+            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
+            bateuMetaVisitas: gn.bateuMetaVisitas,
+            detalhamentoPorDia: [],
+            resumoSemanal: {
+              diasComCredenciamentos: 0,
+              diasComSimulacoes: 0,
+              gerentesPJEnvolvidos: []
+            }
+          }))
         }
       } else if (tipo === 'semanal' && relatorioSemanal) {
         data = {
+          titulo: 'Relatório Semanal',
+          tipoRelatorio: 'semanal',
           periodo: relatorioSemanal.periodo,
           totaisGerais: relatorioSemanal.totaisGerais,
           dadosPorGN: relatorioSemanal.dadosPorGN.map(gn => ({
@@ -264,23 +274,35 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
             totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
             mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
             mediaVisitasPorDia: gn.mediaVisitasPorDia,
+            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
+            bateuMetaVisitas: gn.bateuMetaVisitas,
             detalhamentoPorDia: gn.acumuloPorDia.map(dia => ({
               data: dia.dia,
               diaSemana: dia.diaSemana,
               agencia: '',
-              visitas: 0,
-              interacoes: dia.interacoesAcumuladas,
-              braExpre: dia.braExpreAcumulado,
-              credenciamentos: dia.credenciamentosAcumulados,
-              volumeCred: dia.ativacoesAcumuladas,
-              simulações: 0,
-              faturamentoSim: 0
-            }))
-          })),
-          metas: relatorioSemanal.metas
+              qtdVisitas: dia.visitasAcumuladas,
+              qtdInteracoes: dia.interacoesAcumuladas,
+              qtdBraExpre: dia.braExpreAcumulado,
+              credenciamentos: [],
+              cnpjsSimulados: [],
+              resumoDia: {
+                totalCredenciamentos: dia.credenciamentosAcumulados,
+                totalVolume: dia.ativacoesAcumuladas,
+                totalSimulacoes: 0,
+                totalFaturamentoSimulado: 0
+              }
+            })),
+            resumoSemanal: {
+              diasComCredenciamentos: gn.diasTrabalhados,
+              diasComSimulacoes: 0,
+              gerentesPJEnvolvidos: []
+            }
+          }))
         }
       } else if (tipo === 'mensal' && relatorioMensal) {
         data = {
+          titulo: 'Relatório Mensal',
+          tipoRelatorio: 'mensal',
           periodo: `${relatorioMensal.mes} ${relatorioMensal.ano}`,
           totaisGerais: relatorioMensal.totaisGerais,
           dadosPorGN: relatorioMensal.dadosPorGN.map(gn => ({
@@ -298,9 +320,15 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
             totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
             mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
             mediaVisitasPorDia: gn.mediaVisitasPorDia,
-            detalhamentoPorDia: []
-          })),
-          metas: relatorioMensal.metas
+            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
+            bateuMetaVisitas: gn.bateuMetaVisitas,
+            detalhamentoPorDia: [],
+            resumoSemanal: {
+              diasComCredenciamentos: gn.diasTrabalhados,
+              diasComSimulacoes: 0,
+              gerentesPJEnvolvidos: []
+            }
+          }))
         }
       }
 
