@@ -806,7 +806,7 @@ export default function Home() {
                                 }}
                                 className="w-full"
                               >
-                                Usar outro Gerente PJ
+                                Outro
                               </Button>
                             </div>
                           ) : (
