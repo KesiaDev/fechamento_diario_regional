@@ -158,8 +158,9 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
     { codigo: '340', nome: 'Campos Novos' }
   ],
 
-    // EQUIPE BRUNA PASSOS LEMES
-    'Raymi': [
+  // EQUIPE BRUNA PASSOS LEMES
+  'Tba Exe 2 - Blumenau': [],
+  'Raymi': [
       { codigo: '5750', nome: 'Avenida_Uctba' },
       { codigo: '5717', nome: 'Ahu_Urb.Curitiba' },
       { codigo: '3158', nome: 'Alto Maracana_Ucolom' },
@@ -384,7 +385,7 @@ export const executivos = [
   'Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos',
   
   // EQUIPE BRUNA PASSOS LEMES
-  'Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian',
+  'Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian', 'Tba Exe 2 - Blumenau',
   
   // EQUIPE GUILHERME MORAES DORNEMANN
   'Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina',
