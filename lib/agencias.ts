@@ -237,6 +237,7 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
     ],
 
   // EQUIPE GUILHERME MORAES DORNEMANN
+  'Tba Exe 2 - Porto_Alegre_Norte': [],
   'Ricardo': [
     { codigo: '1589', nome: 'Esteio' },
     { codigo: '1491', nome: 'Montenegro' },
@@ -388,7 +389,7 @@ export const executivos = [
   'Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian', 'Tba Exe 2 - Blumenau',
   
   // EQUIPE GUILHERME MORAES DORNEMANN
-  'Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina',
+  'Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina', 'Tba Exe 2 - Porto_Alegre_Norte',
   
   // EQUIPE TBA ESTADUAL BRA PARANA 2
   'Joslayne', 'Lyon', 'Elisandra', 'Lilian', 'Nicodemos', 

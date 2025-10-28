@@ -16,7 +16,7 @@ const gerentesEstaduais = {
   'AMANDA ALINE TRINDADE JUSTI': ['Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner'],
   'ADRIANO CORREA GOMES': ['Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos'],
   'BRUNA PASSOS LEMES': ['Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian', 'Tba Exe 2 - Blumenau'],
-  'GUILHERME MORAES DORNEMANN': ['Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina'],
+  'GUILHERME MORAES DORNEMANN': ['Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina', 'Tba Exe 2 - Porto_Alegre_Norte'],
   'TBA ESTADUAL BRA PARANA 2': ['Joslayne', 'Lyon', 'Elisandra', 'Jessyka', 'Nicodemos', 'Lilian']
 }
 
