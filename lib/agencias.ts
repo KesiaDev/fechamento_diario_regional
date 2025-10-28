@@ -315,8 +315,7 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
     { codigo: '1369', nome: 'Piraquara' },
     { codigo: '5693', nome: 'Campina Grande Sul' },
     { codigo: '6472', nome: 'Quatro Barras' },
-    { codigo: '5718', nome: 'Rua Xv Novembro_Uctba' },
-    { codigo: '5716', nome: 'B.Agua Verde_Uctba' }
+    { codigo: '5718', nome: 'Rua Xv Novembro_Uctba' }
   ],
   'Elisandra': [
     { codigo: '430', nome: 'Palmeira' },
@@ -338,6 +337,7 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
     { codigo: '3993', nome: 'Sao Mateus Do Sul' }
   ],
   'Nicodemos': [
+    { codigo: '5716', nome: 'B.Agua Verde_Uctba' },
     { codigo: '926', nome: 'Colon.Murici_Usjpin' },
     { codigo: '2037', nome: 'V.Hauer_Uctba' },
     { codigo: '2995', nome: 'Boqueirao_Uctba' },
@@ -405,7 +405,7 @@ export const executivos = [
   'Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina', 'Tba Exe 2 - Porto_Alegre_Norte',
   
   // EQUIPE TBA ESTADUAL BRA PARANA 2
-  'Joslayne', 'Lyon', 'Elisandra', 'Lilian', 'Nicodemos', 
-  'Tba Exe 1 - Curitiba_Norte', 'Tba Exe 1 - Curitiba_Sul', 
+  'Joslayne', 'Lyon', 'Elisandra', 'Lilian', 'Nicodemos',
+  'Tba Exe 1 - Curitiba_Norte', 'Tba Exe 1 - Curitiba_Sul',
   'Tba Exe 2 - Curitiba_Sul', 'Tba Exe 4 - Curitiba_Norte'
 ]
