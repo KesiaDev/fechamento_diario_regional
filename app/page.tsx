@@ -623,8 +623,8 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
-            Fechamento Diário - CIELO Regional
+          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb- Uganda sm:mb-2">
+            Fechamento diário - Sulcesso
           </h1>
           <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-2 sm:mb-4 px-2">
             Sistema de acompanhamento dos Gerentes de Negócios - Regional Completa
