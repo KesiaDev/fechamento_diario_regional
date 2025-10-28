@@ -530,10 +530,20 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Debug: verificar estado de edição
+    console.log('🔍 Submit - modoEdicao:', modoEdicao)
+    console.log('🔍 Submit - registroSelecionado:', registroSelecionado?.id)
+    
     // Validação
     if (!dataFechamento || !gerenteEstadual || !executivo || !agencia || !qtdVisitas || !qtdInteracoes || !qtdBraExpre) {
       alert('Preencha todos os campos principais')
       return
+    }
+    
+    // Verificar se está em modo edição mas perdeu o registro selecionado
+    if (modoEdicao && !registroSelecionado) {
+      console.warn('⚠️ Modo edição ativo mas registroSelecionado está null - resetando modoEdicao')
+      setModoEdicao(false)
     }
 
     // CNPJs Simulados agora são opcionais

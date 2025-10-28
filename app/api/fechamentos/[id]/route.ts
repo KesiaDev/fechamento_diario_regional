@@ -11,7 +11,7 @@ export async function PUT(
     
     console.log('🔄 API PUT - Atualizando registro:', id)
     
-    const { executivo, agencia, porteAgencia, gerentePJ, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos, cnpjsSimulados } = body
+    const { gerenteEstadual, executivo, agencia, porteAgencia, gerentePJ, qtdVisitas, qtdInteracoes, qtdBraExpre, data, credenciamentos, cnpjsSimulados } = body
     
     console.log('📝 Dados recebidos:', { executivo, agencia, qtdVisitas, qtdInteracoes, qtdBraExpre, data })
 
@@ -56,6 +56,7 @@ export async function PUT(
     const fechamento = await prisma.fechamento.update({
       where: { id },
       data: {
+        gerenteEstadual: gerenteEstadual || fechamentoExistente.gerenteEstadual,
         executivo,
         agencia,
         porteAgencia: porteAgencia || null,
