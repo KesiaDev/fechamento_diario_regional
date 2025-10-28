@@ -578,11 +578,12 @@ export default function Home() {
     try {
       let response
       
-      if (modoEdicao && registroSelecionado) {
+      if (modoEdicao && registroSelecionado && registroSelecionado.id) {
         // Modo edição - atualizar registro existente
         console.log('🔄 Editando registro:', registroSelecionado.id)
         console.log('📝 Modo edição ativo:', modoEdicao)
-        console.log('📝 Registro selecionado:', registroSelecionado.executivo)
+        console.log('📝 Registro selecionado ID:', registroSelecionado.id)
+        console.log('📝 Registro selecionado executivo:', registroSelecionado.executivo)
         console.log('📝 Dados enviados:', {
           executivo,
           agencia,
