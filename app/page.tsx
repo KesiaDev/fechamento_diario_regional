@@ -1478,6 +1478,20 @@ export default function Home() {
               <h2 className="text-xl sm:text-2xl font-bold">🏆 Ranking dos GNs</h2>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1">
+                  <Label htmlFor="filtroEstadualRanking" className="text-xs text-gray-600">Visão Regional</Label>
+                  <Select value={filtroEstadual} onValueChange={setFiltroEstadual}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Todos os regionais" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todas">Visão Regional (Todos)</SelectItem>
+                      {Object.keys(gerentesEstaduais).map((gerente) => (
+                        <SelectItem key={gerente} value={gerente}>{gerente}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
                   <Label htmlFor="dataFiltroRanking" className="text-xs text-gray-600">Data de Referência</Label>
                   <Input
                     id="dataFiltroRanking"
