@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, endOfDay, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { executivos } from '@/lib/agencias'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,8 +32,9 @@ export async function GET(request: NextRequest) {
       ]
     })
 
-    // Lista de GNs esperados
-    const gnsEsperados = ['Dionei', 'Sheila', 'Renan', 'Jeferson', 'Jhonattan', 'Cristian']
+    // Usar a lista completa de executivos da regional
+    // Isso garante que todos os GNs cadastrados apareçam, mesmo sem fechamentos
+    const gnsEsperados = [...executivos].sort()
     
     // Calcular totais gerais da semana
     const totaisGerais = {
@@ -130,6 +132,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Calcular métricas de performance
+    const totalGNsCadastrados = dadosPorGN.length // Total de GNs cadastrados na regional
     const gnsComDados = dadosPorGN.filter(gn => gn.diasTrabalhados > 0).length
     const gnsBateramMetaCreds = dadosPorGN.filter(gn => gn.bateuMetaCredenciamentos).length
     const gnsBateramMetaVisitas = dadosPorGN.filter(gn => gn.bateuMetaVisitas).length
@@ -164,7 +167,8 @@ export async function GET(request: NextRequest) {
       dataInicio: startDate.toISOString(),
       dataFim: endDate.toISOString(),
       resumo: {
-        totalGNs: gnsComDados,
+        totalGNs: totalGNsCadastrados, // Total de GNs cadastrados
+        gnsComDados: gnsComDados, // GNs que têm fechamentos
         gnsBateramMetaCredenciamentos: gnsBateramMetaCreds,
         gnsBateramMetaVisitas: gnsBateramMetaVisitas,
         percentualMetaCredenciamentos: percentualMetaCreds,
@@ -176,7 +180,7 @@ export async function GET(request: NextRequest) {
       metas: {
         credenciamentosPorSemana: 10, // 10 mínimos por semana (segunda a sexta)
         visitasPorSemana: 30, // 6 por dia x 5 dias úteis
-        totalGNs: gnsComDados // Quantidade dinâmica de GNs com dados
+        totalGNs: totalGNsCadastrados // Total de GNs cadastrados na regional
       },
       geradoEm: new Date().toISOString()
     }
