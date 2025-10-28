@@ -10,6 +10,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { getAgenciasPorExecutivo, executivos } from '@/lib/agencias'
 
+// Função para formatar número para exibição (com pontos e vírgulas)
+const formatNumberDisplay = (value: string | number): string => {
+  if (!value || value === '') return ''
+  const numValue = typeof value === 'string' ? parseFloat(value.replace(/[^\d,]/g, '').replace(',', '.')) : value
+  if (isNaN(numValue)) return ''
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(numValue)
+}
+
+// Função para converter formato brasileiro para número
+const parseFormattedNumber = (value: string): string => {
+  return value.replace(/[^\d,]/g, '').replace(',', '.')
+}
+
 // Configuração dos Gerentes Estaduais e suas equipes
 const gerentesEstaduais = {
   'KESIA WEIGE NANDI': ['Sheila', 'Jeferson', 'Jhonattan', 'Renan', 'Dionei', 'Cristian'],
@@ -983,12 +999,13 @@ export default function Home() {
                               <div className="space-y-2">
                                 <Label>Faturamento (R$) *</Label>
                                 <Input
-                                  type="number"
-                                  step="0.01"
-                                  value={cnpj.faturamento}
-                                  onChange={(e) => atualizarCnpjSimulado(cnpj.id, 'faturamento', e.target.value)}
-                                  placeholder="0.00"
-                                  min="0"
+                                  type="text"
+                                  value={formatNumberDisplay(cnpj.faturamento)}
+                                  onChange={(e) => {
+                                    const rawValue = parseFormattedNumber(e.target.value)
+                                    atualizarCnpjSimulado(cnpj.id, 'faturamento', rawValue)
+                                  }}
+                                  placeholder="0,00"
                                   required
                                 />
                               </div>
@@ -1095,12 +1112,13 @@ export default function Home() {
                               <div className="space-y-2">
                                 <Label>Volume R$ *</Label>
                                 <Input
-                                  type="number"
-                                  step="0.01"
-                                  value={cred.volumeRS}
-                                  onChange={(e) => atualizarCredenciamento(cred.id, 'volumeRS', e.target.value)}
-                                  placeholder="0.00"
-                                  min="0"
+                                  type="text"
+                                  value={formatNumberDisplay(cred.volumeRS)}
+                                  onChange={(e) => {
+                                    const rawValue = parseFormattedNumber(e.target.value)
+                                    atualizarCredenciamento(cred.id, 'volumeRS', rawValue)
+                                  }}
+                                  placeholder="0,00"
                                   required
                                 />
                               </div>
