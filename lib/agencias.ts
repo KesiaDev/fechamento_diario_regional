@@ -100,6 +100,7 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
   ],
 
   // EQUIPE ADRIANO CORREA GOMES
+  'Tba Exe 1 - Cascavel': [],
   'Vander': [
     { codigo: '3187', nome: 'Foz Do Iguacu_Centro' },
     { codigo: '1987', nome: 'Nova Cascavel_Ucvel' },
@@ -383,7 +384,7 @@ export const executivos = [
   'Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner',
   
   // EQUIPE ADRIANO CORREA GOMES
-  'Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos',
+  'Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos', 'Tba Exe 1 - Cascavel',
   
   // EQUIPE BRUNA PASSOS LEMES
   'Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian', 'Tba Exe 2 - Blumenau',
