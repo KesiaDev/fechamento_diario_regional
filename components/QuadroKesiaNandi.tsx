@@ -36,7 +36,7 @@ export function QuadroKesiaNandi({ totaisGerais, data, tipoRelatorio }: QuadroKe
         <div className="flex items-center gap-3">
           <img
             src={`/fotos/Kesia.jpeg?v=${Date.now()}`}
-            alt="Késia Nandi"
+            alt="Francielen"
             className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
             onError={(e) => {
               const img = e.currentTarget as HTMLImageElement
@@ -63,7 +63,7 @@ export function QuadroKesiaNandi({ totaisGerais, data, tipoRelatorio }: QuadroKe
             }}
           />
           <div>
-            <h3 className="text-xl font-bold text-gray-900">Acumulado Regional — Késia Nandi</h3>
+            <h3 className="text-xl font-bold text-gray-900">Acumulado Regional — Francielen</h3>
             <p className="text-sm text-gray-600">Gerente Estadual • {data} • {getTipoTexto()}</p>
           </div>
         </div>

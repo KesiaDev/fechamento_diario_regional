@@ -373,7 +373,7 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                 </div>
               </div>
 
-              {/* Acumulado Regional — Késia Nandi */}
+              {/* Acumulado Regional — Francielen */}
               <QuadroKesiaNandi 
                 totaisGerais={relatorioDiario.totaisGerais}
                 data={formatDate(relatorioDiario.dataISO)}
