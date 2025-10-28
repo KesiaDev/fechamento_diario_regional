@@ -399,8 +399,11 @@ export default function Home() {
   const editarRegistro = (fechamento: Fechamento) => {
     // Preencher formulário com dados do registro
     setDataFechamento(fechamento.data.split('T')[0])
+    setGerenteEstadual(fechamento.gerenteEstadual || '')
     setExecutivo(fechamento.executivo)
     setAgencia(fechamento.agencia)
+    setPorteAgencia(fechamento.porteAgencia || '')
+    setGerentePJ(fechamento.gerentePJ || '')
     setQtdVisitas(fechamento.qtdVisitas.toString())
     setQtdInteracoes(fechamento.qtdInteracoes.toString())
     setQtdBraExpre(fechamento.qtdBraExpre.toString())
