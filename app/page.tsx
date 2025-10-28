@@ -623,8 +623,14 @@ export default function Home() {
             qtdInteracoes: parseInt(qtdInteracoes),
             qtdBraExpre: parseInt(qtdBraExpre),
             data: dataFechamento,
-            credenciamentos,
-            cnpjsSimulados: cnpjsSalvos
+            credenciamentos: credenciamentos.map(cred => ({
+              ...cred,
+              volumeRS: parseCurrencyInput(cred.volumeRS || '0')
+            })),
+            cnpjsSimulados: cnpjsSalvos.map(cnpj => ({
+              ...cnpj,
+              faturamento: parseCurrencyInput(cnpj.faturamento || '0')
+            }))
           })
         })
       }
