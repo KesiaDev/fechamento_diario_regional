@@ -760,30 +760,62 @@ export default function Home() {
                         <div className="space-y-2">
                           <Label htmlFor="gerentePJ">Gerente PJ</Label>
                           {gerentesPJDisponiveis.length > 1 ? (
-                            <Select value={gerentePJ} onValueChange={setGerentePJ}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione o Gerente PJ" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {gerentesPJDisponiveis.map((pj) => (
-                                  <SelectItem key={pj} value={pj}>{pj}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                            <div className="space-y-2">
+                              <Select value={gerentePJ} onValueChange={(value) => {
+                                if (value === 'outro') {
+                                  setGerentePJ('')
+                                } else {
+                                  setGerentePJ(value)
+                                }
+                              }}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Selecione o Gerente PJ" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {gerentesPJDisponiveis.map((pj) => (
+                                    <SelectItem key={pj} value={pj}>{pj}</SelectItem>
+                                  ))}
+                                  <SelectItem value="outro">Outro</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              {(gerentePJ === '' || !gerentesPJDisponiveis.includes(gerentePJ)) && (
+                                <Input
+                                  id="gerentePJOutro"
+                                  value={gerentePJ}
+                                  onChange={(e) => setGerentePJ(e.target.value)}
+                                  placeholder="Digite o nome do Gerente PJ"
+                                  className="bg-white"
+                                />
+                              )}
+                            </div>
                           ) : gerentesPJDisponiveis.length === 1 ? (
-                            <Input
-                              id="gerentePJ"
-                              value={gerentePJ}
-                              readOnly
-                              className="bg-white"
-                            />
+                            <div className="space-y-2">
+                              <Input
+                                id="gerentePJ"
+                                value={gerentePJ}
+                                readOnly
+                                className="bg-white"
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setGerentePJ('')
+                                  setGerentesPJDisponiveis([])
+                                }}
+                                className="w-full"
+                              >
+                                Usar outro Gerente PJ
+                              </Button>
+                            </div>
                           ) : (
                             <Input
                               id="gerentePJ"
                               value={gerentePJ}
-                              readOnly
+                              onChange={(e) => setGerentePJ(e.target.value)}
                               className="bg-white"
-                              placeholder="Agência sem gerente PJ definido"
+                              placeholder="Digite o nome do Gerente PJ ou 'outro'"
                             />
                           )}
                         </div>
