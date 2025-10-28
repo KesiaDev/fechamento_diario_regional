@@ -386,7 +386,7 @@ export function RelatorioSemanal({ gerenteEstadual = '' }: RelatorioSemanalProps
             </div>
             <div>
               <div className="text-lg font-bold text-green-600">{formatCurrency(relatorio.estatisticas.totalAtivacoes)}</div>
-              <div className="text-xs text-gray-600">Total Ativado</div>
+              <div className="text-xs text-gray-600">Total R$</div>
             </div>
           </div>
         </div>

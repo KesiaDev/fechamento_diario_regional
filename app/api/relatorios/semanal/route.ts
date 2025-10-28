@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, endOfDay } from 'date-fns'
+import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, endOfDay, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 export const dynamic = 'force-dynamic'
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     
     const dataReferencia = new Date(data + 'T12:00:00')
     const startDate = startOfWeek(dataReferencia, { weekStartsOn: 1 }) // Segunda-feira
-    const endDate = endOfWeek(dataReferencia, { weekStartsOn: 1 }) // Domingo
+    const endDate = addDays(startDate, 4) // Sexta-feira (segunda + 4 dias)
 
     // Buscar todos os fechamentos da semana
     const fechamentos = await prisma.fechamento.findMany({
@@ -95,9 +95,14 @@ export async function GET(request: NextRequest) {
         bateuMetaVisitas: totalVisitas >= 30, // Meta individual: 30 visitas/semana
         fechamentos: fechamentosGN,
         acumuloPorDia: (() => {
-          // Calcular acúmulo progressivo por dia da semana
+          // Calcular acúmulo progressivo por dia da semana (Segunda a Sexta)
           const diasSemana = eachDayOfInterval({ start: startDate, end: endDate })
-          return diasSemana.map((dia, index) => {
+          // Filtrar apenas dias úteis (Segunda a Sexta)
+          const diasUteis = diasSemana.filter(dia => {
+            const diaSemana = dia.getDay()
+            return diaSemana >= 1 && diaSemana <= 5 // 1 = Segunda, 5 = Sexta
+          })
+          return diasUteis.map((dia, index) => {
             const fechamentosAteHoje = fechamentosGN.filter(f => 
               f.data <= endOfDay(dia)
             )
@@ -131,9 +136,13 @@ export async function GET(request: NextRequest) {
     const percentualMetaCreds = gnsComDados > 0 ? Math.round((gnsBateramMetaCreds / gnsComDados) * 100) : 0
     const percentualMetaVisitas = gnsComDados > 0 ? Math.round((gnsBateramMetaVisitas / gnsComDados) * 100) : 0
 
-    // Dados por dia da semana
+    // Dados por dia da semana (Segunda a Sexta)
     const diasDaSemana = eachDayOfInterval({ start: startDate, end: endDate })
-    const dadosPorDia = diasDaSemana.map(dia => {
+    const diasUteis = diasDaSemana.filter(dia => {
+      const diaSemana = dia.getDay()
+      return diaSemana >= 1 && diaSemana <= 5 // 1 = Segunda, 5 = Sexta
+    })
+    const dadosPorDia = diasUteis.map(dia => {
       const fechamentosDoDia = fechamentos.filter(f => isSameDay(f.data, dia))
       const totalCredsDia = fechamentosDoDia.reduce((sum, f) => 
         sum + f.credenciamentos.reduce((s, c) => s + c.qtdCredenciamentos, 0), 0)
@@ -165,9 +174,9 @@ export async function GET(request: NextRequest) {
       dadosPorGN,
       dadosPorDia,
       metas: {
-        credenciamentosPorSemana: 10, // 2 por dia x 5 dias
-        visitasPorSemana: 30, // 6 por dia x 5 dias
-        totalGNs: 5
+        credenciamentosPorSemana: 10, // 10 mínimos por semana (segunda a sexta)
+        visitasPorSemana: 30, // 6 por dia x 5 dias úteis
+        totalGNs: gnsComDados // Quantidade dinâmica de GNs com dados
       },
       geradoEm: new Date().toISOString()
     }

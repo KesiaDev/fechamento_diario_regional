@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { startOfWeek, endOfWeek, format } from 'date-fns'
+import { startOfWeek, endOfWeek, format, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 export const dynamic = 'force-dynamic'
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     
     // Calcular início e fim da semana (segunda a sexta)
     const inicioSemana = startOfWeek(dataReferencia, { weekStartsOn: 1 }) // Segunda
-    const fimSemana = endOfWeek(dataReferencia, { weekStartsOn: 1 }) // Domingo
+    const fimSemana = addDays(inicioSemana, 4) // Sexta-feira (segunda + 4 dias)
     
     // Buscar fechamentos da semana
     const fechamentos = await prisma.fechamento.findMany({
