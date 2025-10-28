@@ -333,7 +333,7 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
       }
 
       if (data) {
-        gerarExcelRelatorioCompleto(data, tipo)
+        gerarExcelRelatorioCompleto(data)
       }
     } catch (error) {
       console.error('Erro ao exportar Excel:', error)
