@@ -1777,6 +1777,73 @@ export default function Home() {
           <TabsContent value="relatorio-completo" className="space-y-4 sm:space-y-8">
             <RelatorioCompleto gerenteEstadual={filtroEstadual} />
           </TabsContent>
+
+          <TabsContent value="backup" className="space-y-4 sm:space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>🔒 Backup e Segurança dos Dados</CardTitle>
+                <CardDescription>
+                  Exporte todos os dados do sistema para manter um backup seguro
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-800 mb-2">Por que fazer backup?</h3>
+                  <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
+                    <li>Proteção contra perda acidental de dados</li>
+                    <li>Restauração em caso de problemas no sistema</li>
+                    <li>Histórico completo dos fechamentos</li>
+                    <li>Segurança adicional além dos backups automáticos</li>
+                  </ul>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    onClick={async () => {
+                      try {
+                        const response = await fetch('/api/backup/export')
+                        const blob = await response.blob()
+                        const url = window.URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        const timestamp = new Date().toISOString().split('T')[0]
+                        a.href = url
+                        a.download = `backup-fechamentos-${timestamp}.json`
+                        document.body.appendChild(a)
+                        a.click()
+                        window.URL.revokeObjectURL(url)
+                        document.body.removeChild(a)
+                        alert('✅ Backup exportado com sucesso!')
+                      } catch (error) {
+                        console.error('Erro ao exportar backup:', error)
+                        alert('❌ Erro ao exportar backup. Tente novamente.')
+                      }
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    Exportar Backup (JSON)
+                  </Button>
+                </div>
+
+                <div className="text-xs text-gray-600 space-y-2">
+                  <p><strong>Como usar o backup:</strong></p>
+                  <ol className="list-decimal list-inside space-y-1 ml-2">
+                    <li>Clique em "Exportar Backup" para baixar o arquivo JSON</li>
+                    <li>Salve o arquivo em local seguro (OneDrive, Google Drive, etc.)</li>
+                    <li>Faça backup regularmente (recomendado: diariamente)</li>
+                    <li>Em caso de problema, use a API de importação para restaurar</li>
+                  </ol>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-sm text-yellow-800">
+                    <strong>⚠️ Importante:</strong> O Railway já faz backups automáticos do banco de dados. 
+                    Este backup manual é uma camada adicional de proteção.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Modal de Detalhes do Registro - Design Moderno */}
