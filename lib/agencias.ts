@@ -86,6 +86,18 @@ export const agenciasPorExecutivo: Record<string, Agencia[]> = {
     { codigo: '5002', nome: 'Agência Tiago 2', porte: 'Médio' },
     { codigo: '5003', nome: 'Agência Tiago 3', porte: 'Médio' }
   ],
+  'Ana C Silva': [
+    { codigo: '123', nome: 'Nova Esperanca' },
+    { codigo: '3294', nome: 'Jd.Alvorada_Umaringa' },
+    { codigo: '2460', nome: 'Pc.31 De Marco_Umga' },
+    { codigo: '83', nome: 'Paranavai' },
+    { codigo: '968', nome: 'Sta Isabel Do Ivai' },
+    { codigo: '116', nome: 'Mandaguacu' },
+    { codigo: '6333', nome: 'Paranacity' },
+    { codigo: '2290', nome: 'Nova Londrina' },
+    { codigo: '209', nome: 'Icaraima' },
+    { codigo: '89', nome: 'Astorga' }
+  ],
   'Abner': [
     { codigo: '142', nome: 'Cianorte', porte: 'Grande', gerentesPJ: ['JOSEPH CARLOS OLIVEIRA CONCEICAO', 'RODRIGO RODRIGUES SHIGUEMOTO'] },
     { codigo: '180', nome: 'Umuarama_Cto', porte: 'Mega', gerentesPJ: ['JHONATAN FELIPE DA SILVA', 'FLAVIA ANDREA PETROLINI FORTE MORI', 'GABRIELA FRASQUETTI BECCARI FACHIN', 'DOUGLAS HENRIQUE VIGO CRIVELARO', 'ERICA SIMONE DE OLIVEIRA', 'RAFAEL NASCE CALDERON'] },
@@ -381,7 +393,7 @@ export const executivos = [
   'Sheila', 'Jeferson', 'Jhonattan', 'Renan', 'Dionei', 'Cristian',
   
   // EQUIPE AMANDA ALINE TRINDADE JUSTI
-  'Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner',
+  'Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner', 'Ana C Silva',
   
   // EQUIPE ADRIANO CORREA GOMES
   'Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos', 'Tba Exe 1 - Cascavel',

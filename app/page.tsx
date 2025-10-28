@@ -13,7 +13,7 @@ import { getAgenciasPorExecutivo, executivos } from '@/lib/agencias'
 // Configuração dos Gerentes Estaduais e suas equipes
 const gerentesEstaduais = {
   'KESIA WEIGE NANDI': ['Sheila', 'Jeferson', 'Jhonattan', 'Renan', 'Dionei', 'Cristian'],
-  'AMANDA ALINE TRINDADE JUSTI': ['Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner'],
+  'AMANDA ALINE TRINDADE JUSTI': ['Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner', 'Ana C Silva'],
   'ADRIANO CORREA GOMES': ['Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos', 'Tba Exe 1 - Cascavel'],
   'BRUNA PASSOS LEMES': ['Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian', 'Tba Exe 2 - Blumenau'],
   'GUILHERME MORAES DORNEMANN': ['Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina', 'Tba Exe 2 - Porto_Alegre_Norte'],
