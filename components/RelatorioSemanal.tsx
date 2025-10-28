@@ -72,7 +72,7 @@ export function RelatorioSemanal({ gerenteEstadual = '' }: RelatorioSemanalProps
   const carregarRelatorio = async () => {
     setLoading(true)
     try {
-      const url = `/api/fechamentos/relatorio-semanal?data=${dataFiltro}${gerenteEstadual ? `&gerenteEstadual=${encodeURIComponent(gerenteEstadual)}` : ''}`
+      const url = `/api/fechamentos/relatorio-semanal?data=${dataFiltro}${gerenteEstadual && gerenteEstadual !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(gerenteEstadual)}` : ''}`
       const response = await fetch(url)
       const data = await response.json()
       setRelatorio(data)

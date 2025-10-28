@@ -234,7 +234,7 @@ export default function Home() {
   const [ranking, setRanking] = useState<RankingItem[]>([])
   const [filtro, setFiltro] = useState('dia')
   const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
-  const [filtroEstadual, setFiltroEstadual] = useState('')
+  const [filtroEstadual, setFiltroEstadual] = useState('todas')
   const [loading, setLoading] = useState(false)
   const [registroSelecionado, setRegistroSelecionado] = useState<Fechamento | null>(null)
   const [mostrarModal, setMostrarModal] = useState(false)
@@ -423,7 +423,7 @@ export default function Home() {
 
   const carregarFechamentos = async () => {
     try {
-      const url = `/api/fechamentos?filtro=${filtro}&data=${dataFiltro}${filtroEstadual ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
+      const url = `/api/fechamentos?filtro=${filtro}&data=${dataFiltro}${filtroEstadual && filtroEstadual !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
       const response = await fetch(url)
       const data = await response.json()
       setFechamentos(data)
@@ -434,7 +434,7 @@ export default function Home() {
 
   const carregarRanking = async () => {
     try {
-      const url = `/api/fechamentos/ranking?filtro=${filtro}&data=${dataFiltro}${filtroEstadual ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
+      const url = `/api/fechamentos/ranking?filtro=${filtro}&data=${dataFiltro}${filtroEstadual && filtroEstadual !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
       const response = await fetch(url)
       const data = await response.json()
       setRanking(data)
@@ -1156,7 +1156,7 @@ export default function Home() {
                           <SelectValue placeholder="Todos os regionais" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Todos os regionais</SelectItem>
+                          <SelectItem value="todas">Todos os regionais</SelectItem>
                           {Object.keys(gerentesEstaduais).map((gerente) => (
                             <SelectItem key={gerente} value={gerente}>{gerente}</SelectItem>
                           ))}
