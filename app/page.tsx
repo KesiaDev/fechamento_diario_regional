@@ -10,19 +10,38 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { getAgenciasPorExecutivo, executivos } from '@/lib/agencias'
 
-// Função para formatar número para exibição (com pontos e vírgulas)
-const formatCurrencyDisplay = (value: string | number): string => {
+// Função para formatar número durante digitação (com pontos e vírgulas)
+const formatCurrencyInput = (value: string): string => {
   if (!value || value === '') return ''
   
-  // Converte para número
-  const numValue = typeof value === 'string' ? parseFloat(value.replace(',', '.')) : value
+  // Remove tudo exceto números e vírgula
+  let cleaned = value.replace(/[^\d,]/g, '')
   
-  if (isNaN(numValue)) return ''
+  // Garante apenas uma vírgula
+  const parts = cleaned.split(',')
+  if (parts.length > 2) {
+    cleaned = parts[0] + ',' + parts.slice(1).join('')
+  }
   
-  return new Intl.NumberFormat('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(numValue)
+  // Limita decimais a 2 casas
+  if (parts.length === 2 && parts[1].length > 2) {
+    cleaned = parts[0] + ',' + parts[1].slice(0, 2)
+  }
+  
+  // Separa parte inteira e decimal
+  const [intPart, decPart] = cleaned.includes(',') 
+    ? cleaned.split(',')
+    : [cleaned, '']
+  
+  // Formata parte inteira com pontos
+  const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  
+  // Retorna formatado
+  if (decPart) {
+    return `${formattedInt},${decPart}`
+  }
+  
+  return formattedInt
 }
 
 // Função para converter formato brasileiro para número (para salvar)
@@ -1007,10 +1026,10 @@ export default function Home() {
                                 <Label>Faturamento (R$) *</Label>
                                 <Input
                                   type="text"
-                                  value={cnpj.faturamento || ''}
+                                  value={cnpj.faturamento ? formatCurrencyInput(cnpj.faturamento) : ''}
                                   onChange={(e) => {
                                     let inputValue = e.target.value
-                                    // Remove caracteres inválidos, mantém apenas números e uma vírgula
+                                    // Remove tudo exceto números e vírgula
                                     inputValue = inputValue.replace(/[^\d,]/g, '')
                                     
                                     // Garante apenas uma vírgula
@@ -1024,19 +1043,19 @@ export default function Home() {
                                       inputValue = parts[0] + ',' + parts[1].slice(0, 2)
                                     }
                                     
+                                    // Salva o valor bruto (sem formatação) para processamento
                                     atualizarCnpjSimulado(cnpj.id, 'faturamento', inputValue)
                                   }}
                                   onBlur={(e) => {
-                                    // Ao sair do campo, formata e salva como número
+                                    // Ao sair do campo, converte para formato numérico para salvar
                                     const rawValue = parseCurrencyInput(e.target.value)
                                     if (rawValue && !isNaN(parseFloat(rawValue))) {
-                                      // Salva como número (ponto decimal) para o backend
                                       atualizarCnpjSimulado(cnpj.id, 'faturamento', rawValue)
                                     } else if (!e.target.value || e.target.value === '') {
                                       atualizarCnpjSimulado(cnpj.id, 'faturamento', '')
                                     }
                                   }}
-                                  placeholder="Ex: 1000,00 ou 1.000,00"
+                                  placeholder="Ex: 1000,00"
                                   required
                                 />
                               </div>
@@ -1144,10 +1163,10 @@ export default function Home() {
                                 <Label>Volume R$ *</Label>
                                 <Input
                                   type="text"
-                                  value={cred.volumeRS || ''}
+                                  value={cred.volumeRS ? formatCurrencyInput(cred.volumeRS) : ''}
                                   onChange={(e) => {
                                     let inputValue = e.target.value
-                                    // Remove caracteres inválidos, mantém apenas números e uma vírgula
+                                    // Remove tudo exceto números e vírgula
                                     inputValue = inputValue.replace(/[^\d,]/g, '')
                                     
                                     // Garante apenas uma vírgula
@@ -1161,19 +1180,19 @@ export default function Home() {
                                       inputValue = parts[0] + ',' + parts[1].slice(0, 2)
                                     }
                                     
+                                    // Salva o valor bruto (sem formatação) para processamento
                                     atualizarCredenciamento(cred.id, 'volumeRS', inputValue)
                                   }}
                                   onBlur={(e) => {
-                                    // Ao sair do campo, formata e salva como número
+                                    // Ao sair do campo, converte para formato numérico para salvar
                                     const rawValue = parseCurrencyInput(e.target.value)
                                     if (rawValue && !isNaN(parseFloat(rawValue))) {
-                                      // Salva como número (ponto decimal) para o backend
                                       atualizarCredenciamento(cred.id, 'volumeRS', rawValue)
                                     } else if (!e.target.value || e.target.value === '') {
                                       atualizarCredenciamento(cred.id, 'volumeRS', '')
                                     }
                                   }}
-                                  placeholder="Ex: 1000,00 ou 1.000,00"
+                                  placeholder="Ex: 1000,00"
                                   required
                                 />
                               </div>
