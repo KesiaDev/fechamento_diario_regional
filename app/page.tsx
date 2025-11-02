@@ -777,9 +777,7 @@ export default function Home() {
             <Card>
                 <CardHeader className="pb-3 sm:pb-4 md:pb-6 px-4 sm:px-6">
                 <CardTitle className="text-base sm:text-lg md:text-xl">Novo Lançamento</CardTitle>
-                <CardDescription className="text-xs sm:text-sm">
-                  Registre o fechamento do dia. Das 06:00 até 23:59 = dia atual. Entre 00:00 e 05:59, você pode registrar como dia anterior.
-                </CardDescription>
+                <CardDescription className="text-xs sm:text-sm">Registre o fechamento do dia</CardDescription>
               </CardHeader>
               <CardContent className="px-4 sm:px-6">
                 <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-6">
@@ -794,9 +792,6 @@ export default function Home() {
                         max={new Date().toISOString().split('T')[0]} // Permite até hoje
                         required
                       />
-                      <p className="text-xs text-muted-foreground">
-                        💡 Das 06:00 até 23:59 → registra como dia atual. Entre 00:00 e 05:59 → pode registrar como dia anterior (fechamento do dia de trabalho que terminou tarde).
-                      </p>
                     </div>
 
                     <div className="space-y-2">
