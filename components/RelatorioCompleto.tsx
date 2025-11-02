@@ -343,7 +343,7 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
         // Criar mapa de datas para os dias da semana
         const startDate = new Date(relatorioSemanal.dataInicio)
         const endDate = new Date(relatorioSemanal.dataFim)
-        const diasSemana = []
+        const diasSemana: Array<{ iso: string; formatado: string }> = []
         
         for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
           const diaISO = d.toISOString().split('T')[0]
