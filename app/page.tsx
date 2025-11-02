@@ -270,7 +270,26 @@ export default function Home() {
   const [qtdVisitas, setQtdVisitas] = useState('')
   const [qtdInteracoes, setQtdInteracoes] = useState('')
   const [qtdBraExpre, setQtdBraExpre] = useState('')
-  const [dataFechamento, setDataFechamento] = useState(new Date().toISOString().split('T')[0])
+  // Calcular data padrão:
+  // - Das 06:00 até 23:59 → sugere o dia atual (hoje)
+  // - Após 00:00 (meia-noite) até 05:59 → sugere o dia anterior (ainda pode registrar o fechamento do dia que terminou)
+  // - Depois da meia-noite é considerado o dia seguinte, mas ainda permite registrar como dia anterior até 23:59
+  const getDataPadrao = () => {
+    const agora = new Date()
+    const horaAtual = agora.getHours()
+    
+    // Se for entre 00:00 e 05:59 (madrugada), sugere o dia anterior
+    // Isso permite registrar fechamentos do dia de trabalho que terminou tarde
+    if (horaAtual >= 0 && horaAtual < 6) {
+      const diaAnterior = new Date(agora)
+      diaAnterior.setDate(diaAnterior.getDate() - 1)
+      return diaAnterior.toISOString().split('T')[0]
+    }
+    // Das 06:00 até 23:59 → sugere o dia atual
+    return agora.toISOString().split('T')[0]
+  }
+
+  const [dataFechamento, setDataFechamento] = useState(getDataPadrao())
   const [cnpjsSimulados, setCnpjsSimulados] = useState<CnpjSimulado[]>([])
   const [cnpjsSalvos, setCnpjsSalvos] = useState<CnpjSimulado[]>([])
   const [credenciamentos, setCredenciamentos] = useState<Credenciamento[]>([])
@@ -756,9 +775,11 @@ export default function Home() {
           <TabsContent value="lancamento" className="space-y-3 sm:space-y-6 lg:space-y-8">
             {/* Formulário */}
             <Card>
-              <CardHeader className="pb-3 sm:pb-4 md:pb-6 px-4 sm:px-6">
+                <CardHeader className="pb-3 sm:pb-4 md:pb-6 px-4 sm:px-6">
                 <CardTitle className="text-base sm:text-lg md:text-xl">Novo Lançamento</CardTitle>
-                <CardDescription className="text-xs sm:text-sm">Registre o fechamento do dia</CardDescription>
+                <CardDescription className="text-xs sm:text-sm">
+                  Registre o fechamento do dia. Das 06:00 até 23:59 = dia atual. Entre 00:00 e 05:59, você pode registrar como dia anterior.
+                </CardDescription>
               </CardHeader>
               <CardContent className="px-4 sm:px-6">
                 <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-6">
@@ -770,8 +791,12 @@ export default function Home() {
                         type="date"
                         value={dataFechamento}
                         onChange={(e) => setDataFechamento(e.target.value)}
+                        max={new Date().toISOString().split('T')[0]} // Permite até hoje
                         required
                       />
+                      <p className="text-xs text-muted-foreground">
+                        💡 Das 06:00 até 23:59 → registra como dia atual. Entre 00:00 e 05:59 → pode registrar como dia anterior (fechamento do dia de trabalho que terminou tarde).
+                      </p>
                     </div>
 
                     <div className="space-y-2">

@@ -44,6 +44,22 @@ interface RelatorioDiario {
     bateuMetaCredenciamentos: boolean
     bateuMetaVisitas: boolean
     percentualVisitas: number
+    credenciamentos?: Array<{
+      id: string
+      ec: string
+      volumeRS: number
+      ra: boolean
+      cesta: string
+      instalaDireto: boolean
+      nomeGerentePJ: string | null
+    }>
+    cnpjsSimulados?: Array<{
+      id: string
+      cnpj: string
+      nomeEmpresa: string
+      faturamento: number
+      comentarios: string | null
+    }>
   }>
   metas: {
     credenciamentosPorDia: number
@@ -88,6 +104,30 @@ interface RelatorioSemanal {
     mediaVisitasPorDia: number
     bateuMetaCredenciamentos: boolean
     bateuMetaVisitas: boolean
+    fechamentos?: Array<{
+      id: string
+      data: string
+      agencia: string
+      qtdVisitas: number
+      qtdInteracoes: number
+      qtdBraExpre: number
+      credenciamentos: Array<{
+        id: string
+        ec: string
+        volumeRS: number
+        ra: boolean
+        cesta: string
+        instalaDireto: boolean
+        nomeGerentePJ: string | null
+      }>
+      cnpjsSimulados: Array<{
+        id: string
+        cnpj: string
+        nomeEmpresa: string
+        faturamento: number
+        comentarios: string | null
+      }>
+    }>
     acumuloPorDia: Array<{
       dia: string
       diaSemana: string
@@ -223,81 +263,210 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
       let data: ExcelDataCompleto | null = null
 
       if (tipo === 'diario' && relatorioDiario) {
+        const dataDiario = new Date(relatorioDiario.dataISO)
+        const diaSemana = dataDiario.toLocaleDateString('pt-BR', { weekday: 'long' })
+
         data = {
           titulo: 'Relatório Diário',
           tipoRelatorio: 'diario',
           periodo: relatorioDiario.data,
           totaisGerais: relatorioDiario.totaisGerais,
-          dadosPorGN: relatorioDiario.dadosPorGN.map(gn => ({
-            executivo: gn.executivo,
-            agencia: gn.agencia,
-            diasTrabalhados: 1,
-            diasEsperados: 1,
-            percentualPresenca: 100,
-            totalCredenciamentos: gn.totalCredenciamentos,
-            totalAtivacoes: gn.totalAtivacoes,
-            totalVisitas: gn.qtdVisitas,
-            totalInteracoes: gn.qtdInteracoes,
-            totalBraExpre: gn.qtdBraExpre,
-            totalCnpjsSimulados: gn.totalCnpjsSimulados,
-            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
-            mediaCredenciamentosPorDia: gn.totalCredenciamentos,
-            mediaVisitasPorDia: gn.qtdVisitas,
-            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
-            bateuMetaVisitas: gn.bateuMetaVisitas,
-            detalhamentoPorDia: [],
-            resumoSemanal: {
-              diasComCredenciamentos: 0,
-              diasComSimulacoes: 0,
-              gerentesPJEnvolvidos: []
+          dadosPorGN: relatorioDiario.dadosPorGN.map(gn => {
+            const credenciamentos = (gn.credenciamentos || []).map(c => ({
+              ec: c.ec,
+              volumeRS: c.volumeRS,
+              ra: c.ra,
+              cesta: c.cesta,
+              instalaDireto: c.instalaDireto,
+              nomeGerentePJ: c.nomeGerentePJ || '-',
+              horarioCredenciamento: dataDiario.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+            }))
+
+            const cnpjsSimulados = (gn.cnpjsSimulados || []).map(c => ({
+              cnpj: c.cnpj,
+              nomeEmpresa: c.nomeEmpresa,
+              faturamento: c.faturamento,
+              comentarios: c.comentarios || '-',
+              horarioSimulacao: dataDiario.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+            }))
+
+            // Calcular gerentes PJ envolvidos
+            const gerentesPJ = new Set<string>()
+            credenciamentos.forEach(c => {
+              if (c.nomeGerentePJ && c.nomeGerentePJ !== '-') {
+                gerentesPJ.add(c.nomeGerentePJ)
+              }
+            })
+
+            return {
+              executivo: gn.executivo,
+              agencia: gn.agencia,
+              diasTrabalhados: 1,
+              diasEsperados: 1,
+              percentualPresenca: 100,
+              totalCredenciamentos: gn.totalCredenciamentos,
+              totalAtivacoes: gn.totalAtivacoes,
+              totalVisitas: gn.qtdVisitas,
+              totalInteracoes: gn.qtdInteracoes,
+              totalBraExpre: gn.qtdBraExpre,
+              totalCnpjsSimulados: gn.totalCnpjsSimulados,
+              totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
+              mediaCredenciamentosPorDia: gn.totalCredenciamentos,
+              mediaVisitasPorDia: gn.qtdVisitas,
+              bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
+              bateuMetaVisitas: gn.bateuMetaVisitas,
+              detalhamentoPorDia: [{
+                data: dataDiario.toISOString(),
+                diaSemana,
+                agencia: gn.agencia,
+                qtdVisitas: gn.qtdVisitas,
+                qtdInteracoes: gn.qtdInteracoes,
+                qtdBraExpre: gn.qtdBraExpre,
+                credenciamentos,
+                cnpjsSimulados,
+                resumoDia: {
+                  totalCredenciamentos: credenciamentos.length,
+                  totalVolume: credenciamentos.reduce((sum, c) => sum + c.volumeRS, 0),
+                  totalSimulacoes: cnpjsSimulados.length,
+                  totalFaturamentoSimulado: cnpjsSimulados.reduce((sum, c) => sum + c.faturamento, 0)
+                }
+              }],
+              resumoSemanal: {
+                diasComCredenciamentos: credenciamentos.length > 0 ? 1 : 0,
+                diasComSimulacoes: cnpjsSimulados.length > 0 ? 1 : 0,
+                gerentesPJEnvolvidos: Array.from(gerentesPJ)
+              }
             }
-          }))
+          })
         }
       } else if (tipo === 'semanal' && relatorioSemanal) {
+        // Criar mapa de datas para os dias da semana
+        const startDate = new Date(relatorioSemanal.dataInicio)
+        const endDate = new Date(relatorioSemanal.dataFim)
+        const diasSemana = []
+        
+        for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+          const diaISO = d.toISOString().split('T')[0]
+          const diaFormatado = d.toLocaleDateString('pt-BR', { weekday: 'long' })
+          const diaNum = d.getDay()
+          if (diaNum >= 1 && diaNum <= 5) { // Apenas dias úteis
+            diasSemana.push({ iso: diaISO, formatado: diaFormatado })
+          }
+        }
+
         data = {
           titulo: 'Relatório Semanal',
           tipoRelatorio: 'semanal',
           periodo: relatorioSemanal.periodo,
           totaisGerais: relatorioSemanal.totaisGerais,
-          dadosPorGN: relatorioSemanal.dadosPorGN.map(gn => ({
-            executivo: gn.executivo,
-            agencia: '', // Não disponível no semanal
-            diasTrabalhados: gn.diasTrabalhados,
-            diasEsperados: gn.diasEsperados,
-            percentualPresenca: gn.percentualPresenca,
-            totalCredenciamentos: gn.totalCredenciamentos,
-            totalAtivacoes: gn.totalAtivacoes,
-            totalVisitas: gn.totalVisitas,
-            totalInteracoes: gn.totalInteracoes,
-            totalBraExpre: gn.totalBraExpre,
-            totalCnpjsSimulados: gn.totalCnpjsSimulados,
-            totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
-            mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
-            mediaVisitasPorDia: gn.mediaVisitasPorDia,
-            bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
-            bateuMetaVisitas: gn.bateuMetaVisitas,
-            detalhamentoPorDia: gn.acumuloPorDia.map(dia => ({
-              data: dia.dia,
-              diaSemana: dia.diaSemana,
-              agencia: '',
-              qtdVisitas: dia.visitasAcumuladas,
-              qtdInteracoes: dia.interacoesAcumuladas,
-              qtdBraExpre: dia.braExpreAcumulado,
-              credenciamentos: [],
-              cnpjsSimulados: [],
-              resumoDia: {
-                totalCredenciamentos: dia.credenciamentosAcumulados,
-                totalVolume: dia.ativacoesAcumuladas,
-                totalSimulacoes: 0,
-                totalFaturamentoSimulado: 0
-              }
-            })),
-            resumoSemanal: {
-              diasComCredenciamentos: gn.diasTrabalhados,
-              diasComSimulacoes: 0,
-              gerentesPJEnvolvidos: []
+          dadosPorGN: relatorioSemanal.dadosPorGN.map(gn => {
+            // Agrupar fechamentos por dia
+            type FechamentoCompleto = NonNullable<typeof gn.fechamentos>[0]
+            const fechamentosPorDia = new Map<string, FechamentoCompleto[]>()
+            
+            if (gn.fechamentos) {
+              gn.fechamentos.forEach(fechamento => {
+                const dataISO = new Date(fechamento.data).toISOString().split('T')[0]
+                if (!fechamentosPorDia.has(dataISO)) {
+                  fechamentosPorDia.set(dataISO, [])
+                }
+                fechamentosPorDia.get(dataISO)!.push(fechamento)
+              })
             }
-          }))
+
+            // Criar detalhamento por dia
+            const detalhamentoPorDia = diasSemana.map(({ iso, formatado }) => {
+              const fechamentosDia = fechamentosPorDia.get(iso) || []
+              
+              const credenciamentos = fechamentosDia.flatMap(f => 
+                f.credenciamentos.map(c => ({
+                  ec: c.ec,
+                  volumeRS: c.volumeRS,
+                  ra: c.ra,
+                  cesta: c.cesta,
+                  instalaDireto: c.instalaDireto,
+                  nomeGerentePJ: c.nomeGerentePJ || '-',
+                  horarioCredenciamento: new Date(f.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                }))
+              )
+
+              const cnpjsSimulados = fechamentosDia.flatMap(f =>
+                f.cnpjsSimulados.map(c => ({
+                  cnpj: c.cnpj,
+                  nomeEmpresa: c.nomeEmpresa,
+                  faturamento: c.faturamento,
+                  comentarios: c.comentarios || '-',
+                  horarioSimulacao: new Date(f.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                }))
+              )
+
+              const totalCreds = credenciamentos.length
+              const totalVolume = credenciamentos.reduce((sum, c) => sum + c.volumeRS, 0)
+              const totalSimulacoes = cnpjsSimulados.length
+              const totalFaturamento = cnpjsSimulados.reduce((sum, c) => sum + c.faturamento, 0)
+              const totalVisitas = fechamentosDia.reduce((sum, f) => sum + f.qtdVisitas, 0)
+              const totalInteracoes = fechamentosDia.reduce((sum, f) => sum + f.qtdInteracoes, 0)
+              const totalBraExpre = fechamentosDia.reduce((sum, f) => sum + f.qtdBraExpre, 0)
+              const agencia = fechamentosDia[0]?.agencia || ''
+
+              return {
+                data: new Date(iso).toISOString(),
+                diaSemana: formatado,
+                agencia,
+                qtdVisitas: totalVisitas,
+                qtdInteracoes: totalInteracoes,
+                qtdBraExpre: totalBraExpre,
+                credenciamentos,
+                cnpjsSimulados,
+                resumoDia: {
+                  totalCredenciamentos: totalCreds,
+                  totalVolume,
+                  totalSimulacoes,
+                  totalFaturamentoSimulado: totalFaturamento
+                }
+              }
+            })
+
+            // Calcular gerentes PJ envolvidos
+            const gerentesPJ = new Set<string>()
+            if (gn.fechamentos) {
+              gn.fechamentos.forEach(f => {
+                f.credenciamentos.forEach(c => {
+                  if (c.nomeGerentePJ && c.nomeGerentePJ !== '-') {
+                    gerentesPJ.add(c.nomeGerentePJ)
+                  }
+                })
+              })
+            }
+
+            const diasComCredenciamentos = detalhamentoPorDia.filter(d => d.resumoDia.totalCredenciamentos > 0).length
+            const diasComSimulacoes = detalhamentoPorDia.filter(d => d.resumoDia.totalSimulacoes > 0).length
+
+            return {
+              executivo: gn.executivo,
+              agencia: gn.fechamentos?.[0]?.agencia || '',
+              diasTrabalhados: gn.diasTrabalhados,
+              diasEsperados: gn.diasEsperados,
+              percentualPresenca: gn.percentualPresenca,
+              totalCredenciamentos: gn.totalCredenciamentos,
+              totalAtivacoes: gn.totalAtivacoes,
+              totalVisitas: gn.totalVisitas,
+              totalInteracoes: gn.totalInteracoes,
+              totalBraExpre: gn.totalBraExpre,
+              totalCnpjsSimulados: gn.totalCnpjsSimulados,
+              totalFaturamentoSimulado: gn.totalFaturamentoSimulado,
+              mediaCredenciamentosPorDia: gn.mediaCredenciamentosPorDia,
+              mediaVisitasPorDia: gn.mediaVisitasPorDia,
+              bateuMetaCredenciamentos: gn.bateuMetaCredenciamentos,
+              bateuMetaVisitas: gn.bateuMetaVisitas,
+              detalhamentoPorDia,
+              resumoSemanal: {
+                diasComCredenciamentos,
+                diasComSimulacoes,
+                gerentesPJEnvolvidos: Array.from(gerentesPJ)
+              }
+            }
+          })
         }
       } else if (tipo === 'mensal' && relatorioMensal) {
         data = {
@@ -357,6 +526,9 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
       <Card>
         <CardHeader>
           <CardTitle>Filtros</CardTitle>
+          <CardDescription>
+            Cada mês é isolado: os dados não acumulam entre meses. Selecionando novembro, verá apenas dados de novembro.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 items-end">
@@ -369,6 +541,9 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                 onChange={(e) => setDataSelecionada(e.target.value)}
                 className="w-full"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                📅 Para relatório mensal: selecione qualquer data do mês desejado. Ex: Para ver novembro, selecione qualquer dia de novembro.
+              </p>
             </div>
           </div>
         </CardContent>
@@ -800,7 +975,9 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                   <div className="flex justify-between items-center">
                     <div>
                       <CardTitle>Performance Mensal por GN</CardTitle>
-                      <CardDescription>Resumo completo do mês</CardDescription>
+                      <CardDescription>
+                        Resumo do mês de {relatorioMensal.mes} • Dados isolados (não acumulam com meses anteriores)
+                      </CardDescription>
                     </div>
                     <Button onClick={() => exportarExcelCompleto('mensal')} variant="outline" size="sm">
                       <Download className="w-4 h-4 mr-2" />

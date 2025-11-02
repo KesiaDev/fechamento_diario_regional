@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { format, startOfMonth, endOfMonth, eachWeekOfInterval, startOfWeek, endOfWeek } from 'date-fns'
+import { format, startOfMonth, endOfMonth, endOfDay, eachWeekOfInterval, startOfWeek, endOfWeek } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { executivos, getGNsPorGerenteEstadual } from '@/lib/agencias'
 
@@ -14,16 +14,26 @@ export async function GET(request: NextRequest) {
     const data = searchParams.get('data') || new Date().toISOString().split('T')[0]
     const gerenteEstadual = searchParams.get('gerenteEstadual')
     
+    // Garantir que busca apenas o mês especificado, sem acumular com meses anteriores ou posteriores
     const dataReferencia = new Date(data + 'T12:00:00')
-    const startDate = startOfMonth(dataReferencia)
-    const endDate = endOfMonth(dataReferencia)
+    const startDate = startOfMonth(dataReferencia) // Primeiro dia do mês às 00:00:00
+    const endDate = endOfDay(endOfMonth(dataReferencia)) // Último dia do mês às 23:59:59
+    
+    console.log('📅 Relatório Mensal - Filtro:', {
+      dataReferencia: format(dataReferencia, 'dd/MM/yyyy'),
+      startDate: format(startDate, 'dd/MM/yyyy HH:mm:ss'),
+      endDate: format(endDate, 'dd/MM/yyyy HH:mm:ss'),
+      mes: format(dataReferencia, 'MMMM yyyy', { locale: ptBR })
+    })
 
-    // Buscar todos os fechamentos do mês
+    // Buscar APENAS os fechamentos do mês especificado
+    // IMPORTANTE: Não acumula com meses anteriores ou posteriores
+    // Cada mês é isolado: dia 01 até o último dia do mês (28, 29, 30 ou 31) às 23:59:59
     const fechamentos = await prisma.fechamento.findMany({
       where: {
         data: {
-          gte: startDate,
-          lte: endDate
+          gte: startDate,  // >= primeiro dia do mês às 00:00:00
+          lte: endDate     // <= último dia do mês às 23:59:59
         },
         ...(gerenteEstadual && gerenteEstadual !== 'todas' ? { gerenteEstadual } : {})
       },
@@ -35,6 +45,8 @@ export async function GET(request: NextRequest) {
         { data: 'asc' }
       ]
     })
+    
+    console.log(`📊 Fechamentos encontrados para ${format(dataReferencia, 'MMMM yyyy', { locale: ptBR })}:`, fechamentos.length)
 
     // Filtrar GNs baseado no gerente estadual, se fornecido
     let gnsEsperados: string[]
