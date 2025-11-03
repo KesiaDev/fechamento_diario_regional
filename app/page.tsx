@@ -271,22 +271,12 @@ export default function Home() {
   const [qtdInteracoes, setQtdInteracoes] = useState('')
   const [qtdBraExpre, setQtdBraExpre] = useState('')
   // Calcular data padrão:
-  // - Das 06:00 até 23:59 → sugere o dia atual (hoje)
-  // - Após 00:00 (meia-noite) até 05:59 → sugere o dia anterior (ainda pode registrar o fechamento do dia que terminou)
-  // - Depois da meia-noite é considerado o dia seguinte, mas ainda permite registrar como dia anterior até 23:59
+  // - Sempre sugere o dia atual (hoje)
+  // - Entre 00:00 e 05:59, o usuário pode escolher manualmente o dia anterior se necessário
+  // - Mas nunca bloqueia o registro do dia atual
   const getDataPadrao = () => {
-    const agora = new Date()
-    const horaAtual = agora.getHours()
-    
-    // Se for entre 00:00 e 05:59 (madrugada), sugere o dia anterior
-    // Isso permite registrar fechamentos do dia de trabalho que terminou tarde
-    if (horaAtual >= 0 && horaAtual < 6) {
-      const diaAnterior = new Date(agora)
-      diaAnterior.setDate(diaAnterior.getDate() - 1)
-      return diaAnterior.toISOString().split('T')[0]
-    }
-    // Das 06:00 até 23:59 → sugere o dia atual
-    return agora.toISOString().split('T')[0]
+    // Sempre sugere o dia atual
+    return new Date().toISOString().split('T')[0]
   }
 
   const [dataFechamento, setDataFechamento] = useState(getDataPadrao())
