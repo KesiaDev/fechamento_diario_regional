@@ -1734,11 +1734,6 @@ export default function Home() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-semibold text-gray-900">{item.executivo}</h3>
-                          {temEmpate && (
-                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                              EMPATE
-                            </span>
-                          )}
                         </div>
                         <div className="flex items-center gap-2">
                           {item.bateuMeta ? (
