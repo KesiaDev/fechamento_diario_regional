@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { formatCurrency } from '@/lib/utils'
 import { gerarPDFRelatorio, PDFData } from '@/lib/pdf-generator'
 import { gerarExcelRelatorio, gerarExcelRelatorioCompleto, ExcelData, ExcelDataCompleto } from '@/lib/excel-generator'
@@ -60,19 +61,30 @@ type RelatorioSemanal = {
   }>
 }
 
+// Lista de Gerentes Estaduais
+const gerentesEstaduais = {
+  'KESIA WEIGE NANDI': ['Sheila', 'Jeferson', 'Jhonattan', 'Renan', 'Dionei', 'Cristian'],
+  'AMANDA ALINE TRINDADE JUSTI': ['Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner', 'Ana C Silva'],
+  'ADRIANO CORREA GOMES': ['Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos', 'Tba Exe 1 - Cascavel'],
+  'BRUNA PASSOS LEMES': ['Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian', 'Tba Exe 2 - Blumenau'],
+  'GUILHERME MORAES DORNEMANN': ['Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina', 'Tba Exe 2 - Porto_Alegre_Norte'],
+  'TBA ESTADUAL BRA PARANA 2': ['Joslayne', 'Lyon', 'Elisandra', 'Lilian', 'Nicodemos', 'Tba Exe 1 - Curitiba_Norte', 'Tba Exe 1 - Curitiba_Sul', 'Tba Exe 2 - Curitiba_Sul', 'Tba Exe 4 - Curitiba_Norte']
+}
+
 interface RelatorioSemanalProps {
   gerenteEstadual?: string
 }
 
-export function RelatorioSemanal({ gerenteEstadual = '' }: RelatorioSemanalProps) {
+export function RelatorioSemanal({ gerenteEstadual: gerenteEstadualProp = '' }: RelatorioSemanalProps) {
   const [relatorio, setRelatorio] = useState<RelatorioSemanal | null>(null)
   const [loading, setLoading] = useState(false)
   const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
+  const [filtroRegional, setFiltroRegional] = useState(gerenteEstadualProp || 'todas')
 
   const carregarRelatorio = async () => {
     setLoading(true)
     try {
-      const url = `/api/fechamentos/relatorio-semanal?data=${dataFiltro}${gerenteEstadual && gerenteEstadual !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(gerenteEstadual)}` : ''}`
+      const url = `/api/fechamentos/relatorio-semanal?data=${dataFiltro}${filtroRegional && filtroRegional !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(filtroRegional)}` : ''}`
       const response = await fetch(url)
       const data = await response.json()
       setRelatorio(data)
@@ -85,7 +97,7 @@ export function RelatorioSemanal({ gerenteEstadual = '' }: RelatorioSemanalProps
 
   useEffect(() => {
     carregarRelatorio()
-  }, [dataFiltro, gerenteEstadual])
+  }, [dataFiltro, filtroRegional])
 
   const gerarRelatorioPDF = async () => {
     if (!relatorio) return
@@ -242,6 +254,17 @@ export function RelatorioSemanal({ gerenteEstadual = '' }: RelatorioSemanalProps
             <p className="text-blue-100">Acompanhamento de performance da equipe CIELO</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
+            <Select value={filtroRegional} onValueChange={setFiltroRegional}>
+              <SelectTrigger className="bg-white/10 border-white/20 text-white w-full sm:w-[200px]">
+                <SelectValue placeholder="Todos os regionais" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todas">Todos os regionais</SelectItem>
+                {Object.keys(gerentesEstaduais).map((gerente) => (
+                  <SelectItem key={gerente} value={gerente}>{gerente}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Input
               type="date"
               value={dataFiltro}
