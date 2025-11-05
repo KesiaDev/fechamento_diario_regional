@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const data = searchParams.get('data') || new Date().toISOString().split('T')[0]
     const acumulado = searchParams.get('acumulado') === 'true'
+    const gerenteEstadual = searchParams.get('gerenteEstadual')
     
     const dataReferencia = new Date(data + 'T12:00:00')
     
@@ -32,7 +33,8 @@ export async function GET(request: NextRequest) {
         data: {
           gte: startDate,
           lte: endDate
-        }
+        },
+        ...(gerenteEstadual && gerenteEstadual !== 'todas' ? { gerenteEstadual } : {})
       },
       include: {
         credenciamentos: true,

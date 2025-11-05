@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const dataInicio = searchParams.get('dataInicio')
     const dataFim = searchParams.get('dataFim')
     const tipoRelatorio = searchParams.get('tipo') as 'diario' | 'semanal' | 'mensal' || 'semanal'
+    const gerenteEstadual = searchParams.get('gerenteEstadual')
 
     let startDate: Date
     let endDate: Date
@@ -39,7 +40,8 @@ export async function GET(request: NextRequest) {
         data: {
           gte: startDate,
           lte: endDate
-        }
+        },
+        ...(gerenteEstadual && gerenteEstadual !== 'todas' ? { gerenteEstadual } : {})
       },
       include: {
         credenciamentos: true,

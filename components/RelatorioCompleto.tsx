@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Calendar, TrendingUp, Users, Award, Target, CheckCircle, XCircle, Download } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
@@ -217,17 +218,28 @@ interface RelatorioCompletoProps {
   gerenteEstadual?: string
 }
 
-export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoProps) {
+// Lista de Gerentes Estaduais
+const gerentesEstaduais = {
+  'KESIA WEIGE NANDI': ['Sheila', 'Jeferson', 'Jhonattan', 'Renan', 'Dionei', 'Cristian'],
+  'AMANDA ALINE TRINDADE JUSTI': ['Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner', 'Ana C Silva'],
+  'ADRIANO CORREA GOMES': ['Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos', 'Tba Exe 1 - Cascavel'],
+  'BRUNA PASSOS LEMES': ['Raymi', 'William', 'Adler', 'Willyam', 'Alexsandro', 'Cristian Alfonso', 'Kelvin', 'Willian', 'Tba Exe 2 - Blumenau'],
+  'GUILHERME MORAES DORNEMANN': ['Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina', 'Tba Exe 2 - Porto_Alegre_Norte'],
+  'TBA ESTADUAL BRA PARANA 2': ['Joslayne', 'Lyon', 'Elisandra', 'Lilian', 'Nicodemos', 'Tba Exe 1 - Curitiba_Norte', 'Tba Exe 1 - Curitiba_Sul', 'Tba Exe 2 - Curitiba_Sul', 'Tba Exe 4 - Curitiba_Norte']
+}
+
+export function RelatorioCompleto({ gerenteEstadual: gerenteEstadualProp = '' }: RelatorioCompletoProps) {
   const [relatorioDiario, setRelatorioDiario] = useState<RelatorioDiario | null>(null)
   const [relatorioSemanal, setRelatorioSemanal] = useState<RelatorioSemanal | null>(null)
   const [relatorioMensal, setRelatorioMensal] = useState<RelatorioMensal | null>(null)
   const [loading, setLoading] = useState(false)
   const [dataSelecionada, setDataSelecionada] = useState(new Date().toISOString().split('T')[0])
+  const [filtroRegional, setFiltroRegional] = useState(gerenteEstadualProp || 'todas')
 
   const carregarRelatorios = async () => {
     setLoading(true)
     try {
-      const gerenteParam = gerenteEstadual ? `&gerenteEstadual=${encodeURIComponent(gerenteEstadual)}` : ''
+      const gerenteParam = filtroRegional && filtroRegional !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(filtroRegional)}` : ''
       
       // Carregar relatório diário - sem acumulado para mostrar apenas o dia selecionado
       const responseDiario = await fetch(`/api/relatorios/diario?data=${dataSelecionada}&acumulado=false${gerenteParam}`)
@@ -270,7 +282,7 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
 
   useEffect(() => {
     carregarRelatorios()
-  }, [dataSelecionada, gerenteEstadual])
+  }, [dataSelecionada, filtroRegional])
 
   const exportarExcelCompleto = async (tipo: 'diario' | 'semanal' | 'mensal') => {
     try {
@@ -549,7 +561,21 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4 items-end">
+          <div className="flex flex-col sm:flex-row gap-4 items-end">
+            <div className="flex-1">
+              <Label htmlFor="filtroRegional">Visão Regional</Label>
+              <Select value={filtroRegional} onValueChange={setFiltroRegional}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Todos os regionais" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todos os regionais</SelectItem>
+                  {Object.keys(gerentesEstaduais).map((gerente) => (
+                    <SelectItem key={gerente} value={gerente}>{gerente}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="flex-1">
               <Label htmlFor="dataSelecionada">Data de Referência</Label>
               <Input
