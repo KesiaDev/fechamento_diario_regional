@@ -98,7 +98,25 @@ export async function PUT(
       })
     })
 
-    return NextResponse.json(fechamento, { status: 200 })
+    // Garantir que credenciamentos e cnpjsSimulados sejam arrays válidos e serializar datas corretamente
+    const fechamentoFormatado = {
+      ...fechamento,
+      data: fechamento.data.toISOString(),
+      createdAt: fechamento.createdAt.toISOString(),
+      updatedAt: fechamento.updatedAt.toISOString(),
+      credenciamentos: Array.isArray(fechamento.credenciamentos) ? fechamento.credenciamentos.map(c => ({
+        ...c,
+        createdAt: c.createdAt.toISOString(),
+        updatedAt: c.updatedAt.toISOString()
+      })) : [],
+      cnpjsSimulados: Array.isArray(fechamento.cnpjsSimulados) ? fechamento.cnpjsSimulados.map(c => ({
+        ...c,
+        createdAt: c.createdAt.toISOString(),
+        updatedAt: c.updatedAt.toISOString()
+      })) : []
+    }
+
+    return NextResponse.json(fechamentoFormatado, { status: 200 })
   } catch (error) {
     console.error('Erro ao atualizar fechamento:', error)
     console.error('Erro completo:', JSON.stringify(error, null, 2))

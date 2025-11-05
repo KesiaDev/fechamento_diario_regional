@@ -80,7 +80,25 @@ export async function POST(request: NextRequest) {
       })
     })
 
-    return NextResponse.json(fechamento, { status: 201 })
+    // Garantir que credenciamentos e cnpjsSimulados sejam arrays válidos e serializar datas corretamente
+    const fechamentoFormatado = {
+      ...fechamento,
+      data: fechamento.data.toISOString(),
+      createdAt: fechamento.createdAt.toISOString(),
+      updatedAt: fechamento.updatedAt.toISOString(),
+      credenciamentos: Array.isArray(fechamento.credenciamentos) ? fechamento.credenciamentos.map(c => ({
+        ...c,
+        createdAt: c.createdAt.toISOString(),
+        updatedAt: c.updatedAt.toISOString()
+      })) : [],
+      cnpjsSimulados: Array.isArray(fechamento.cnpjsSimulados) ? fechamento.cnpjsSimulados.map(c => ({
+        ...c,
+        createdAt: c.createdAt.toISOString(),
+        updatedAt: c.updatedAt.toISOString()
+      })) : []
+    }
+
+    return NextResponse.json(fechamentoFormatado, { status: 201 })
   } catch (error) {
     console.error('Erro ao criar fechamento:', error)
     console.error('Erro completo:', JSON.stringify(error, null, 2))
@@ -163,7 +181,25 @@ export async function GET(request: NextRequest) {
     console.log('Fechamentos encontrados:', fechamentos.length)
     console.log('Fechamentos:', fechamentos.map(f => ({ id: f.id, data: f.data, executivo: f.executivo })))
 
-    return NextResponse.json(fechamentos)
+    // Garantir que credenciamentos e cnpjsSimulados sejam arrays válidos e serializar datas corretamente
+    const fechamentosFormatados = fechamentos.map(f => ({
+      ...f,
+      data: f.data.toISOString(),
+      createdAt: f.createdAt.toISOString(),
+      updatedAt: f.updatedAt.toISOString(),
+      credenciamentos: Array.isArray(f.credenciamentos) ? f.credenciamentos.map(c => ({
+        ...c,
+        createdAt: c.createdAt.toISOString(),
+        updatedAt: c.updatedAt.toISOString()
+      })) : [],
+      cnpjsSimulados: Array.isArray(f.cnpjsSimulados) ? f.cnpjsSimulados.map(c => ({
+        ...c,
+        createdAt: c.createdAt.toISOString(),
+        updatedAt: c.updatedAt.toISOString()
+      })) : []
+    }))
+
+    return NextResponse.json(fechamentosFormatados)
   } catch (error) {
     console.error('Erro ao buscar fechamentos:', error)
     return NextResponse.json(
