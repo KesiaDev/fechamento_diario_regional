@@ -59,6 +59,8 @@ interface RelatorioDiario {
       nomeEmpresa: string
       faturamento: number
       comentarios: string | null
+      agenciaSimulacao?: string | null
+      pjIndicou?: string | null
     }>
   }>
   metas: {
@@ -287,8 +289,8 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
               nomeEmpresa: c.nomeEmpresa,
               faturamento: c.faturamento,
               comentarios: c.comentarios || '-',
-              agenciaSimulacao: c.agenciaSimulacao || '-',
-              pjIndicou: c.pjIndicou || '-',
+              agenciaSimulacao: (c as any).agenciaSimulacao || '-',
+              pjIndicou: (c as any).pjIndicou || '-',
               horarioSimulacao: dataDiario.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
             }))
 
@@ -398,8 +400,8 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                   nomeEmpresa: c.nomeEmpresa,
                   faturamento: c.faturamento,
                   comentarios: c.comentarios || '-',
-                  agenciaSimulacao: c.agenciaSimulacao || '-',
-                  pjIndicou: c.pjIndicou || '-',
+                  agenciaSimulacao: (c as any).agenciaSimulacao || '-',
+                  pjIndicou: (c as any).pjIndicou || '-',
                   horarioSimulacao: new Date(f.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
                 }))
               )
