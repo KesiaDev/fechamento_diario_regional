@@ -55,13 +55,23 @@ export async function POST(request: NextRequest) {
       // Se já existe, manter o primeiro (ou pode escolher o último)
       if (!cnpjsUnicos.has(cnpjStr)) {
         cnpjsUnicos.set(cnpjStr, cnpj)
+      } else {
+        console.log('⚠️ CNPJ duplicado removido:', cnpjStr)
       }
     })
     const cnpjsValidos = Array.from(cnpjsUnicos.values())
 
-    console.log('CNPJs válidos:', cnpjsValidos.length)
-    console.log('CNPJs recebidos:', cnpjsSimulados?.length || 0)
-    console.log('CNPJs únicos (sem duplicatas):', cnpjsValidos.map(c => c.cnpj))
+    console.log('📊 CNPJs recebidos:', cnpjsSimulados?.length || 0)
+    console.log('📊 CNPJs filtrados (válidos):', cnpjsFiltrados.length)
+    console.log('📊 CNPJs únicos (sem duplicatas):', cnpjsValidos.length)
+    console.log('📊 Lista de CNPJs únicos:', cnpjsValidos.map(c => c.cnpj.toString().trim()))
+    
+    // Verificar se ainda há duplicatas (double check)
+    const cnpjsSet = new Set(cnpjsValidos.map(c => c.cnpj.toString().trim()))
+    if (cnpjsSet.size !== cnpjsValidos.length) {
+      console.error('❌ ERRO: Ainda há CNPJs duplicados após remoção!')
+      console.error('❌ CNPJs:', cnpjsValidos.map(c => c.cnpj.toString().trim()))
+    }
 
     // Usar transação para garantir que tudo seja salvo ou nada seja salvo
     const fechamento = await prisma.$transaction(async (tx) => {
@@ -101,11 +111,12 @@ export async function POST(request: NextRequest) {
             })) : []
           },
           cnpjsSimulados: {
-            create: cnpjsValidos.length > 0 ? cnpjsValidos.map((cnpj: any) => {
+            create: cnpjsValidos.length > 0 ? cnpjsValidos.map((cnpj: any, index: number) => {
               const faturamento = parseFaturamento(cnpj.faturamento)
-              console.log('Processando CNPJ:', cnpj.cnpj, 'Faturamento:', faturamento)
+              const cnpjStr = cnpj.cnpj.toString().trim()
+              console.log(`📝 Criando CNPJ ${index + 1}/${cnpjsValidos.length}:`, cnpjStr, 'Faturamento:', faturamento)
               return {
-                cnpj: cnpj.cnpj.toString().trim(),
+                cnpj: cnpjStr,
                 nomeEmpresa: cnpj.nomeEmpresa.toString().trim(),
                 faturamento,
                 comentarios: cnpj.comentarios || null,

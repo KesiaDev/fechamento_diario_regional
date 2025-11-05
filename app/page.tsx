@@ -570,6 +570,12 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Proteção contra duplo clique
+    if (loading) {
+      console.log('⚠️ Submit já em andamento, ignorando...')
+      return
+    }
+    
     // Debug: verificar estado de edição
     console.log('🔍 Submit - modoEdicao:', modoEdicao)
     console.log('🔍 Submit - registroSelecionado:', registroSelecionado?.id)
@@ -664,12 +670,22 @@ export default function Home() {
               ...cred,
               volumeRS: parseCurrencyInput(cred.volumeRS || '0')
             })),
-            cnpjsSimulados: cnpjsSalvos.map(cnpj => ({
-              ...cnpj,
-              faturamento: parseCurrencyInput(cnpj.faturamento || '0'),
-              agenciaSimulacao: cnpj.agenciaSimulacao || undefined,
-              pjIndicou: cnpj.pjIndicou || undefined
-            }))
+            cnpjsSimulados: (() => {
+              // Remover CNPJs duplicados no frontend antes de enviar
+              const cnpjsUnicos = new Map<string, typeof cnpjsSalvos[0]>()
+              cnpjsSalvos.forEach(cnpj => {
+                const cnpjStr = cnpj.cnpj.toString().trim()
+                if (!cnpjsUnicos.has(cnpjStr)) {
+                  cnpjsUnicos.set(cnpjStr, cnpj)
+                }
+              })
+              return Array.from(cnpjsUnicos.values()).map(cnpj => ({
+                ...cnpj,
+                faturamento: parseCurrencyInput(cnpj.faturamento || '0'),
+                agenciaSimulacao: cnpj.agenciaSimulacao || undefined,
+                pjIndicou: cnpj.pjIndicou || undefined
+              }))
+            })()
           })
         })
       } else {
@@ -677,6 +693,20 @@ export default function Home() {
         console.log('🆕 Criando novo registro')
         console.log('📝 Modo edição:', modoEdicao)
         console.log('📝 Registro selecionado:', registroSelecionado)
+        
+        // Remover CNPJs duplicados no frontend antes de enviar
+        const cnpjsUnicos = new Map<string, typeof cnpjsSalvos[0]>()
+        cnpjsSalvos.forEach(cnpj => {
+          const cnpjStr = cnpj.cnpj.toString().trim()
+          if (!cnpjsUnicos.has(cnpjStr)) {
+            cnpjsUnicos.set(cnpjStr, cnpj)
+          }
+        })
+        const cnpjsParaEnviar = Array.from(cnpjsUnicos.values())
+        
+        console.log('📊 CNPJs antes de remover duplicatas:', cnpjsSalvos.length)
+        console.log('📊 CNPJs após remover duplicatas:', cnpjsParaEnviar.length)
+        
         response = await fetch('/api/fechamentos', {
           method: 'POST',
           headers: {
@@ -696,7 +726,7 @@ export default function Home() {
               ...cred,
               volumeRS: parseCurrencyInput(cred.volumeRS || '0')
             })),
-            cnpjsSimulados: cnpjsSalvos.map(cnpj => ({
+            cnpjsSimulados: cnpjsParaEnviar.map(cnpj => ({
               ...cnpj,
               faturamento: parseCurrencyInput(cnpj.faturamento || '0'),
               agenciaSimulacao: cnpj.agenciaSimulacao || undefined,
@@ -706,6 +736,22 @@ export default function Home() {
         })
       }
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.details || errorData.error || 'Erro ao salvar fechamento'
+        
+        // Tratamento específico para erro de constraint única
+        if (errorMessage.includes('Unique constraint') || errorMessage.includes('P2002')) {
+          alert('Erro: Este CNPJ já foi registrado para este fechamento. Por favor, verifique se não há duplicatas.')
+        } else {
+          alert(`Erro ao salvar: ${errorMessage}`)
+        }
+        
+        console.error('❌ Erro na resposta:', errorData)
+        setLoading(false)
+        return
+      }
+      
       if (response.ok) {
         alert(modoEdicao ? 'Fechamento atualizado com sucesso!' : 'Fechamento salvo com sucesso!')
         
@@ -728,9 +774,6 @@ export default function Home() {
         // Recarregar dados
         carregarFechamentos()
         carregarRanking()
-      } else {
-        const error = await response.json()
-        alert('Erro ao salvar: ' + error.error)
       }
     } catch (error) {
       console.error('Erro:', error)

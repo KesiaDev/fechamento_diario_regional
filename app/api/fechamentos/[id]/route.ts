@@ -105,7 +105,7 @@ export async function PUT(
             }))
           },
           cnpjsSimulados: {
-            deleteMany: {},
+            deleteMany: {}, // Remove todos os CNPJs existentes antes de criar novos
             create: cnpjsValidos.length > 0 ? cnpjsValidos.map((cnpj: any) => {
               // Função auxiliar para converter string de moeda para número
               const parseFaturamento = (value: any): number => {
