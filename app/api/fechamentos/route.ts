@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
 
     console.log('Credenciamentos válidos:', credenciamentosValidos.length)
 
-    // Filtrar CNPJs simulados válidos
-    const cnpjsValidos = (cnpjsSimulados || []).filter((cnpj: any) => {
+    // Filtrar CNPJs simulados válidos e remover duplicatas
+    const cnpjsFiltrados = (cnpjsSimulados || []).filter((cnpj: any) => {
       if (!cnpj || !cnpj.cnpj || !cnpj.nomeEmpresa || cnpj.faturamento === undefined || cnpj.faturamento === null) {
         return false
       }
@@ -48,8 +48,20 @@ export async function POST(request: NextRequest) {
       return !isNaN(faturamentoNum) && isFinite(faturamentoNum)
     })
 
+    // Remover CNPJs duplicados no mesmo fechamento (mesmo CNPJ não pode aparecer duas vezes)
+    const cnpjsUnicos = new Map<string, any>()
+    cnpjsFiltrados.forEach((cnpj: any) => {
+      const cnpjStr = cnpj.cnpj.toString().trim()
+      // Se já existe, manter o primeiro (ou pode escolher o último)
+      if (!cnpjsUnicos.has(cnpjStr)) {
+        cnpjsUnicos.set(cnpjStr, cnpj)
+      }
+    })
+    const cnpjsValidos = Array.from(cnpjsUnicos.values())
+
     console.log('CNPJs válidos:', cnpjsValidos.length)
     console.log('CNPJs recebidos:', cnpjsSimulados?.length || 0)
+    console.log('CNPJs únicos (sem duplicatas):', cnpjsValidos.map(c => c.cnpj))
 
     // Usar transação para garantir que tudo seja salvo ou nada seja salvo
     const fechamento = await prisma.$transaction(async (tx) => {
