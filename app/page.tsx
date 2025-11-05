@@ -448,8 +448,8 @@ export default function Home() {
       nomeEmpresa: cnpj.nomeEmpresa,
       faturamento: cnpj.faturamento.toString(),
       comentarios: cnpj.comentarios || '',
-      agenciaSimulacao: cnpj.agenciaSimulacao || '',
-      pjIndicou: cnpj.pjIndicou || ''
+      agenciaSimulacao: (cnpj as any).agenciaSimulacao || '',
+      pjIndicou: (cnpj as any).pjIndicou || ''
     }))
     setCnpjsSalvos(cnpjsFormatados)
     setCnpjsSimulados([])
