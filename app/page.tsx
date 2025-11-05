@@ -430,27 +430,31 @@ export default function Home() {
     setQtdBraExpre(fechamento.qtdBraExpre.toString())
     
     // Converter credenciamentos para formato do formulário
-    const credenciamentosFormatados = fechamento.credenciamentos.map(cred => ({
-      id: crypto.randomUUID(),
-      ec: cred.ec,
-      volumeRS: cred.volumeRS.toString(),
-      ra: cred.ra ? 'true' : 'false',
-      cesta: cred.cesta,
-      instalaDireto: cred.instalaDireto ? 'true' : 'false',
-      nomeGerentePJ: cred.nomeGerentePJ || ''
-    }))
+    const credenciamentosFormatados = Array.isArray(fechamento.credenciamentos) 
+      ? fechamento.credenciamentos.map(cred => ({
+          id: crypto.randomUUID(),
+          ec: cred.ec,
+          volumeRS: cred.volumeRS.toString(),
+          ra: cred.ra ? 'true' : 'false',
+          cesta: cred.cesta,
+          instalaDireto: cred.instalaDireto ? 'true' : 'false',
+          nomeGerentePJ: cred.nomeGerentePJ || ''
+        }))
+      : []
     setCredenciamentos(credenciamentosFormatados)
     
     // Converter CNPJs simulados para formato do formulário
-    const cnpjsFormatados = fechamento.cnpjsSimulados.map(cnpj => ({
-      id: crypto.randomUUID(),
-      cnpj: cnpj.cnpj,
-      nomeEmpresa: cnpj.nomeEmpresa,
-      faturamento: cnpj.faturamento.toString(),
-      comentarios: cnpj.comentarios || '',
-      agenciaSimulacao: (cnpj as any).agenciaSimulacao || '',
-      pjIndicou: (cnpj as any).pjIndicou || ''
-    }))
+    const cnpjsFormatados = Array.isArray(fechamento.cnpjsSimulados)
+      ? fechamento.cnpjsSimulados.map(cnpj => ({
+          id: crypto.randomUUID(),
+          cnpj: cnpj.cnpj,
+          nomeEmpresa: cnpj.nomeEmpresa,
+          faturamento: cnpj.faturamento.toString(),
+          comentarios: cnpj.comentarios || '',
+          agenciaSimulacao: (cnpj as any).agenciaSimulacao || '',
+          pjIndicou: (cnpj as any).pjIndicou || ''
+        }))
+      : []
     setCnpjsSalvos(cnpjsFormatados)
     setCnpjsSimulados([])
     
@@ -1950,7 +1954,7 @@ export default function Home() {
                 </div>
 
                 {/* Credenciamentos */}
-                {registroSelecionado.credenciamentos.length === 0 ? (
+                {(!Array.isArray(registroSelecionado.credenciamentos) || registroSelecionado.credenciamentos.length === 0) ? (
                   <div className="text-center py-12">
                     <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <span className="text-gray-400 text-3xl">📋</span>
@@ -1964,11 +1968,11 @@ export default function Home() {
                       <span className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
                         <span className="text-orange-600">📋</span>
                       </span>
-                      Credenciamentos ({registroSelecionado.credenciamentos.length})
+                      Credenciamentos ({Array.isArray(registroSelecionado.credenciamentos) ? registroSelecionado.credenciamentos.length : 0})
                     </h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {registroSelecionado.credenciamentos.map((cred, index) => (
+                      {(Array.isArray(registroSelecionado.credenciamentos) ? registroSelecionado.credenciamentos : []).map((cred, index) => (
                         <div key={cred.id} className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all">
                           <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
@@ -2025,17 +2029,17 @@ export default function Home() {
                 )}
 
                 {/* CNPJs Simulados */}
-                {registroSelecionado.cnpjsSimulados.length > 0 && (
+                {Array.isArray(registroSelecionado.cnpjsSimulados) && registroSelecionado.cnpjsSimulados.length > 0 && (
                   <div className="mt-8">
                     <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                       <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                         <span className="text-blue-600">🏢</span>
                       </span>
-                      CNPJs Simulados ({registroSelecionado.cnpjsSimulados.length})
+                      CNPJs Simulados ({Array.isArray(registroSelecionado.cnpjsSimulados) ? registroSelecionado.cnpjsSimulados.length : 0})
                     </h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {registroSelecionado.cnpjsSimulados.map((cnpj, index) => (
+                      {(Array.isArray(registroSelecionado.cnpjsSimulados) ? registroSelecionado.cnpjsSimulados : []).map((cnpj, index) => (
                         <div key={cnpj.id} className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all">
                           <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">

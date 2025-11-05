@@ -229,10 +229,14 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
     try {
       const gerenteParam = gerenteEstadual ? `&gerenteEstadual=${encodeURIComponent(gerenteEstadual)}` : ''
       
-      // Carregar relatório diário com dados acumulados
-      const responseDiario = await fetch(`/api/relatorios/diario?data=${dataSelecionada}&acumulado=true${gerenteParam}`)
+      // Carregar relatório diário - sem acumulado para mostrar apenas o dia selecionado
+      const responseDiario = await fetch(`/api/relatorios/diario?data=${dataSelecionada}&acumulado=false${gerenteParam}`)
       if (responseDiario.ok) {
         const diario = await responseDiario.json()
+        // Garantir que dadosPorGN seja sempre um array
+        if (diario && !Array.isArray(diario.dadosPorGN)) {
+          diario.dadosPorGN = []
+        }
         setRelatorioDiario(diario)
       }
 
@@ -240,6 +244,10 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
       const responseSemanal = await fetch(`/api/relatorios/semanal?data=${dataSelecionada}${gerenteParam}`)
       if (responseSemanal.ok) {
         const semanal = await responseSemanal.json()
+        // Garantir que dadosPorGN seja sempre um array
+        if (semanal && !Array.isArray(semanal.dadosPorGN)) {
+          semanal.dadosPorGN = []
+        }
         setRelatorioSemanal(semanal)
       }
 
@@ -247,6 +255,10 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
       const responseMensal = await fetch(`/api/relatorios/mensal?data=${dataSelecionada}${gerenteParam}`)
       if (responseMensal.ok) {
         const mensal = await responseMensal.json()
+        // Garantir que dadosPorGN seja sempre um array
+        if (mensal && !Array.isArray(mensal.dadosPorGN)) {
+          mensal.dadosPorGN = []
+        }
         setRelatorioMensal(mensal)
       }
     } catch (error) {
@@ -624,6 +636,15 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                   </div>
                 </CardHeader>
                 <CardContent>
+                  {relatorioDiario.dadosPorGN.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-gray-400 text-3xl">📊</span>
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-600 mb-2">Nenhum dado encontrado</h3>
+                      <p className="text-gray-500">Não há registros de fechamento para o dia {relatorioDiario.data}.</p>
+                    </div>
+                  ) : (
                   <div className="space-y-4">
                     {relatorioDiario.dadosPorGN.map((gn, index) => (
                       <div key={index} className="border rounded-lg p-4">
@@ -671,6 +692,7 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                       </div>
                     ))}
                   </div>
+                  )}
                 </CardContent>
               </Card>
             </>

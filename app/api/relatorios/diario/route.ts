@@ -144,9 +144,22 @@ export async function GET(request: NextRequest) {
     const percentualMetaCreds = gnsComDados > 0 ? Math.round((gnsBateramMetaCreds / gnsComDados) * 100) : 0
     const percentualMetaVisitas = gnsComDados > 0 ? Math.round((gnsBateramMetaVisitas / gnsComDados) * 100) : 0
 
+    // Formatar data corretamente para exibição
+    const dataFormatada = format(dataReferencia, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+    
+    console.log('📅 Relatório Diário - Filtro:', {
+      dataSelecionada: data,
+      dataReferencia: format(dataReferencia, 'dd/MM/yyyy'),
+      startDate: format(startDate, 'dd/MM/yyyy HH:mm:ss'),
+      endDate: format(endDate, 'dd/MM/yyyy HH:mm:ss'),
+      acumulado,
+      fechamentosEncontrados: fechamentos.length,
+      dadosPorGN: dadosPorGN.length
+    })
+
     // Gerar relatório estruturado
     const relatorio = {
-      data: format(dataReferencia, "dd 'de' MMMM 'de' yyyy", { locale: ptBR }),
+      data: dataFormatada,
       dataISO: data,
       resumo: {
         totalGNs: gnsComDados,
