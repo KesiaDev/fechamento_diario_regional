@@ -40,6 +40,8 @@ export interface ExcelData {
         nomeEmpresa: string
         faturamento: number
         comentarios: string
+        agenciaSimulacao?: string
+        pjIndicou?: string
       }>
     }>
   }>
@@ -96,6 +98,8 @@ export interface ExcelDataCompleto {
         nomeEmpresa: string
         faturamento: number
         comentarios: string
+        agenciaSimulacao?: string
+        pjIndicou?: string
         horarioSimulacao?: string
       }>
       resumoDia: {
@@ -242,7 +246,7 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
 
     gnData.push([''])
     gnData.push(['DETALHAMENTO DOS CNPJs SIMULADOS'])
-    gnData.push(['Data', 'CNPJ', 'Empresa', 'Faturamento (R$)', 'Comentários'])
+    gnData.push(['Data', 'CNPJ', 'Empresa', 'Faturamento (R$)', 'Agência de Simulação', 'PJ que Indicou', 'Comentários'])
 
     gn.fechamentos.forEach(fechamento => {
       fechamento.cnpjsSimulados.forEach(cnpj => {
@@ -251,6 +255,8 @@ export const gerarExcelRelatorio = (data: ExcelData) => {
           cnpj.cnpj,
           cnpj.nomeEmpresa,
           formatCurrencyUtil(cnpj.faturamento),
+          cnpj.agenciaSimulacao || '-',
+          cnpj.pjIndicou || '-',
           cnpj.comentarios || '-'
         ])
       })
@@ -447,7 +453,7 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
 
     gnData.push([''])
     gnData.push(['🔍 DETALHAMENTO COMPLETO DAS SIMULAÇÕES'])
-    gnData.push(['Data', 'Dia da Semana', 'CNPJ', 'Empresa', 'Faturamento (R$)', 'Comentários', 'Horário'])
+    gnData.push(['Data', 'Dia da Semana', 'CNPJ', 'Empresa', 'Faturamento (R$)', 'Agência de Simulação', 'PJ que Indicou', 'Comentários', 'Horário'])
 
     gn.detalhamentoPorDia.forEach(dia => {
       dia.cnpjsSimulados.forEach(cnpj => {
@@ -457,6 +463,8 @@ export const gerarExcelRelatorioCompleto = (data: ExcelDataCompleto) => {
           cnpj.cnpj,
           cnpj.nomeEmpresa,
           formatCurrencyUtil(cnpj.faturamento),
+          cnpj.agenciaSimulacao || '-',
+          cnpj.pjIndicou || '-',
           cnpj.comentarios || '-',
           cnpj.horarioSimulacao || '-'
         ])

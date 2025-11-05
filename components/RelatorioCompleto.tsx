@@ -287,6 +287,8 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
               nomeEmpresa: c.nomeEmpresa,
               faturamento: c.faturamento,
               comentarios: c.comentarios || '-',
+              agenciaSimulacao: c.agenciaSimulacao || '-',
+              pjIndicou: c.pjIndicou || '-',
               horarioSimulacao: dataDiario.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
             }))
 
@@ -396,6 +398,8 @@ export function RelatorioCompleto({ gerenteEstadual = '' }: RelatorioCompletoPro
                   nomeEmpresa: c.nomeEmpresa,
                   faturamento: c.faturamento,
                   comentarios: c.comentarios || '-',
+                  agenciaSimulacao: c.agenciaSimulacao || '-',
+                  pjIndicou: c.pjIndicou || '-',
                   horarioSimulacao: new Date(f.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
                 }))
               )

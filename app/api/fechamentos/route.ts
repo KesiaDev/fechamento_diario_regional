@@ -68,6 +68,8 @@ export async function POST(request: NextRequest) {
               nomeEmpresa: cnpj.nomeEmpresa,
               faturamento: parseFloat(cnpj.faturamento),
               comentarios: cnpj.comentarios || null,
+              agenciaSimulacao: cnpj.agenciaSimulacao || null,
+              pjIndicou: cnpj.pjIndicou || null,
             }))
           }
         },

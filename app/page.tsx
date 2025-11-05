@@ -214,6 +214,8 @@ type CnpjSimulado = {
   nomeEmpresa: string
   faturamento: string
   comentarios: string
+  agenciaSimulacao?: string
+  pjIndicou?: string
 }
 
 type Fechamento = {
@@ -244,6 +246,8 @@ type Fechamento = {
     nomeEmpresa: string
     faturamento: number
     comentarios: string | null
+    agenciaSimulacao?: string | null
+    pjIndicou?: string | null
   }>
 }
 
@@ -344,7 +348,9 @@ export default function Home() {
         cnpj: '',
         nomeEmpresa: '',
         faturamento: '',
-        comentarios: ''
+        comentarios: '',
+        agenciaSimulacao: '',
+        pjIndicou: ''
       }
     ])
   }
@@ -441,7 +447,9 @@ export default function Home() {
       cnpj: cnpj.cnpj,
       nomeEmpresa: cnpj.nomeEmpresa,
       faturamento: cnpj.faturamento.toString(),
-      comentarios: cnpj.comentarios || ''
+      comentarios: cnpj.comentarios || '',
+      agenciaSimulacao: cnpj.agenciaSimulacao || '',
+      pjIndicou: cnpj.pjIndicou || ''
     }))
     setCnpjsSalvos(cnpjsFormatados)
     setCnpjsSimulados([])
@@ -1121,10 +1129,28 @@ export default function Home() {
                                 />
                               </div>
 
+                              <div className="space-y-2 sm:col-span-2 lg:col-span-2">
+                                <Label>Agência de Simulação</Label>
+                                <Input
+                                  value={cnpj.agenciaSimulacao || ''}
+                                  onChange={(e) => atualizarCnpjSimulado(cnpj.id, 'agenciaSimulacao', e.target.value)}
+                                  placeholder="Nome da agência onde foi feita a simulação"
+                                />
+                              </div>
+
+                              <div className="space-y-2 sm:col-span-2 lg:col-span-2">
+                                <Label>PJ que Indicou o CNPJ</Label>
+                                <Input
+                                  value={cnpj.pjIndicou || ''}
+                                  onChange={(e) => atualizarCnpjSimulado(cnpj.id, 'pjIndicou', e.target.value)}
+                                  placeholder="Nome do PJ que indicou este CNPJ"
+                                />
+                              </div>
+
                               <div className="space-y-2 sm:col-span-2 lg:col-span-3">
                                 <Label>Comentários sobre a Simulação</Label>
                                 <Input
-                                  value={cnpj.comentarios}
+                                  value={cnpj.comentarios || ''}
                                   onChange={(e) => atualizarCnpjSimulado(cnpj.id, 'comentarios', e.target.value)}
                                   placeholder="Descreva os detalhes da simulação realizada"
                                 />
@@ -2019,6 +2045,20 @@ export default function Home() {
                               <p className="text-xs text-purple-600 font-medium mb-1">Faturamento</p>
                               <p className="font-bold text-purple-700">{formatCurrency(cnpj.faturamento)}</p>
                             </div>
+                            
+                            {cnpj.agenciaSimulacao && (
+                              <div className="bg-white rounded-lg p-3">
+                                <p className="text-xs text-orange-600 font-medium mb-1">Agência de Simulação</p>
+                                <p className="font-semibold text-orange-700">{cnpj.agenciaSimulacao}</p>
+                              </div>
+                            )}
+                            
+                            {cnpj.pjIndicou && (
+                              <div className="bg-white rounded-lg p-3">
+                                <p className="text-xs text-indigo-600 font-medium mb-1">PJ que Indicou</p>
+                                <p className="font-semibold text-indigo-700">{cnpj.pjIndicou}</p>
+                              </div>
+                            )}
                             
                             {cnpj.comentarios && (
                               <div className="bg-white rounded-lg p-3">
