@@ -652,7 +652,9 @@ export default function Home() {
             })),
             cnpjsSimulados: cnpjsSalvos.map(cnpj => ({
               ...cnpj,
-              faturamento: parseCurrencyInput(cnpj.faturamento || '0')
+              faturamento: parseCurrencyInput(cnpj.faturamento || '0'),
+              agenciaSimulacao: cnpj.agenciaSimulacao || undefined,
+              pjIndicou: cnpj.pjIndicou || undefined
             }))
           })
         })
@@ -682,7 +684,9 @@ export default function Home() {
             })),
             cnpjsSimulados: cnpjsSalvos.map(cnpj => ({
               ...cnpj,
-              faturamento: parseCurrencyInput(cnpj.faturamento || '0')
+              faturamento: parseCurrencyInput(cnpj.faturamento || '0'),
+              agenciaSimulacao: cnpj.agenciaSimulacao || undefined,
+              pjIndicou: cnpj.pjIndicou || undefined
             }))
           })
         })
@@ -2046,17 +2050,17 @@ export default function Home() {
                               <p className="font-bold text-purple-700">{formatCurrency(cnpj.faturamento)}</p>
                             </div>
                             
-                            {cnpj.agenciaSimulacao && (
+                            {(cnpj.agenciaSimulacao || (cnpj as any).agenciaSimulacao) && (
                               <div className="bg-white rounded-lg p-3">
                                 <p className="text-xs text-orange-600 font-medium mb-1">Agência de Simulação</p>
-                                <p className="font-semibold text-orange-700">{cnpj.agenciaSimulacao}</p>
+                                <p className="font-semibold text-orange-700">{cnpj.agenciaSimulacao || (cnpj as any).agenciaSimulacao || ''}</p>
                               </div>
                             )}
                             
-                            {cnpj.pjIndicou && (
+                            {(cnpj.pjIndicou || (cnpj as any).pjIndicou) && (
                               <div className="bg-white rounded-lg p-3">
                                 <p className="text-xs text-indigo-600 font-medium mb-1">PJ que Indicou</p>
-                                <p className="font-semibold text-indigo-700">{cnpj.pjIndicou}</p>
+                                <p className="font-semibold text-indigo-700">{cnpj.pjIndicou || (cnpj as any).pjIndicou || ''}</p>
                               </div>
                             )}
                             
