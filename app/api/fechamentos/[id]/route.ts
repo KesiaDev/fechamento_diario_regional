@@ -47,10 +47,21 @@ export async function PUT(
     console.log('Credenciamentos válidos:', credenciamentosValidos.length)
 
     // Filtrar CNPJs simulados válidos
-    const cnpjsValidos = (cnpjsSimulados || []).filter((cnpj: any) =>
-      cnpj && cnpj.cnpj && cnpj.nomeEmpresa && cnpj.faturamento &&
-      cnpj.cnpj.toString().trim() !== '' && cnpj.nomeEmpresa.toString().trim() !== ''
-    )
+    const cnpjsValidos = (cnpjsSimulados || []).filter((cnpj: any) => {
+      if (!cnpj || !cnpj.cnpj || !cnpj.nomeEmpresa || cnpj.faturamento === undefined || cnpj.faturamento === null) {
+        return false
+      }
+      const cnpjStr = cnpj.cnpj.toString().trim()
+      const nomeStr = cnpj.nomeEmpresa.toString().trim()
+      if (cnpjStr === '' || nomeStr === '') {
+        return false
+      }
+      // Verificar se faturamento é um número válido
+      const faturamentoNum = typeof cnpj.faturamento === 'string' 
+        ? parseFloat(cnpj.faturamento.replace(/[^\d,.-]/g, '').replace(',', '.'))
+        : parseFloat(cnpj.faturamento)
+      return !isNaN(faturamentoNum) && isFinite(faturamentoNum)
+    })
 
     // Atualizar fechamento com credenciamentos e CNPJs simulados usando transação
     const fechamento = await prisma.$transaction(async (tx) => {
@@ -81,14 +92,28 @@ export async function PUT(
           },
           cnpjsSimulados: {
             deleteMany: {},
-            create: cnpjsValidos.map((cnpj: any) => ({
-              cnpj: cnpj.cnpj,
-              nomeEmpresa: cnpj.nomeEmpresa,
-              faturamento: parseFloat(cnpj.faturamento),
-              comentarios: cnpj.comentarios || null,
-              agenciaSimulacao: cnpj.agenciaSimulacao || null,
-              pjIndicou: cnpj.pjIndicou || null,
-            }))
+            create: cnpjsValidos.length > 0 ? cnpjsValidos.map((cnpj: any) => {
+              // Função auxiliar para converter string de moeda para número
+              const parseFaturamento = (value: any): number => {
+                if (typeof value === 'number') return value
+                if (typeof value === 'string') {
+                  // Remove caracteres não numéricos exceto ponto e vírgula
+                  const cleaned = value.replace(/[^\d,.-]/g, '').replace(',', '.')
+                  const parsed = parseFloat(cleaned)
+                  return isNaN(parsed) ? 0 : parsed
+                }
+                return 0
+              }
+              const faturamento = parseFaturamento(cnpj.faturamento)
+              return {
+                cnpj: cnpj.cnpj.toString().trim(),
+                nomeEmpresa: cnpj.nomeEmpresa.toString().trim(),
+                faturamento,
+                comentarios: cnpj.comentarios || null,
+                agenciaSimulacao: cnpj.agenciaSimulacao || null,
+                pjIndicou: cnpj.pjIndicou || null,
+              }
+            }) : []
           }
         },
         include: {

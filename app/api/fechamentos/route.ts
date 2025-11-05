@@ -32,13 +32,39 @@ export async function POST(request: NextRequest) {
     console.log('Credenciamentos válidos:', credenciamentosValidos.length)
 
     // Filtrar CNPJs simulados válidos
-    const cnpjsValidos = (cnpjsSimulados || []).filter((cnpj: any) =>
-      cnpj && cnpj.cnpj && cnpj.nomeEmpresa && cnpj.faturamento &&
-      cnpj.cnpj.toString().trim() !== '' && cnpj.nomeEmpresa.toString().trim() !== ''
-    )
+    const cnpjsValidos = (cnpjsSimulados || []).filter((cnpj: any) => {
+      if (!cnpj || !cnpj.cnpj || !cnpj.nomeEmpresa || cnpj.faturamento === undefined || cnpj.faturamento === null) {
+        return false
+      }
+      const cnpjStr = cnpj.cnpj.toString().trim()
+      const nomeStr = cnpj.nomeEmpresa.toString().trim()
+      if (cnpjStr === '' || nomeStr === '') {
+        return false
+      }
+      // Verificar se faturamento é um número válido
+      const faturamentoNum = typeof cnpj.faturamento === 'string' 
+        ? parseFloat(cnpj.faturamento.replace(/[^\d,.-]/g, '').replace(',', '.'))
+        : parseFloat(cnpj.faturamento)
+      return !isNaN(faturamentoNum) && isFinite(faturamentoNum)
+    })
+
+    console.log('CNPJs válidos:', cnpjsValidos.length)
+    console.log('CNPJs recebidos:', cnpjsSimulados?.length || 0)
 
     // Usar transação para garantir que tudo seja salvo ou nada seja salvo
     const fechamento = await prisma.$transaction(async (tx) => {
+      // Função auxiliar para converter string de moeda para número
+      const parseFaturamento = (value: any): number => {
+        if (typeof value === 'number') return value
+        if (typeof value === 'string') {
+          // Remove caracteres não numéricos exceto ponto e vírgula
+          const cleaned = value.replace(/[^\d,.-]/g, '').replace(',', '.')
+          const parsed = parseFloat(cleaned)
+          return isNaN(parsed) ? 0 : parsed
+        }
+        return 0
+      }
+
       return await tx.fechamento.create({
         data: {
           gerenteEstadual,
@@ -46,31 +72,35 @@ export async function POST(request: NextRequest) {
           agencia,
           porteAgencia: porteAgencia || null,
           gerentePJ: gerentePJ || null,
-          qtdVisitas: parseInt(qtdVisitas),
-          qtdInteracoes: parseInt(qtdInteracoes),
-          qtdBraExpre: parseInt(qtdBraExpre),
+          qtdVisitas: parseInt(qtdVisitas) || 0,
+          qtdInteracoes: parseInt(qtdInteracoes) || 0,
+          qtdBraExpre: parseInt(qtdBraExpre) || 0,
           data: dataFechamento,
           credenciamentos: {
-            create: credenciamentosValidos.map((cred: any) => ({
+            create: credenciamentosValidos.length > 0 ? credenciamentosValidos.map((cred: any) => ({
               qtdCredenciamentos: 1, // Cada credenciamento adicionado = 1 credenciamento
               ativacoesValor: 0, // Campo removido, sempre 0
-              ec: cred.ec,
-              volumeRS: parseFloat(cred.volumeRS),
+              ec: cred.ec.toString().trim(),
+              volumeRS: parseFloat(cred.volumeRS) || 0,
               ra: cred.ra === 'true' || cred.ra === true || cred.ra === 'True' || cred.ra === 'TRUE',
-              cesta: cred.cesta,
+              cesta: cred.cesta || '',
               instalaDireto: cred.instalaDireto === 'true' || cred.instalaDireto === true || cred.instalaDireto === 'True' || cred.instalaDireto === 'TRUE',
               nomeGerentePJ: cred.nomeGerentePJ || null,
-            }))
+            })) : []
           },
           cnpjsSimulados: {
-            create: cnpjsValidos.map((cnpj: any) => ({
-              cnpj: cnpj.cnpj,
-              nomeEmpresa: cnpj.nomeEmpresa,
-              faturamento: parseFloat(cnpj.faturamento),
-              comentarios: cnpj.comentarios || null,
-              agenciaSimulacao: cnpj.agenciaSimulacao || null,
-              pjIndicou: cnpj.pjIndicou || null,
-            }))
+            create: cnpjsValidos.length > 0 ? cnpjsValidos.map((cnpj: any) => {
+              const faturamento = parseFaturamento(cnpj.faturamento)
+              console.log('Processando CNPJ:', cnpj.cnpj, 'Faturamento:', faturamento)
+              return {
+                cnpj: cnpj.cnpj.toString().trim(),
+                nomeEmpresa: cnpj.nomeEmpresa.toString().trim(),
+                faturamento,
+                comentarios: cnpj.comentarios || null,
+                agenciaSimulacao: cnpj.agenciaSimulacao || null,
+                pjIndicou: cnpj.pjIndicou || null,
+              }
+            }) : []
           }
         },
         include: {
@@ -100,10 +130,27 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(fechamentoFormatado, { status: 201 })
   } catch (error) {
-    console.error('Erro ao criar fechamento:', error)
-    console.error('Erro completo:', JSON.stringify(error, null, 2))
+    console.error('❌ Erro ao criar fechamento:', error)
+    console.error('❌ Erro completo:', JSON.stringify(error, null, 2))
+    
+    // Log detalhado do erro
+    if (error instanceof Error) {
+      console.error('❌ Mensagem de erro:', error.message)
+      console.error('❌ Stack trace:', error.stack)
+    }
+    
+    // Se for erro do Prisma, logar mais detalhes
+    if (error && typeof error === 'object' && 'code' in error) {
+      console.error('❌ Código do erro Prisma:', (error as any).code)
+      console.error('❌ Meta do erro:', (error as any).meta)
+    }
+    
     return NextResponse.json(
-      { error: 'Erro ao salvar fechamento', details: error instanceof Error ? error.message : 'Erro desconhecido' },
+      { 
+        error: 'Erro ao salvar fechamento', 
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+        stack: error instanceof Error ? error.stack : undefined
+      },
       { status: 500 }
     )
   }
