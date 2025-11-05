@@ -499,10 +499,15 @@ export default function Home() {
     try {
       const url = `/api/fechamentos?filtro=${filtro}&data=${dataFiltro}${filtroEstadual && filtroEstadual !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
       const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`Erro na API: ${response.status}`)
+      }
       const data = await response.json()
-      setFechamentos(data)
+      // Garantir que data seja um array válido
+      setFechamentos(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Erro ao carregar fechamentos:', error)
+      setFechamentos([]) // Garantir array vazio em caso de erro
     }
   }
 
@@ -510,10 +515,15 @@ export default function Home() {
     try {
       const url = `/api/fechamentos/ranking?filtro=${filtro}&data=${dataFiltro}${filtroEstadual && filtroEstadual !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
       const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`Erro na API: ${response.status}`)
+      }
       const data = await response.json()
-      setRanking(data)
+      // Garantir que data seja um array válido
+      setRanking(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Erro ao carregar ranking:', error)
+      setRanking([]) // Garantir array vazio em caso de erro
     }
   }
 
@@ -1435,9 +1445,9 @@ export default function Home() {
                         </tr>
                       </thead>
                       <tbody>
-                        {fechamentos.map((fechamento) => {
-                          const totalCreds = fechamento.credenciamentos.length
-                          const totalAtiv = fechamento.credenciamentos.reduce((sum, c) => sum + c.volumeRS, 0)
+                        {(Array.isArray(fechamentos) ? fechamentos : []).map((fechamento) => {
+                          const totalCreds = Array.isArray(fechamento.credenciamentos) ? fechamento.credenciamentos.length : 0
+                          const totalAtiv = Array.isArray(fechamento.credenciamentos) ? fechamento.credenciamentos.reduce((sum, c) => sum + c.volumeRS, 0) : 0
                           
                           return (
                             <tr 
@@ -1590,7 +1600,7 @@ export default function Home() {
                   </div>
                   <div className="mt-3">
                     {(() => {
-                      const maxCreds = Math.max(...ranking.map(gn => gn.totalCredenciamentos))
+                      const maxCreds = Array.isArray(ranking) && ranking.length > 0 ? Math.max(...ranking.map(gn => gn.totalCredenciamentos)) : 0
                       // Filtra apenas quem tem máximo de credenciamentos
                       const candidatosCreds = ranking.filter(gn => gn.totalCredenciamentos === maxCreds)
                       
@@ -1655,7 +1665,7 @@ export default function Home() {
                   </div>
                   <div className="mt-3">
                     {(() => {
-                      const maxVolume = Math.max(...ranking.map(gn => gn.totalAtivacoes))
+                      const maxVolume = Array.isArray(ranking) && ranking.length > 0 ? Math.max(...ranking.map(gn => gn.totalAtivacoes)) : 0
                       // Filtra apenas quem tem máximo de volume
                       const candidatosVolume = ranking.filter(gn => gn.totalAtivacoes === maxVolume)
                       
@@ -1730,7 +1740,7 @@ export default function Home() {
               </Card>
             ) : (
               <div className="space-y-2">
-                {ranking.map((item, index) => {
+                {(Array.isArray(ranking) ? ranking : []).map((item, index) => {
                   // Usar posição calculada pela API
                   const posicaoReal = item.posicao || (index + 1)
                   const isPrimeiroLugar = posicaoReal === 1
