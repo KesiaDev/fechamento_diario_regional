@@ -1662,6 +1662,61 @@ export default function Home() {
               </div>
             </div>
 
+            <div className="p-4 bg-white rounded-lg border border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Filtro por GN</p>
+                  <p className="text-xs text-gray-500">{descricaoFiltroGNsRanking}</p>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {filtroGNsRanking.length > 0 && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      onClick={limparFiltroGNsRanking}
+                    >
+                      Limpar seleção
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setMostrarFiltroGNsRanking(prev => !prev)}
+                  >
+                    {mostrarFiltroGNsRanking ? 'Ocultar GNs' : 'Selecionar GNs'}
+                  </Button>
+                </div>
+              </div>
+
+              {mostrarFiltroGNsRanking && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {gnsDisponiveisRanking.map((gn) => {
+                    const selecionado = filtroGNsRanking.includes(gn)
+                    return (
+                      <button
+                        key={gn}
+                        type="button"
+                        onClick={() => alternarGNRanking(gn)}
+                        className={`rounded-full px-3 py-1 text-sm border transition ${
+                          selecionado
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
+                        }`}
+                      >
+                        {gn}
+                      </button>
+                    )
+                  })}
+                  {gnsDisponiveisRanking.length === 0 && (
+                    <span className="text-sm text-gray-500">Nenhum GN disponível para esta regional.</span>
+                  )}
+                </div>
+              )}
+            </div>
+
             {/* Cards de Destaque */}
             {ranking.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
