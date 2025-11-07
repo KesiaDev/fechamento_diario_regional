@@ -9,7 +9,16 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const dataParam = searchParams.get('data')
-    
+    const gerenteEstadualParam = searchParams.get('gerenteEstadual')
+    const gnsParam = searchParams.get('gns')
+
+    const gnsFiltrados = gnsParam
+      ? gnsParam
+          .split(',')
+          .map((gn) => gn.trim())
+          .filter((gn) => gn.length > 0)
+      : []
+
     // Se não especificar data, usa a semana atual
     const dataReferencia = dataParam ? new Date(dataParam + 'T12:00:00') : new Date(new Date().toISOString().split('T')[0] + 'T12:00:00')
     
@@ -18,13 +27,25 @@ export async function GET(request: NextRequest) {
     const fimSemana = addDays(inicioSemana, 4) // Sexta-feira (segunda + 4 dias)
     
     // Buscar fechamentos da semana
+    const whereClause: Record<string, any> = {
+      data: {
+        gte: inicioSemana,
+        lte: fimSemana
+      }
+    }
+
+    if (gerenteEstadualParam && gerenteEstadualParam !== 'todas') {
+      whereClause.gerenteEstadual = gerenteEstadualParam
+    }
+
+    if (gnsFiltrados.length > 0) {
+      whereClause.executivo = {
+        in: gnsFiltrados
+      }
+    }
+
     const fechamentos = await prisma.fechamento.findMany({
-      where: {
-        data: {
-          gte: inicioSemana,
-          lte: fimSemana
-        }
-      },
+      where: whereClause,
       include: {
         credenciamentos: true
       }
@@ -83,13 +104,22 @@ export async function GET(request: NextRequest) {
       })
 
     // Encontrar destaques considerando empates
-    const maxCreds = Math.max(...ranking.map(gn => gn.totalCredenciamentos))
-    const gnsEmpatadosCreds = ranking.filter(gn => gn.totalCredenciamentos === maxCreds)
-    const maiorQuantidade = gnsEmpatadosCreds.length > 0 ? gnsEmpatadosCreds[0] : null
-    
-    const maxVolume = Math.max(...ranking.map(gn => gn.totalAtivacoes))
-    const gnsEmpatadosVolume = ranking.filter(gn => gn.totalAtivacoes === maxVolume)
-    const maiorVolume = gnsEmpatadosVolume.length > 0 ? gnsEmpatadosVolume[0] : null
+    let maiorQuantidade = null
+    let maiorQuantidadeEmpate: string[] = []
+    let maiorVolume = null
+    let maiorVolumeEmpate: string[] = []
+
+    if (ranking.length > 0) {
+      const maxCreds = Math.max(...ranking.map(gn => gn.totalCredenciamentos))
+      const gnsEmpatadosCreds = ranking.filter(gn => gn.totalCredenciamentos === maxCreds)
+      maiorQuantidade = gnsEmpatadosCreds.length > 0 ? gnsEmpatadosCreds[0] : null
+      maiorQuantidadeEmpate = gnsEmpatadosCreds.map(gn => gn.executivo)
+
+      const maxVolume = Math.max(...ranking.map(gn => gn.totalAtivacoes))
+      const gnsEmpatadosVolume = ranking.filter(gn => gn.totalAtivacoes === maxVolume)
+      maiorVolume = gnsEmpatadosVolume.length > 0 ? gnsEmpatadosVolume[0] : null
+      maiorVolumeEmpate = gnsEmpatadosVolume.map(gn => gn.executivo)
+    }
 
     // Estatísticas gerais
     const totalCredenciamentos = ranking.reduce((sum, gn) => sum + gn.totalCredenciamentos, 0)
@@ -109,15 +139,15 @@ export async function GET(request: NextRequest) {
           executivo: maiorQuantidade.executivo,
           credenciamentos: maiorQuantidade.totalCredenciamentos,
           ativacoes: maiorQuantidade.totalAtivacoes,
-          temEmpate: gnsEmpatadosCreds.length > 1,
-          gnsEmpatados: gnsEmpatadosCreds.map(gn => gn.executivo)
+          temEmpate: maiorQuantidadeEmpate.length > 1,
+          gnsEmpatados: maiorQuantidadeEmpate
         } : null,
         maiorVolume: maiorVolume && maiorVolume.totalAtivacoes > 0 ? {
           executivo: maiorVolume.executivo,
           credenciamentos: maiorVolume.totalCredenciamentos,
           ativacoes: maiorVolume.totalAtivacoes,
-          temEmpate: gnsEmpatadosVolume.length > 1,
-          gnsEmpatados: gnsEmpatadosVolume.map(gn => gn.executivo)
+          temEmpate: maiorVolumeEmpate.length > 1,
+          gnsEmpatados: maiorVolumeEmpate
         } : null
       },
       estatisticas: {

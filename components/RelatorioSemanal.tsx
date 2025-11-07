@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -62,7 +62,7 @@ type RelatorioSemanal = {
 }
 
 // Lista de Gerentes Estaduais
-const gerentesEstaduais = {
+const gerentesEstaduais: Record<string, string[]> = {
   'KESIA WEIGE NANDI': ['Sheila', 'Jeferson', 'Jhonattan', 'Renan', 'Dionei', 'Cristian'],
   'AMANDA ALINE TRINDADE JUSTI': ['Vitor Hugo', 'Wagner', 'Patricia', 'Augusto', 'Tiago', 'Abner', 'Ana C Silva'],
   'ADRIANO CORREA GOMES': ['Vander', 'In Koo', 'Fabio', 'Henrique', 'Paulo', 'Carlos', 'Tba Exe 1 - Cascavel'],
@@ -75,16 +75,48 @@ interface RelatorioSemanalProps {
   gerenteEstadual?: string
 }
 
+const todosGNs = Array.from(
+  new Set(Object.values(gerentesEstaduais).flat())
+).sort()
+
 export function RelatorioSemanal({ gerenteEstadual: gerenteEstadualProp = '' }: RelatorioSemanalProps) {
   const [relatorio, setRelatorio] = useState<RelatorioSemanal | null>(null)
   const [loading, setLoading] = useState(false)
   const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
   const [filtroRegional, setFiltroRegional] = useState(gerenteEstadualProp || 'todas')
+  const [filtroGNs, setFiltroGNs] = useState<string[]>([])
+
+  const gnsDisponiveis = useMemo(() => {
+    if (filtroRegional && filtroRegional !== 'todas') {
+      return [...(gerentesEstaduais[filtroRegional as keyof typeof gerentesEstaduais] || [])]
+    }
+    return todosGNs
+  }, [filtroRegional])
+
+  useEffect(() => {
+    setFiltroGNs((prev) => prev.filter((gn) => gnsDisponiveis.includes(gn)))
+  }, [gnsDisponiveis])
+
+  const alternarFiltroGN = (gn: string) => {
+    setFiltroGNs((prev) =>
+      prev.includes(gn) ? prev.filter((item) => item !== gn) : [...prev, gn]
+    )
+  }
+
+  const limparFiltroGNs = () => setFiltroGNs([])
 
   const carregarRelatorio = async () => {
     setLoading(true)
     try {
-      const url = `/api/fechamentos/relatorio-semanal?data=${dataFiltro}${filtroRegional && filtroRegional !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(filtroRegional)}` : ''}`
+      const params = new URLSearchParams({ data: dataFiltro })
+      if (filtroRegional && filtroRegional !== 'todas') {
+        params.append('gerenteEstadual', filtroRegional)
+      }
+      if (filtroGNs.length > 0) {
+        params.append('gns', filtroGNs.join(','))
+      }
+
+      const url = `/api/fechamentos/relatorio-semanal?${params.toString()}`
       const response = await fetch(url)
       const data = await response.json()
       setRelatorio(data)
@@ -97,7 +129,7 @@ export function RelatorioSemanal({ gerenteEstadual: gerenteEstadualProp = '' }: 
 
   useEffect(() => {
     carregarRelatorio()
-  }, [dataFiltro, filtroRegional])
+  }, [dataFiltro, filtroRegional, filtroGNs])
 
   const gerarRelatorioPDF = async () => {
     if (!relatorio) return
@@ -253,28 +285,68 @@ export function RelatorioSemanal({ gerenteEstadual: gerenteEstadualProp = '' }: 
             <h2 className="text-2xl font-bold mb-2">📊 Relatório Semanal</h2>
             <p className="text-blue-100">Acompanhamento de performance da equipe CIELO</p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Select value={filtroRegional} onValueChange={setFiltroRegional}>
-              <SelectTrigger className="bg-white/10 border-white/20 text-white w-full sm:w-[200px]">
-                <SelectValue placeholder="Todos os regionais" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todas">Todos os regionais</SelectItem>
-                {Object.keys(gerentesEstaduais).map((gerente) => (
-                  <SelectItem key={gerente} value={gerente}>{gerente}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Input
-              type="date"
-              value={dataFiltro}
-              onChange={(e) => setDataFiltro(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-blue-200"
-            />
-            <Button onClick={carregarRelatorio} variant="secondary" size="sm">
-              <Calendar className="w-4 h-4 mr-2" />
-              Atualizar
-            </Button>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Select value={filtroRegional} onValueChange={setFiltroRegional}>
+                <SelectTrigger className="bg-white/10 border-white/20 text-white w-full sm:w-[200px]">
+                  <SelectValue placeholder="Todos os regionais" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todos os regionais</SelectItem>
+                  {Object.keys(gerentesEstaduais).map((gerente) => (
+                    <SelectItem key={gerente} value={gerente}>{gerente}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                type="date"
+                value={dataFiltro}
+                onChange={(e) => setDataFiltro(e.target.value)}
+                className="bg-white/10 border-white/20 text-white placeholder:text-blue-200"
+              />
+              <Button onClick={carregarRelatorio} variant="secondary" size="sm">
+                <Calendar className="w-4 h-4 mr-2" />
+                Atualizar
+              </Button>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="text-xs uppercase tracking-wide text-blue-100">Filtrar por GN</Label>
+              <div className="flex flex-wrap gap-2">
+                {gnsDisponiveis.map((gn) => {
+                  const selecionado = filtroGNs.includes(gn)
+                  return (
+                    <button
+                      key={gn}
+                      type="button"
+                      onClick={() => alternarFiltroGN(gn)}
+                      className={`rounded-full px-3 py-1 text-sm transition border ${
+                        selecionado
+                          ? 'bg-white text-blue-600 border-white'
+                          : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
+                      }`}
+                    >
+                      {gn}
+                    </button>
+                  )
+                })}
+                {gnsDisponiveis.length === 0 && (
+                  <span className="text-sm text-blue-100/80">Nenhum GN disponível para esta regional.</span>
+                )}
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {filtroGNs.length > 0 && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+                    onClick={limparFiltroGNs}
+                  >
+                    Limpar seleção
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
