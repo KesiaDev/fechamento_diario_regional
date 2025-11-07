@@ -85,6 +85,7 @@ export function RelatorioSemanal({ gerenteEstadual: gerenteEstadualProp = '' }: 
   const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
   const [filtroRegional, setFiltroRegional] = useState(gerenteEstadualProp || 'todas')
   const [filtroGNs, setFiltroGNs] = useState<string[]>([])
+  const [mostrarFiltroGNs, setMostrarFiltroGNs] = useState(false)
 
   const gnsDisponiveis = useMemo(() => {
     if (filtroRegional && filtroRegional !== 'todas') {
@@ -104,6 +105,10 @@ export function RelatorioSemanal({ gerenteEstadual: gerenteEstadualProp = '' }: 
   }
 
   const limparFiltroGNs = () => setFiltroGNs([])
+
+  const descricaoFiltroGNs = filtroGNs.length === 0
+    ? 'Mostrando todos os GNs'
+    : `${filtroGNs.length} GN${filtroGNs.length > 1 ? 's' : ''} selecionado${filtroGNs.length > 1 ? 's' : ''}`
 
   const carregarRelatorio = async () => {
     setLoading(true)
@@ -309,43 +314,60 @@ export function RelatorioSemanal({ gerenteEstadual: gerenteEstadualProp = '' }: 
                 Atualizar
               </Button>
             </div>
-            <div className="flex flex-col gap-2">
-              <Label className="text-xs uppercase tracking-wide text-blue-100">Filtrar por GN</Label>
-              <div className="flex flex-wrap gap-2">
-                {gnsDisponiveis.map((gn) => {
-                  const selecionado = filtroGNs.includes(gn)
-                  return (
-                    <button
-                      key={gn}
+            <div className="flex flex-col gap-3 p-3 bg-white/10 border border-white/20 rounded-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <Label className="text-xs uppercase tracking-wide text-blue-100">Filtrar por GN</Label>
+                  <p className="text-xs text-blue-100/80">{descricaoFiltroGNs}</p>
+                </div>
+                <div className="flex gap-2">
+                  {filtroGNs.length > 0 && (
+                    <Button
                       type="button"
-                      onClick={() => alternarFiltroGN(gn)}
-                      className={`rounded-full px-3 py-1 text-sm transition border ${
-                        selecionado
-                          ? 'bg-white text-blue-600 border-white'
-                          : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
-                      }`}
+                      variant="secondary"
+                      size="sm"
+                      className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+                      onClick={limparFiltroGNs}
                     >
-                      {gn}
-                    </button>
-                  )
-                })}
-                {gnsDisponiveis.length === 0 && (
-                  <span className="text-sm text-blue-100/80">Nenhum GN disponível para esta regional.</span>
-                )}
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {filtroGNs.length > 0 && (
+                      Limpar seleção
+                    </Button>
+                  )}
                   <Button
                     type="button"
                     variant="secondary"
                     size="sm"
-                    className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-                    onClick={limparFiltroGNs}
+                    className="bg-white text-blue-600"
+                    onClick={() => setMostrarFiltroGNs((prev) => !prev)}
                   >
-                    Limpar seleção
+                    {mostrarFiltroGNs ? 'Ocultar' : 'Selecionar GNs'}
                   </Button>
-                )}
+                </div>
               </div>
+
+              {mostrarFiltroGNs && (
+                <div className="flex flex-wrap gap-2">
+                  {gnsDisponiveis.map((gn) => {
+                    const selecionado = filtroGNs.includes(gn)
+                    return (
+                      <button
+                        key={gn}
+                        type="button"
+                        onClick={() => alternarFiltroGN(gn)}
+                        className={`rounded-full px-3 py-1 text-sm transition border ${
+                          selecionado
+                            ? 'bg-white text-blue-600 border-white'
+                            : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
+                        }`}
+                      >
+                        {gn}
+                      </button>
+                    )
+                  })}
+                  {gnsDisponiveis.length === 0 && (
+                    <span className="text-sm text-blue-100/80">Nenhum GN disponível para esta regional.</span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
