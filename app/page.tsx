@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -61,6 +61,8 @@ const gerentesEstaduais = {
   'GUILHERME MORAES DORNEMANN': ['Ricardo', 'Paola', 'Josimar', 'Edson', 'Fabiele', 'Sabrina', 'Tba Exe 2 - Porto_Alegre_Norte'],
   'TBA ESTADUAL BRA PARANA 2': ['Joslayne', 'Lyon', 'Elisandra', 'Lilian', 'Nicodemos', 'Tba Exe 1 - Curitiba_Norte', 'Tba Exe 1 - Curitiba_Sul', 'Tba Exe 2 - Curitiba_Sul', 'Tba Exe 4 - Curitiba_Norte']
 }
+
+const todosGNs = Array.from(new Set(Object.values(gerentesEstaduais).flat())).sort()
 
 // Função para obter GNs de um Gerente Estadual
 const getGNsPorGerenteEstadual = (gerente: string) => {
@@ -293,10 +295,35 @@ export default function Home() {
   const [filtro, setFiltro] = useState('dia')
   const [dataFiltro, setDataFiltro] = useState(new Date().toISOString().split('T')[0])
   const [filtroEstadual, setFiltroEstadual] = useState('todas')
+  const [filtroGNsRanking, setFiltroGNsRanking] = useState<string[]>([])
+  const [mostrarFiltroGNsRanking, setMostrarFiltroGNsRanking] = useState(false)
   const [loading, setLoading] = useState(false)
   const [registroSelecionado, setRegistroSelecionado] = useState<Fechamento | null>(null)
   const [mostrarModal, setMostrarModal] = useState(false)
   const [modoEdicao, setModoEdicao] = useState(false)
+
+  const gnsDisponiveisRanking = useMemo(() => {
+    if (filtroEstadual && filtroEstadual !== 'todas') {
+      return [...getGNsPorGerenteEstadual(filtroEstadual)]
+    }
+    return todosGNs
+  }, [filtroEstadual])
+
+  useEffect(() => {
+    setFiltroGNsRanking(prev => prev.filter(gn => gnsDisponiveisRanking.includes(gn)))
+  }, [gnsDisponiveisRanking])
+
+  const alternarGNRanking = (gn: string) => {
+    setFiltroGNsRanking(prev =>
+      prev.includes(gn) ? prev.filter(item => item !== gn) : [...prev, gn]
+    )
+  }
+
+  const limparFiltroGNsRanking = () => setFiltroGNsRanking([])
+
+  const descricaoFiltroGNsRanking = filtroGNsRanking.length === 0
+    ? 'Mostrando todos os GNs'
+    : `${filtroGNsRanking.length} GN${filtroGNsRanking.length > 1 ? 's' : ''} selecionado${filtroGNsRanking.length > 1 ? 's' : ''}`
 
   // Função para lidar com mudança de Gerente Estadual
   const handleGerenteEstadualChange = (novoGerente: string) => {
@@ -517,7 +544,15 @@ export default function Home() {
 
   const carregarRanking = async () => {
     try {
-      const url = `/api/fechamentos/ranking?filtro=${filtro}&data=${dataFiltro}${filtroEstadual && filtroEstadual !== 'todas' ? `&gerenteEstadual=${encodeURIComponent(filtroEstadual)}` : ''}`
+      const params = new URLSearchParams({ filtro, data: dataFiltro })
+      if (filtroEstadual && filtroEstadual !== 'todas') {
+        params.append('gerenteEstadual', filtroEstadual)
+      }
+      if (filtroGNsRanking.length > 0) {
+        params.append('gns', filtroGNsRanking.join(','))
+      }
+
+      const url = `/api/fechamentos/ranking?${params.toString()}`
       const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`Erro na API: ${response.status}`)
@@ -534,7 +569,7 @@ export default function Home() {
   useEffect(() => {
     carregarFechamentos()
     carregarRanking()
-  }, [filtro, dataFiltro, filtroEstadual])
+  }, [filtro, dataFiltro, filtroEstadual, filtroGNsRanking])
 
   // Atualizar porte e gerente PJ quando agência for selecionada
   useEffect(() => {

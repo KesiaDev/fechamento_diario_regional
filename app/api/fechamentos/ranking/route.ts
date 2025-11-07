@@ -10,6 +10,14 @@ export async function GET(request: NextRequest) {
     const filtro = searchParams.get('filtro') || 'dia'
     const dataParam = searchParams.get('data')
     const gerenteEstadual = searchParams.get('gerenteEstadual')
+    const gnsParam = searchParams.get('gns')
+
+    const gnsFiltrados = gnsParam
+      ? gnsParam
+          .split(',')
+          .map(gn => gn.trim())
+          .filter(gn => gn.length > 0)
+      : []
     
     const dataReferencia = dataParam ? new Date(dataParam + 'T12:00:00') : new Date(new Date().toISOString().split('T')[0] + 'T12:00:00')
     
@@ -32,14 +40,25 @@ export async function GET(request: NextRequest) {
         break
     }
 
+    const whereClause: Record<string, any> = {
+      data: {
+        gte: startDate,
+        lte: endDate
+      }
+    }
+
+    if (gerenteEstadual && gerenteEstadual !== 'todas') {
+      whereClause.gerenteEstadual = gerenteEstadual
+    }
+
+    if (gnsFiltrados.length > 0) {
+      whereClause.executivo = {
+        in: gnsFiltrados
+      }
+    }
+
     const fechamentos = await prisma.fechamento.findMany({
-      where: {
-        data: {
-          gte: startDate,
-          lte: endDate
-        },
-        ...(gerenteEstadual ? { gerenteEstadual } : {})
-      },
+      where: whereClause,
       include: {
         credenciamentos: true
       }
